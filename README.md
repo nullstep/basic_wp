@@ -2,4 +2,5 @@
 
 an extremely basic blog theme featuring:
 - google font selection
-- seed generated background effect
+- bootstrap/jquery
+- css/js editor
