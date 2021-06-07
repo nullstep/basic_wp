@@ -1,0 +1,12 @@
+<?php get_header(); ?>
+
+		<main class="row">
+			<section class="col-sm-12">
+<?php get_template_part('loop'); ?>
+				<div class="pagination">
+<?php pagination(); ?>
+
+				</div>
+			</section>
+		</main>
+<?php get_footer(); ?>
