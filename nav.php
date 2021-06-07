@@ -1,6 +1,6 @@
 	<div id="nav-area" class="content">
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark shadow" role="navigation">
-			<div class="container px-0">
+			<div class="<?php echo getvalue('container_class'); ?> px-0">
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-collapse" aria-controls="nav-collapse" aria-expanded="false" aria-label="Toggle Navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>

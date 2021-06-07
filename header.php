@@ -18,4 +18,4 @@
 <?php get_template_part('nav'); ?>
 <?php get_template_part('banner'); ?>
 	<div id="content-area" class="content">
-		<div class="container">
+		<div class="<?php echo getvalue('container_class'); ?>">

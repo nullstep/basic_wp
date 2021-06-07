@@ -2,6 +2,7 @@
 
 #wpwrap {
 	background: url(logo_light.svg) center center no-repeat !important;
+	background-size: auto 60% !important;
 }
 
 #basic_wp-form .tab-content:after {

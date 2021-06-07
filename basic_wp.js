@@ -5,6 +5,7 @@ jQuery(function($) {
 	const id = 'basic_wp';
 	var theme = basic_wp;
 	const fields = [
+		'container_class',
 		'excerpt_length',
 		'favicon_image',
 		'logo_image_normal',

@@ -1,7 +1,7 @@
 		</div>
 	</div>
 	<div id="footer-area" class="content">
-		<div class="container">
+		<div class="<?php echo getvalue('container_class'); ?>">
 			<footer class="row">
 				<section class="col-sm-12">
 					<?php wp_footer(); ?>

@@ -24,7 +24,7 @@ define('_BASIC_WP_MENUS', [
 	'primary' => 'Primary Menu'
 ]);
 
-define('_BASIC_WP_CSS', '?>
+define('_BASIC_WP_CSS', '
 :root {
 	--main-doc-colour: #fff;
 	--info-area-colour: #eee;
@@ -241,9 +241,13 @@ pre {
 	width: 100%;
 	height: 100%;
 }
-<?php');
+');
 
 define('_ARGS_BASIC_WP', [
+	'container_class' => [
+		'type' => 'string',
+		'default' => 'container'
+	],
 	'excerpt_length' => [
 		'type' => 'integer',
 		'default' => 20
@@ -319,6 +323,14 @@ define('_FORM_BASIC_WP', [
 		'label' => 'General',
 		'columns' => 4,
 		'fields' => [
+			'container_class' => [
+				'label' => 'Site Width',
+				'type' => 'select',
+				'values' => [
+					'container-fluid' => 'Full Width',
+					'container' => 'Fixed Width'
+				]
+			],
 			'excerpt_length' => [
 				'label' => 'Excerpt Word Limit',
 				'type' => 'input'
