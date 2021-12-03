@@ -832,7 +832,7 @@ function getcss() {
 		'--secondary-colour:' . _BWP['secondary_colour'] . ';' .
 		'--tertiary-colour:' . _BWP['tertiary_colour'] . ';' .
 		'--quaternary-colour:' . _BWP['quaternary_colour'] . ';' .
-	'}';
+	'}.dropdown-menu[data-bs-popper]{left:unset;}';
 	echo $css . _BWP['theme_css_minified'] . "\n";
 }
 
@@ -1146,7 +1146,7 @@ function fix_content($content) {
 		libxml_use_internal_errors(true);
 		$dom = new DOMDocument;
 		$dom->strictErrorChecking = false;
-		$dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+		$dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NODEFDTD);
 		foreach ($dom->getElementsByTagName('img') as $img) {
 			$file = basename(parse_url($img->getAttribute('src'), PHP_URL_PATH));
 			$path = substr($img->getAttribute('src'), 0, (0 - strlen($file)));
@@ -1164,7 +1164,9 @@ function fix_content($content) {
 		for ($els = $xpath->query('//comment()'), $i = $els->length - 1; $i >= 0; $i--) {
 			$els->item($i)->parentNode->removeChild($els->item($i));
 		}
-		return "\t\t\t\t\t\t" . str_replace("\n", '', $dom->saveHTML());
+		$temp = str_replace('<html><body>', '', $dom->saveHTML());
+		$temp = str_replace('</body></html>', '', $temp);
+		return "\t\t\t\t\t\t" . str_replace("\n", '', $temp);
 	}
 }
 
@@ -1430,328 +1432,80 @@ add_action('rest_api_init', function() {
 //    ███    ███      ███    ███  ███▌    ▄    ███         
 //    ███    █▀       ██████████  █████▄▄██   ▄████▀  
 
-// navwalker class - https://github.com/wp-bootstrap/wp-bootstrap-navwalker
+// bootstrap 5 nav walker
 
-if (!class_exists('WP_Bootstrap_Navwalker')) :
-	class WP_Bootstrap_Navwalker extends Walker_Nav_Menu {
+class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
+	private $current_item;
+	private $dropdown_menu_alignment_values = [
+		'dropdown-menu-start',
+		'dropdown-menu-end',
+		'dropdown-menu-sm-start',
+		'dropdown-menu-sm-end',
+		'dropdown-menu-md-start',
+		'dropdown-menu-md-end',
+		'dropdown-menu-lg-start',
+		'dropdown-menu-lg-end',
+		'dropdown-menu-xl-start',
+		'dropdown-menu-xl-end',
+		'dropdown-menu-xxl-start',
+		'dropdown-menu-xxl-end'
+	];
 
-		private $has_schema = false;
-
-		public function __construct() {
-			if (!has_filter('wp_nav_menu_args', [$this, 'add_schema_to_navbar_ul'])) {
-				add_filter('wp_nav_menu_args', [$this, 'add_schema_to_navbar_ul']);
+	function start_lvl(&$output, $depth = 0, $args = null) {
+		$dropdown_menu_class[] = '';
+		foreach ($this->current_item->classes as $class) {
+			if (in_array($class, $this->dropdown_menu_alignment_values)) {
+				$dropdown_menu_class[] = $class;
 			}
 		}
-
-		public function start_lvl(&$output, $depth = 0, $args = null) {
-			if (isset($args->item_spacing) && 'discard' === $args->item_spacing) {
-				$t = '';
-				$n = '';
-			}
-			else {
-				$t = "\t";
-				$n = "\n";
-			}
-			$indent = str_repeat($t, $depth);
-			$classes = ['dropdown-menu'];
-			$class_names = join(' ', apply_filters('nav_menu_submenu_css_class', $classes, $args, $depth));
-			$class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
-
-			$labelledby = '';
-			preg_match_all('/(<a.*?id=\"|\')(.*?)\"|\'.*?>/im', $output, $matches);
-			if (end($matches[2])) {
-				$labelledby = 'aria-labelledby="' . esc_attr(end($matches[2])) . '"';
-			}
-			$output .= "{$n}{$indent}<ul$class_names $labelledby>{$n}";
-		}
-
-		public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-			if (isset($args->item_spacing) && 'discard' === $args->item_spacing) {
-				$t = '';
-				$n = '';
-			}
-			else {
-				$t = "\t";
-				$n = "\n";
-			}
-			$indent = ($depth) ? str_repeat($t, $depth) : '';
-
-			if (false !== strpos($args->items_wrap, 'itemscope') && false === $this->has_schema) {
-				$this->has_schema = true;
-				$args->link_before = '<span itemprop="name">' . $args->link_before;
-				$args->link_after .= '</span>';
-			}
-
-			$classes = empty($item->classes) ? [] : (array) $item->classes;
-
-			$split_on_spaces = function ($class) {
-				return preg_split('/\s+/', $class);
-			};
-			$classes = $this->flatten(array_map($split_on_spaces, $classes));
-
-			$linkmod_classes = [];
-			$icon_classes = [];
-
-			$classes = self::separate_linkmods_and_icons_from_classes($classes, $linkmod_classes, $icon_classes, $depth);
-			$icon_class_string = join(' ', $icon_classes);
-
-			$args = apply_filters('nav_menu_item_args', $args, $item, $depth);
-
-			if ($this->has_children) {
-				$classes[] = 'dropdown';
-			}
-			if (in_array('current-menu-item', $classes, true) || in_array('current-menu-parent', $classes, true)) {
-				$classes[] = 'active';
-			}
-
-			$classes[] = 'menu-item-' . $item->ID;
-			$classes[] = 'nav-item';
-			$classes = apply_filters('nav_menu_css_class', array_filter($classes), $item, $args, $depth);
-			$class_names = join(' ', $classes);
-			$class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
-
-			$id = apply_filters('nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args, $depth);
-			$id = $id ? ' id="' . esc_attr($id) . '"' : '';
-
-			$output .= $indent . '<li ' . $id . $class_names . '>';
-
-			$atts = [];
-			$atts['title']  = !empty($item->attr_title) ? $item->attr_title : '';
-			$atts['target'] = !empty($item->target) ? $item->target : '';
-			if ('_blank' === $item->target && empty($item->xfn)) {
-				$atts['rel'] = 'noopener noreferrer';
-			}
-			else {
-				$atts['rel'] = ! empty($item->xfn) ? $item->xfn : '';
-			}
-
-			if ( $this->has_children && 0 === $depth ) {
-				$atts['href'] = '#';
-				$atts['data-toggle'] = 'dropdown';
-				$atts['aria-haspopup'] = 'true';
-				$atts['aria-expanded'] = 'false';
-				$atts['class'] = 'dropdown-toggle nav-link';
-				$atts['id'] = 'menu-item-dropdown-' . $item->ID;
-			}
-			else {
-				if (true === $this->has_schema) {
-					$atts['itemprop'] = 'url';
-				}
-
-				$atts['href'] = ! empty($item->url) ? $item->url : '#';
-				if ( $depth > 0 ) {
-					$atts['class'] = 'dropdown-item';
-				}
-				else {
-					$atts['class'] = 'nav-link';
-				}
-			}
-
-			$atts['aria-current'] = $item->current ? 'page' : '';
-			$atts = self::update_atts_for_linkmod_type($atts, $linkmod_classes);
-			$atts = apply_filters('nav_menu_link_attributes', $atts, $item, $args, $depth);
-
-			$attributes = '';
-			foreach ($atts as $attr => $value) {
-				if (!empty($value)) {
-					$value = ('href' === $attr) ? esc_url($value) : esc_attr($value);
-					$attributes .= ' ' . $attr . '="' . $value . '"';
-				}
-			}
-
-			$linkmod_type = self::get_linkmod_type($linkmod_classes);
-			$item_output = isset($args->before) ? $args->before : '';
-
-			if ('' !== $linkmod_type) {
-				$item_output .= self::linkmod_element_open($linkmod_type, $attributes);
-			}
-			else {
-				$item_output .= '<a' . $attributes . '>';
-			}
-
-			$icon_html = '';
-			if (!empty($icon_class_string)) {
-				$icon_html = '<i class="' . esc_attr($icon_class_string) . '" aria-hidden="true"></i> ';
-			}
-
-			$title = apply_filters('the_title', $item->title, $item->ID);
-			$title = apply_filters('nav_menu_item_title', $title, $item, $args, $depth);
-
-			if (in_array('sr-only', $linkmod_classes, true)) {
-				$title = self::wrap_for_screen_reader($title);
-				$keys_to_unset = array_keys($linkmod_classes, 'sr-only', true);
-				foreach ($keys_to_unset as $k) {
-					unset($linkmod_classes[$k]);
-				}
-			}
-
-			$item_output .= isset($args->link_before) ? $args->link_before . $icon_html . $title . $args->link_after : '';
-
-			if ('' !== $linkmod_type) {
-				$item_output .= self::linkmod_element_close($linkmod_type);
-			}
-			else {
-				$item_output .= '</a>';
-			}
-
-			$item_output .= isset($args->after) ? $args->after : '';
-			$output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
-		}
-
-		public static function fallback($args) {
-			if (!current_user_can('edit_theme_options')) {
-				return;
-			}
-
-			$fallback_output = '';
-			$show_container = false;
-			if ($args['container']) {
-				$allowed_tags = apply_filters('wp_nav_menu_container_allowedtags', ['div', 'nav']);
-				if (is_string($args['container']) && in_array($args['container'], $allowed_tags, true)) {
-					$show_container = true;
-					$class = $args['container_class'] ? ' class="menu-fallback-container ' . esc_attr($args['container_class']) . '"' : ' class="menu-fallback-container"';
-					$id = $args['container_id'] ? ' id="' . esc_attr($args['container_id']) . '"' : '';
-					$fallback_output .= '<' . $args['container'] . $id . $class . '>';
-				}
-			}
-
-			$class = $args['menu_class'] ? ' class="menu-fallback-menu ' . esc_attr($args['menu_class']) . '"' : ' class="menu-fallback-menu"';
-			$id = $args['menu_id'] ? ' id="' . esc_attr($args['menu_id']) . '"' : '';
-			$fallback_output .= '<ul' . $id . $class . '>';
-			$fallback_output .= '<li class="nav-item"><a href="' . esc_url(admin_url('nav-menus.php')) . '" class="nav-link" title="' . esc_attr__('Add a menu', 'wp-bootstrap-navwalker') . '">' . esc_html__('Add a menu', 'wp-bootstrap-navwalker') . '</a></li>';
-			$fallback_output .= '</ul>';
-
-			if ($show_container) {
-				$fallback_output .= '</' . $args['container'] . '>';
-			}
-
-			if (array_key_exists('echo', $args) && $args['echo'] ) {
-				echo $fallback_output;
-			}
-			else {
-				return $fallback_output;
-			}
-		}
-
-		public function add_schema_to_navbar_ul($args) {
-			$wrap = $args['items_wrap'];
-			if (strpos($wrap, 'SiteNavigationElement') === false) {
-				$args['items_wrap'] = preg_replace('/(>).*>?\%3\$s/', ' itemscope itemtype="http://www.schema.org/SiteNavigationElement"$0', $wrap);
-			}
-
-			return $args;
-		}
-
-		private function separate_linkmods_and_icons_from_classes($classes, &$linkmod_classes, &$icon_classes, $depth) {
-			foreach ($classes as $key => $class) {
-				if (preg_match('/^disabled|^sr-only/i', $class)) {
-					$linkmod_classes[] = $class;
-					unset($classes[$key]);
-				}
-				elseif (preg_match('/^dropdown-header|^dropdown-divider|^dropdown-item-text/i', $class) && $depth > 0) {
-					$linkmod_classes[] = $class;
-					unset($classes[$key]);
-				}
-				elseif (preg_match( '/^fa-(\S*)?|^fa(s|r|l|b)?(\s?)?$/i', $class)) {
-					$icon_classes[] = $class;
-					unset($classes[$key]);
-				}
-				elseif (preg_match( '/^glyphicon-(\S*)?|^glyphicon(\s?)$/i', $class)) {
-					$icon_classes[] = $class;
-					unset($classes[$key]);
-				}
-			}
-
-			return $classes;
-		}
-
-		private function get_linkmod_type($linkmod_classes = []) {
-			$linkmod_type = '';
-			if (!empty($linkmod_classes)) {
-				foreach ($linkmod_classes as $link_class) {
-					if (!empty($link_class)) {
-						if ('dropdown-header' === $link_class) {
-							$linkmod_type = 'dropdown-header';
-						}
-						elseif ('dropdown-divider' === $link_class) {
-							$linkmod_type = 'dropdown-divider';
-						}
-						elseif ('dropdown-item-text' === $link_class) {
-							$linkmod_type = 'dropdown-item-text';
-						}
-					}
-				}
-			}
-			return $linkmod_type;
-		}
-
-		private function update_atts_for_linkmod_type($atts = [], $linkmod_classes = []) {
-			if (!empty($linkmod_classes)) {
-				foreach ($linkmod_classes as $link_class) {
-					if (!empty($link_class)) {
-						if ('sr-only' !== $link_class) {
-							$atts['class'] .= ' ' . esc_attr($link_class);
-						}
-						if ('disabled' === $link_class) {
-							$atts['href'] = '#';
-							unset($atts['target']);
-						}
-						elseif ('dropdown-header' === $link_class || 'dropdown-divider' === $link_class || 'dropdown-item-text' === $link_class) {
-							unset($atts['href']);
-							unset($atts['target']);
-						}
-					}
-				}
-			}
-			return $atts;
-		}
-
-		private function wrap_for_screen_reader($text = '') {
-			if ($text) {
-				$text = '<span class="sr-only">' . $text . '</span>';
-			}
-			return $text;
-		}
-
-		private function linkmod_element_open($linkmod_type, $attributes = '') {
-			$output = '';
-			if ('dropdown-item-text' === $linkmod_type) {
-				$output .= '<span class="dropdown-item-text"' . $attributes . '>';
-			}
-			elseif ('dropdown-header' === $linkmod_type) {
-				$output .= '<span class="dropdown-header h6"' . $attributes . '>';
-			}
-			elseif ('dropdown-divider' === $linkmod_type) {
-				$output .= '<div class="dropdown-divider"' . $attributes . '>';
-			}
-			return $output;
-		}
-
-		private function linkmod_element_close($linkmod_type) {
-			$output = '';
-			if ('dropdown-header' === $linkmod_type || 'dropdown-item-text' === $linkmod_type) {
-				$output .= '</span>';
-			}
-			elseif ('dropdown-divider' === $linkmod_type) {
-				$output .= '</div>';
-			}
-			return $output;
-		}
-
-		public function flatten($array) {
-			$result = [];
-			foreach ($array as $element) {
-				if (is_array( $element)) {
-					array_push($result, ...$this->flatten($element));
-				}
-				else {
-					$result[] = $element;
-				}
-			}
-			return $result;
-		}
+		$indent = str_repeat("\t", $depth);
+		$submenu = ($depth > 0) ? ' sub-menu' : '';
+		$output .= "\n$indent<ul class=\"dropdown-menu$submenu " . esc_attr(implode(" ",$dropdown_menu_class)) . " depth_$depth\">\n";
 	}
-endif;
+
+	function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
+		$this->current_item = $item;
+
+		$indent = ($depth) ? str_repeat("\t", $depth) : '';
+
+		$li_attributes = '';
+		$class_names = $value = '';
+
+		$classes = empty($item->classes) ? array() : (array) $item->classes;
+
+		$classes[] = ($args->walker->has_children) ? 'dropdown' : '';
+		$classes[] = 'nav-item';
+		$classes[] = 'nav-item-' . $item->ID;
+		if ($depth && $args->walker->has_children) {
+			$classes[] = 'dropdown-menu dropdown-menu-end';
+		}
+
+		$class_names =  join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
+		$class_names = ' class="' . esc_attr($class_names) . '"';
+
+		$id = apply_filters('nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args);
+		$id = strlen($id) ? ' id="' . esc_attr($id) . '"' : '';
+
+		$output .= $indent . '<li ' . $id . $value . $class_names . $li_attributes . '>';
+
+		$attributes = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
+		$attributes .= !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
+		$attributes .= !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
+		$attributes .= !empty($item->url) ? ' href="' . esc_attr($item->url) . '"' : '';
+
+		$active_class = ($item->current || $item->current_item_ancestor) ? 'active' : '';
+		$nav_link_class = ( $depth > 0 ) ? 'dropdown-item ' : 'nav-link ';
+		$attributes .= ( $args->walker->has_children ) ? ' class="'. $nav_link_class . $active_class . ' dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' : ' class="'. $nav_link_class . $active_class . '"';
+
+		$item_output = $args->before;
+		$item_output .= '<a' . $attributes . '>';
+		$item_output .= $args->link_before . apply_filters('the_title', $item->title, $item->ID) . $args->link_after;
+		$item_output .= '</a>';
+		$item_output .= $args->after;
+
+		$output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
+	}
+}
 
 // minifying functions
 

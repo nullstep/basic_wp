@@ -7,7 +7,7 @@
 	<meta name="description" content="<?php bloginfo('description'); ?>">
 	<title><?php echo trim(wp_title('', false)); ?><?php if (wp_title('', false)) { echo ' : '; } ?><?php bloginfo('name'); ?></title>
 	<link href="<?php getfavicon(); ?>" rel="shortcut icon">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <?php wp_head(); ?>
 	<style>
 		<?php getfonts(); ?><?php getcss(); ?>
