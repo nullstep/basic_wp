@@ -1,4 +1,4 @@
-<?php setviews(get_the_ID()); ?>
+<?php set_views(get_the_ID()); ?>
 <?php get_header(); ?>
 
 		<main class="row">

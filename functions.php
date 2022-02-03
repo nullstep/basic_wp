@@ -1002,19 +1002,19 @@ function getviews($postID) {
 	return $count . ' View' . (($count != 1)? 's' : '');
 }
 
-function setviews($postID) {
+function set_views($id) {
 	$ip = $_SERVER['REMOTE_ADDR'];
 	if (!in_array($ip, _IGNORE_BASIC_WP)) {
 		$count_key = 'post_views_count';
-		$count = get_post_meta($postID, $count_key, true);
+		$count = get_post_meta($id, $count_key, true);
 		if ($count == '') {
 			$count = 0;
-			delete_post_meta($postID, $count_key);
-			add_post_meta($postID, $count_key, '0');
+			delete_post_meta($id, $count_key);
+			add_post_meta($id, $count_key, '0');
 		}
 		else {
 			$count++;
-			update_post_meta($postID, $count_key, $count);
+			update_post_meta($id, $count_key, $count);
 		}
 	}
 }
@@ -1148,11 +1148,14 @@ function fix_content($content) {
 		$dom->strictErrorChecking = false;
 		$dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NODEFDTD);
 		foreach ($dom->getElementsByTagName('img') as $img) {
-			$file = basename(parse_url($img->getAttribute('src'), PHP_URL_PATH));
-			$path = substr($img->getAttribute('src'), 0, (0 - strlen($file)));
-			$img->setAttribute('src', '/uploads/' . $file);
-			$set = str_replace($path, '/uploads/', $img->getAttribute('srcset'));
-			$img->setAttribute('srcset', $set);
+			$classes = explode(' ', $img->getAttribute('class'));
+			if (!in_array('ext', $classes)) {
+				$file = basename(parse_url($img->getAttribute('src'), PHP_URL_PATH));
+				$path = substr($img->getAttribute('src'), 0, (0 - strlen($file)));
+				$img->setAttribute('src', '/uploads/' . $file);
+				$set = str_replace($path, '/uploads/', $img->getAttribute('srcset'));
+				$img->setAttribute('srcset', $set);
+			}
 		}
 		foreach ($dom->getElementsByTagName('figure') as $fig) {
 			$fig->removeAttribute('class');
