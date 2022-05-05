@@ -4,7 +4,7 @@
 			<section class="col-sm-12">
 <?php get_template_part('loop'); ?>
 				<div class="pagination">
-<?php pagination(); ?>
+<?php get_pagination(); ?>
 
 				</div>
 			</section>

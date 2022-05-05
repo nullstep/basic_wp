@@ -826,7 +826,7 @@ class _themeUpdater {
 //    ███         ███    ███  ███    ███  ███    ███     ▄█    ███  
 //    ███         ████████▀    ▀█    █▀   ████████▀    ▄████████▀   
 
-function getcss() {
+function get_css() {
 	$css = ':root{' .
 		'--primary-colour:' . _BWP['primary_colour'] . ';' .
 		'--secondary-colour:' . _BWP['secondary_colour'] . ';' .
@@ -836,11 +836,11 @@ function getcss() {
 	echo $css . _BWP['theme_css_minified'] . "\n";
 }
 
-function getjs() {
+function get_js() {
 	echo _BWP['theme_js_minified'] . "\n";
 }
 
-function getfonts() {
+function get_fonts() {
 	$template = '@import url(\'https://fonts.googleapis.com/css2?family=[F]&display=swap\');';
 	$fonts = [
 		'heading_font',
@@ -865,7 +865,7 @@ function getfonts() {
 	echo $css;
 }
 
-function getfavicon() {
+function get_favicon() {
 	$setting = _BWP['favicon_image'];
 	$favicon = ($setting != '') ? '/uploads/' . $setting : '/img/favicon.png';
 	echo $favicon;
@@ -873,8 +873,13 @@ function getfavicon() {
 
 // return values
 
-function getvalue($key) {
-	return _BWP[$key];
+function get_value($key, $echo = TRUE) {
+	if ($echo) {
+		echo _BWP[$key];
+	}
+	else {
+		return _BWP[$key];
+	}
 }
 
 // wp options
@@ -895,7 +900,7 @@ function set_wp_options() {
 
 // pagination
 
-function pagination() {
+function get_pagination() {
 	global $wp_query;
 	$big = 999999999;
 	echo paginate_links([
@@ -991,15 +996,15 @@ function add_mime_types($mimes) {
 
 // pages/posts views count
 
-function getviews($postID) {
+function get_views($postID) {
 	$count_key = 'post_views_count';
 	$count = get_post_meta($postID, $count_key, true);
 	if ($count == '') {
 		delete_post_meta($postID, $count_key);
 		add_post_meta($postID, $count_key, '0');
-		return "No Views";
+		echo "No Views";
 	}
-	return $count . ' View' . (($count != 1)? 's' : '');
+	echo $count . ' View' . (($count != 1)? 's' : '');
 }
 
 function set_views($id) {
@@ -1026,7 +1031,7 @@ function posts_column_views($defaults) {
 
 function posts_custom_column_views($column_name, $id) {
 	if ($column_name === 'post_views') {
-		echo getviews(get_the_ID());
+		get_views(get_the_ID());
 	}
 }
 
@@ -1037,7 +1042,7 @@ function pages_column_views($defaults) {
 
 function pages_custom_column_views($column_name, $id) {
 	if ($column_name === 'page_views') {
-		echo getviews(get_the_ID());
+		get_views(get_the_ID());
 	}
 }
 
@@ -1190,6 +1195,7 @@ function remove_recent_comments_style() {
 function remove_crap() {
 	wp_dequeue_style('wp-block-library');
 	wp_deregister_script('jquery');
+	wp_dequeue_style('global-styles');
 }
 
 // tidy head
@@ -1328,7 +1334,7 @@ function do_setup() {
 
 //add_action('init', [$updater, 'init']);
 add_action('init', 'set_wp_options');
-add_action('init', 'pagination');
+add_action('init', 'get_pagination');
 add_action('init', 'no_category_base_permastruct');
 add_action('widgets_init', 'remove_recent_comments_style');
 add_action('admin_init', 'flush_htaccess');

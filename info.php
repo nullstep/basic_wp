@@ -1,5 +1,5 @@
 	<div id="info-area" class="content">
-		<div class="<?php echo getvalue('container_class'); ?>">
+		<div class="<?php get_value('container_class'); ?>">
 			<div class="row">
 
 			</div>
