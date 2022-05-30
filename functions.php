@@ -10,19 +10,11 @@
 define('_THEME', 'basic_wp');
 define('_AUTHOR', 'nullstep');
 
-// you can change these though
+// don't change these unless
+// you know what you're doing
+// and have a good reason
 
-define('_IGNORE_BASIC_WP', [
-	'127.0.0.1'
-]);
-
-define('_BASIC_WP_OPTIONS', [
-	'thumbnails' => true
-]);
-
-define('_BASIC_WP_MENUS', [
-	'primary' => 'Primary Menu'
-]);
+// basic_wp default css
 
 define('_BASIC_WP_CSS', '
 :root {
@@ -243,6 +235,8 @@ pre {
 }
 ');
 
+// basic_wp data
+
 define('_ARGS_BASIC_WP', [
 	'container_class' => [
 		'type' => 'string',
@@ -318,7 +312,9 @@ define('_ARGS_BASIC_WP', [
 	]
 ]);
 
-define('_FORM_BASIC_WP', [
+// basic_wp admin 
+
+define('_ADMIN_BASIC_WP', [
 	'general' => [
 		'label' => 'General',
 		'columns' => 4,
@@ -422,6 +418,48 @@ define('_FORM_BASIC_WP', [
 			]
 		]
 	]
+]);
+
+// don't change this unless
+// you want to change the
+// contact form fields
+
+// contact form
+
+define('_FORM_BASIC_WP', [
+	'name' => [
+		'label' => 'Name',
+		'type' => 'text'
+	],
+	'email' => [
+		'label' => 'Email',
+		'type' => 'email'
+	],
+	'message' => [
+		'label' => 'Message',
+		'type' => 'textarea'
+	]
+]);
+
+// you can change these
+// if you want to though
+
+// page views ignore ips
+
+define('_IGNORE_BASIC_WP', [
+	'127.0.0.1'
+]);
+
+// wp options
+
+define('_OPTIONS_BASIC_WP', [
+	'thumbnails' => true
+]);
+
+// wp menus
+
+define('_MENUS_BASIC_WP', [
+	'primary' => 'Primary Menu'
 ]);
 
 //     ▄████████     ▄███████▄   ▄█   
@@ -584,7 +622,7 @@ class _themeMenu {
 		}
 
 		$name = _THEME;
-		$form = _FORM_BASIC_WP;
+		$form = _ADMIN_BASIC_WP;
 
 		// build form
 
@@ -837,8 +875,10 @@ function get_css() {
 }
 
 function get_js() {
-	echo _BWP['theme_js_minified'] . "\n";
+	$js = 'window.addEventListener(\'load\',(event)=>{if(typeof(boot)===typeof(Function))boot();});';
+	echo $js . _BWP['theme_js_minified'] . "\n";
 }
+
 
 function get_fonts() {
 	$template = '@import url(\'https://fonts.googleapis.com/css2?family=[F]&display=swap\');';
@@ -1118,7 +1158,7 @@ function save_post_metadata($post_id) {
 
 function output_htaccess($rules) {
 	$theme = _THEME;
-	$new_rules = "\n# BEGIN _theme\n<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteCond %{REQUEST_URI} ^/img [NC]\nRewriteRule /(.*) wp-content/themes/{$theme}/$1 [L]\nRewriteCond %{REQUEST_URI} ^/css [NC]\nRewriteRule /(.*) wp-content/themes/{$theme}/$1 [L]\nRewriteCond %{REQUEST_URI} ^/js [NC]\nRewriteRule /(.*) wp-content/themes/{$theme}/$1 [L]\nRewriteCond %{REQUEST_URI} ^/uploads [NC]\nRewriteRule /(.*) wp-content/themes/{$theme}/uploads.php?file=$1 [L]\n</IfModule>\n# END _theme\n\n";
+	$new_rules = "\n# BEGIN basic_wp\n\nOptions -Indexes\n\n<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteCond %{REQUEST_URI} ^/img [NC]\nRewriteRule /(.*) wp-content/themes/{$theme}/$1 [L]\nRewriteCond %{REQUEST_URI} ^/css [NC]\nRewriteRule /(.*) wp-content/themes/{$theme}/$1 [L]\nRewriteCond %{REQUEST_URI} ^/js [NC]\nRewriteRule /(.*) wp-content/themes/{$theme}/$1 [L]\nRewriteCond %{REQUEST_URI} ^/uploads [NC]\nRewriteRule /(.*) wp-content/themes/{$theme}/uploads.php?file=$1 [L]\nRewriteCond %{QUERY_STRING} (author=\d+) [NC]\nRewriteRule .* - [F]\n</IfModule>\n\n<Files xmlrpc.php>\norder deny,allow\ndeny from all\n</Files>\n\n# END basic_wp\n\n";
 	return $new_rules . $rules;
 }
 
@@ -1308,15 +1348,142 @@ function children_shortcode() {
 	return ob_get_clean();
 }
 
+// contact form shortcode
+
+function contact_shortcode() {
+	$html = '<form id="contact-form">';
+	$form = _FORM_BASIC_WP;
+	foreach ($form as $field => $data) {
+		$html .= '<div class="mb-3">';
+			$html .= '<label for="' . $field . '" class="form-label">' . $data['label'] . '</label>';
+			switch ($data['type']) {
+				case 'textarea': {
+					$html .= '<textarea id="' . $field . '" class="f form-control" name="' . $field . '"></textarea>';
+					break;
+				}
+				case 'checkbox': {
+					$html .= '<input id="' . $field . '" type="checkbox" class="form-check-input" name="' . $field . '">';
+					break;
+				}
+				default: {
+					$html .= '<input id="' . $field . '" type="' . $data['type'] . '" class="f form-control" name="' . $field . '">';
+				}
+			}
+		$html .= '</div>';
+	}
+	$html .= '<div class="mb-3">';
+		$html .= '<input type="hidden" name="action" value="contact_form_action">';
+		$html .= wp_nonce_field('contact_form_action', '_acf_nonce', true, false);
+		$html .= '<input id="contact-button" type="button" value="Send">';
+	$html .= '</div>';
+	$html .= '</form>';
+	$html .= '<div id="contact-msg"></div>';
+
+	$url = admin_url('admin-ajax.php');
+
+	$script = "<script>function boot(){
+		$('article').on('click','#contact-button',function(){
+			var f=$('#contact-form');
+			var m=$('#contact-msg');
+			m.text('...');
+			var ne=$('.f').filter(function(){
+				return this.value != '';
+			});
+			if(ne.length==0){
+				m.text('empty fields');
+				return false;
+			}else{
+				$.ajax({
+					type:'POST',
+					url:'{$url}',
+					data:f.serialize(),
+					dataType:'json',
+					success:function(res){
+						if(res.status=='success'){
+							f[0].reset();
+						}
+						m.text(res.errmessage);
+					}
+				});
+			}
+		});
+	}</script>";
+
+	return $html . minify_js($script);
+}
+
+// contact form post handler
+
+function contact_form_callback() {
+	if (!wp_verify_nonce($_POST['_acf_nonce'], $_POST['action'])) {
+		$error = 'verification error, try again.';
+	}
+	else {
+		$form = _FORM_BASIC_WP;
+		$message = 'IP address: ' . $_SERVER['REMOTE_ADDR'] . "\n\n";
+
+		foreach ($form as $field => $data) {
+			$sane = '';
+
+			switch ($field) {
+				case 'email': {
+					$sane = filter_var($_POST[$field], FILTER_SANITIZE_EMAIL);
+					break;
+				}
+				case 'message': {
+					$sane = stripslashes($_POST[$field]);
+					break;
+				}
+				default: {
+					$sane = filter_var($_POST[$field], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+				}
+			}
+
+			$message .= $field . ': ';
+			if (strlen($sane) > 50) {
+				$message .= "\n\n" . $sane . "\n\n";
+			}
+			else {
+				$message .= $sane . "\n";
+			}
+		}
+
+		$subject = 'A messsage from ' . get_option('blogname');
+		$sendmsg = 'Thanks, for the message. We will respond as soon as possible.';
+		$to = get_option('admin_email');
+
+		$parsed = parse_url(site_url());
+
+		$header = 'From: ' . get_option('blogname') . ' <no-reply@' . $parsed['host'] . '>' . "\n";
+		$header .= 'Reply-To: ' . $email . "\n";
+
+		if (wp_mail($to, $subject, $message, $header)) {
+			$status = 'success';
+			$error = $sendmsg;
+		}
+		else {
+			$error = 'error(s)';
+		}
+	}
+
+	$json = [
+		'status' => $status,
+		'errmessage' => $error
+	];
+	
+	header('Content-Type: application/json');
+	die(json_encode($json));
+}
+
 // theme setup
 
 function do_setup() {
-	if (_BASIC_WP_OPTIONS['thumbnails']) {
+	if (_OPTIONS_BASIC_WP['thumbnails']) {
 		add_theme_support('post-thumbnails');
 		set_post_thumbnail_size(192, 108);
 	}
 
-	register_nav_menus(_BASIC_WP_MENUS);
+	register_nav_menus(_MENUS_BASIC_WP);
 }
 
 //   ▄█   ███▄▄▄▄▄     ▄█       ███      
@@ -1355,6 +1522,9 @@ add_action('after_setup_theme', 'do_setup');
 add_action('shutdown', function() {
 	while (@ob_end_flush());
 });
+
+add_action('wp_ajax_contact_form_action', 'contact_form_callback');
+add_action('wp_ajax_nopriv_contact_form_action', 'contact_form_callback');
 
 remove_action('wp_head', 'feed_links', 2);
 remove_action('wp_head', 'feed_links_extra', 3);
@@ -1416,6 +1586,7 @@ add_shortcode('logo-contrast', 'logo_contrast_shortcode');
 add_shortcode('inc', 'inc_shortcode');
 add_shortcode('video', 'video_shortcode');
 add_shortcode('children', 'children_shortcode');
+add_shortcode('contact-form', 'contact_shortcode');
 
 // boot theme
 
@@ -1469,7 +1640,7 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 		}
 		$indent = str_repeat("\t", $depth);
 		$submenu = ($depth > 0) ? ' sub-menu' : '';
-		$output .= "\n$indent<ul class=\"dropdown-menu$submenu " . esc_attr(implode(" ",$dropdown_menu_class)) . " depth_$depth\">\n";
+		$output .= "$indent<ul class=\"dropdown-menu$submenu " . esc_attr(implode(" ", $dropdown_menu_class)) . " $depth\">";
 	}
 
 	function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
@@ -1495,7 +1666,7 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 		$id = apply_filters('nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args);
 		$id = strlen($id) ? ' id="' . esc_attr($id) . '"' : '';
 
-		$output .= $indent . '<li ' . $id . $value . $class_names . $li_attributes . '>';
+		$output .= $indent . '<li' . $id . $value . $class_names . $li_attributes . '>';
 
 		$attributes = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
 		$attributes .= !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
@@ -1503,8 +1674,8 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 		$attributes .= !empty($item->url) ? ' href="' . esc_attr($item->url) . '"' : '';
 
 		$active_class = ($item->current || $item->current_item_ancestor) ? 'active' : '';
-		$nav_link_class = ( $depth > 0 ) ? 'dropdown-item ' : 'nav-link ';
-		$attributes .= ( $args->walker->has_children ) ? ' class="'. $nav_link_class . $active_class . ' dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' : ' class="'. $nav_link_class . $active_class . '"';
+		$nav_link_class = ($depth > 0) ? 'dropdown-item ' : 'nav-link ';
+		$attributes .= ($args->walker->has_children) ? ' class="'. $nav_link_class . $active_class . ' dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' : ' class="'. $nav_link_class . $active_class . '"';
 
 		$item_output = $args->before;
 		$item_output .= '<a' . $attributes . '>';
@@ -1513,6 +1684,11 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 		$item_output .= $args->after;
 
 		$output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
+		$output = str_replace("\n", '', $output);
+	}
+
+	function end_el(&$output, $data_object, $depth = 0, $args = []) {
+		$output = str_replace("\n", '', $output);
 	}
 }
 

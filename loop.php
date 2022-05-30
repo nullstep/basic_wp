@@ -7,7 +7,8 @@
 						<img src="/uploads/<?php echo end(explode('/', wp_get_attachment_image_src(get_post_thumbnail_id(), 'post-thumbnail')[0])); ?>">
 <?php endif; ?>
 						<?php the_excerpt(); ?>
-						</p>
+
+					</p>
 				</article>
 <?php endwhile; ?>
 <?php else: ?>

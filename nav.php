@@ -16,7 +16,7 @@
 				<div id="navbar" class="navbar-collapse collapse">
 					<?php wp_nav_menu([
 						'theme_location' => 'primary',
-						'depth' => 5,
+						'depth' => 0,
 						'container' => false,
 						'menu_class' => 'navbar-nav mx-auto position-relative',
 						'fallback_cb' => '__return_false',
