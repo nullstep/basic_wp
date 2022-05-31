@@ -5,4 +5,5 @@ a basic, useful wordpress theme featuring:
 - bootstrap/jquery
 - css/js editor
 - various config options
+- configurable contact forms
 - child theme available
