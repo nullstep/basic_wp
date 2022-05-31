@@ -1487,7 +1487,7 @@ function contact_form_callback() {
 		}
 
 		$subject = 'A messsage from ' . get_option('blogname');
-		$sendmsg = 'Thanks, for the message. We will respond as soon as possible.';
+		$sendmsg = _BWP['form_success'];
 		$to = _BWP['form_email'];
 
 		$parsed = parse_url(site_url());
