@@ -19,10 +19,15 @@ jQuery(function($) {
 		'nav_font',
 		'body_font',
 		'mono_font',
+		'form_active',
+		'form_email',
+		'form_success',
+		'form_json',
 		'theme_css',
 		'theme_js'
 	];
 	const editors = [
+		'form_json',
 		'theme_css',
 		'theme_js'
 	];

@@ -294,6 +294,35 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
+	'form_email' => [
+		'type' => 'string',
+		'default' => get_option('admin_email')
+	],
+	'form_active' => [
+		'type' => 'string',
+		'default' => 'yes'
+	],
+	'form_success' => [
+		'type' => 'string',
+		'default' => 'Thanks for the message. We will respond as soon as possible.'
+	],
+	'form_json' => [
+		'type' => 'string',
+		'default' => json_encode([
+			'name' => [
+				'label' => 'Name',
+				'type' => 'text'
+			],
+			'email' => [
+				'label' => 'Email',
+				'type' => 'email'
+			],
+			'message' => [
+				'label' => 'Message',
+				'type' => 'textarea'
+			]
+		])
+	],
 	'theme_css' => [
 		'type' => 'string',
 		'default' => _BASIC_WP_CSS
@@ -398,6 +427,28 @@ define('_ADMIN_BASIC_WP', [
 			]
 		]
 	],
+	'forms' => [
+		'label' => 'Forms',
+		'columns' => 4,
+		'fields' => [
+			'form_json' => [
+				'label' => 'Forms Config',
+				'type' => 'code'
+			],
+			'form_email' => [
+				'label' => 'Forms Email',
+				'type' => 'input'
+			],
+			'form_success' => [
+				'label' => 'Forms Thanks Message',
+				'type' => 'text'
+			],
+			'form_active' => [
+				'label' => 'Forms Active',
+				'type' => 'check'
+			]
+		]
+	],
 	'css' => [
 		'label' => 'CSS',
 		'columns' => 1,
@@ -417,27 +468,6 @@ define('_ADMIN_BASIC_WP', [
 				'type' => 'code'
 			]
 		]
-	]
-]);
-
-// don't change this unless
-// you want to change the
-// contact form fields
-
-// contact form
-
-define('_FORM_BASIC_WP', [
-	'name' => [
-		'label' => 'Name',
-		'type' => 'text'
-	],
-	'email' => [
-		'label' => 'Email',
-		'type' => 'email'
-	],
-	'message' => [
-		'label' => 'Message',
-		'type' => 'textarea'
 	]
 ]);
 
@@ -1295,11 +1325,11 @@ function nav_attributes_filter($var) {
 // logo shortcodes
 
 function logo_normal_shortcode($atts = [], $content = null, $tag = '') {
-	return '<img src="/uploads/' . _NWP['logo_image_normal'] . '" class="logo ' . $content .'">';
+	return '<img src="/uploads/' . _BWP['logo_image_normal'] . '" class="logo ' . $content .'">';
 }
 
 function logo_contrast_shortcode($atts = [], $content = null, $tag = '') {
-	return '<img src="/uploads/' . _NWP['logo_image_contrast'] . '" class="logo ' . $content .'">';
+	return '<img src="/uploads/' . _BWP['logo_image_contrast'] . '" class="logo ' . $content .'">';
 }
 
 // include file shortcode
@@ -1350,66 +1380,73 @@ function children_shortcode() {
 
 // contact form shortcode
 
-function contact_shortcode() {
-	$html = '<form id="contact-form">';
-	$form = _FORM_BASIC_WP;
-	foreach ($form as $field => $data) {
-		$html .= '<div class="mb-3">';
-			$html .= '<label for="' . $field . '" class="form-label">' . $data['label'] . '</label>';
-			switch ($data['type']) {
-				case 'textarea': {
-					$html .= '<textarea id="' . $field . '" class="f form-control" name="' . $field . '"></textarea>';
-					break;
-				}
-				case 'checkbox': {
-					$html .= '<input id="' . $field . '" type="checkbox" class="form-check-input" name="' . $field . '">';
-					break;
-				}
-				default: {
-					$html .= '<input id="' . $field . '" type="' . $data['type'] . '" class="f form-control" name="' . $field . '">';
-				}
-			}
-		$html .= '</div>';
-	}
-	$html .= '<div class="mb-3">';
-		$html .= '<input type="hidden" name="action" value="contact_form_action">';
-		$html .= wp_nonce_field('contact_form_action', '_acf_nonce', true, false);
-		$html .= '<input id="contact-button" type="button" value="Send">';
-	$html .= '</div>';
-	$html .= '</form>';
-	$html .= '<div id="contact-msg"></div>';
-
-	$url = admin_url('admin-ajax.php');
-
-	$script = "<script>function boot(){
-		$('article').on('click','#contact-button',function(){
-			var f=$('#contact-form');
-			var m=$('#contact-msg');
-			m.text('...');
-			var ne=$('.f').filter(function(){
-				return this.value != '';
-			});
-			if(ne.length==0){
-				m.text('empty fields');
-				return false;
-			}else{
-				$.ajax({
-					type:'POST',
-					url:'{$url}',
-					data:f.serialize(),
-					dataType:'json',
-					success:function(res){
-						if(res.status=='success'){
-							f[0].reset();
-						}
-						m.text(res.errmessage);
+function contact_shortcode($atts = [], $content = null, $tag = '') {
+	if (_BWP['form_active'] == 'yes') {
+		$html = '<form id="contact-form">';
+		$id = ($content) ? $content : 0;
+		$form = json_decode(_BWP['form_json'], true);
+		foreach ($form[$id] as $field => $data) {
+			$html .= '<div class="mb-3">';
+				$html .= '<label for="' . $field . '" class="form-label">' . $data['label'] . '</label>';
+				switch ($data['type']) {
+					case 'textarea': {
+						$html .= '<textarea id="' . $field . '" class="f form-control" name="' . $field . '"></textarea>';
+						break;
 					}
-				});
-			}
-		});
-	}</script>";
+					case 'checkbox': {
+						$html .= '<input id="' . $field . '" type="checkbox" class="form-check-input" name="' . $field . '">';
+						break;
+					}
+					default: {
+						$html .= '<input id="' . $field . '" type="' . $data['type'] . '" class="f form-control" name="' . $field . '">';
+					}
+				}
+			$html .= '</div>';
+		}
+		$html .= '<div class="mb-3">';
+			$html .= '<input type="hidden" name="action" value="contact_form_action">';
+			$html .= '<input type="hidden" name="form_id" value="' . $id . '">';
+			$html .= wp_nonce_field('contact_form_action', '_acf_nonce', true, false);
+			$html .= '<input id="contact-button" type="button" value="Send">';
+		$html .= '</div>';
+		$html .= '</form>';
+		$html .= '<div id="contact-msg"></div>';
 
-	return $html . minify_js($script);
+		$url = admin_url('admin-ajax.php');
+
+		$script = "<script>function boot(){
+			$('article').on('click','#contact-button',function(){
+				var f=$('#contact-form');
+				var m=$('#contact-msg');
+				m.text('...');
+				var ne=$('.f').filter(function(){
+					return this.value != '';
+				});
+				if(ne.length==0){
+					m.text('empty fields');
+					return false;
+				}else{
+					$.ajax({
+						type:'POST',
+						url:'{$url}',
+						data:f.serialize(),
+						dataType:'json',
+						success:function(res){
+							if(res.status=='success'){
+								f[0].reset();
+							}
+							m.text(res.errmessage);
+						}
+					});
+				}
+			});
+		}</script>";
+
+		return $html . minify_js($script);
+	}
+	else {
+		return null;
+	}
 }
 
 // contact form post handler
@@ -1419,10 +1456,11 @@ function contact_form_callback() {
 		$error = 'verification error, try again.';
 	}
 	else {
-		$form = _FORM_BASIC_WP;
+		$id = $_POST['form_id'];
+		$forms = json_decode(_BWP['form_json'], true);
 		$message = 'IP address: ' . $_SERVER['REMOTE_ADDR'] . "\n\n";
 
-		foreach ($form as $field => $data) {
+		foreach ($forms[$id] as $field => $data) {
 			$sane = '';
 
 			switch ($field) {
@@ -1450,7 +1488,7 @@ function contact_form_callback() {
 
 		$subject = 'A messsage from ' . get_option('blogname');
 		$sendmsg = 'Thanks, for the message. We will respond as soon as possible.';
-		$to = get_option('admin_email');
+		$to = _BWP['form_email'];
 
 		$parsed = parse_url(site_url());
 
