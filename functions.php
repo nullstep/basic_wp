@@ -308,7 +308,7 @@ define('_ARGS_BASIC_WP', [
 	],
 	'form_json' => [
 		'type' => 'string',
-		'default' => json_encode([
+		'default' => json_encode([[
 			'name' => [
 				'label' => 'Name',
 				'type' => 'text'
@@ -321,7 +321,7 @@ define('_ARGS_BASIC_WP', [
 				'label' => 'Message',
 				'type' => 'textarea'
 			]
-		])
+		]])
 	],
 	'theme_css' => [
 		'type' => 'string',
