@@ -1423,7 +1423,7 @@ function contact_shortcode($atts = [], $content = null, $tag = '') {
 					return this.value != '';
 				});
 				if(ne.length==0){
-					m.text('empty fields');
+					m.text('Please complete all the fields.');
 					return false;
 				}else{
 					$.ajax({
