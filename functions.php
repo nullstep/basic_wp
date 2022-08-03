@@ -1223,10 +1223,7 @@ function do_setup() {
 add_action('init', 'set_wp_options');
 add_action('init', 'get_pagination');
 add_action('admin_enqueue_scripts', 'add_scripts');
-
-
 add_action('after_setup_theme', 'do_setup');
-
 add_action('wp_ajax_contact_form_action', 'contact_form_callback');
 add_action('wp_ajax_nopriv_contact_form_action', 'contact_form_callback');
 
@@ -1234,7 +1231,6 @@ add_action('wp_ajax_nopriv_contact_form_action', 'contact_form_callback');
 
 add_filter('post_thumbnail_html', 'remove_thumbnail_dimensions', 10);
 add_filter('image_send_to_editor', 'remove_thumbnail_dimensions', 10);
-
 add_filter('attachment_fields_to_edit', 'media_downloads', 10, 2);
 add_filter('attachment_fields_to_save', 'media_downloads_save', 10, 2);
 add_filter('excerpt_length', 'set_excerpt_length', 999);
