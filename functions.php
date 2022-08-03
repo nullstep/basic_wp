@@ -1013,25 +1013,6 @@ function set_excerpt_length($length) {
 	return _BWP['excerpt_length'];
 }
 
-// media downloads field
-
-function media_downloads($form_fields, $post) {
-	$form_fields['file_downloads'] = [
-		'label' => 'Downloads',
-		'input' => 'text',
-		'value' => get_post_meta($post->ID, 'file_downloads', true),
-		'helps' => ''
-	];
-	return $form_fields;
-}
- 
-function media_downloads_save($post, $attachment) {
-	if (isset($attachment['file_downloads'])) {
-		update_post_meta($post->ID, 'file_downloads', $attachment['file_downloads']);
-	}
-	return $post;
-}
-
 //     ▄████████     ▄█    █▄      ▄██████▄      ▄████████      ███      
 //    ███    ███    ███    ███    ███    ███    ███    ███  ▀█████████▄  
 //    ███    █▀     ███    ███    ███    ███    ███    ███     ▀███▀▀██  
@@ -1231,8 +1212,7 @@ add_action('wp_ajax_nopriv_contact_form_action', 'contact_form_callback');
 
 add_filter('post_thumbnail_html', 'remove_thumbnail_dimensions', 10);
 add_filter('image_send_to_editor', 'remove_thumbnail_dimensions', 10);
-add_filter('attachment_fields_to_edit', 'media_downloads', 10, 2);
-add_filter('attachment_fields_to_save', 'media_downloads_save', 10, 2);
+
 add_filter('excerpt_length', 'set_excerpt_length', 999);
 
 // shortcodes
