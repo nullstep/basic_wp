@@ -1,8 +1,8 @@
 # basic_wp
 
-a basic, useful wordpress theme featuring:
+a basic, useful wp theme featuring:
 - google font selection
-- bootstrap/jquery
+- bootstrap 5/jquery 3
 - css/js editor
 - various config options
 - configurable contact forms
