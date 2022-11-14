@@ -9,4 +9,4 @@
 				</div>
 			</section>
 		</main>
-<?php get_footer(); ?>
+<?php wp_footer(); ?>
