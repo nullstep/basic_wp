@@ -14,6 +14,15 @@ define('_AUTHOR', 'nullstep');
 // you know what you're doing
 // and have a good reason
 
+// basic_wp placeholder
+
+define('_IMG_BASIC_WP', 'data:image/png;base64,' .
+	'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSn' . 
+	'cAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAA' . 
+	'AJcEhZcwAADsMAAA7DAcdvqGQAAAAQSURBVBhXY1DEA' .
+	'YaUhKIiAKxPGMHCx0CmAAAAAElFTkSuQmCC
+');
+
 // basic_wp default css
 
 define('_CSS_BASIC_WP', '
@@ -965,6 +974,16 @@ function get_favicon() {
 	echo $favicon;
 }
 
+function get_featured($echo = true) {
+	$image = explode('/', wp_get_attachment_image_src(get_post_thumbnail_id(get_queried_object_id()), 'full')[0]);
+	if ($echo) {
+		echo end($image);
+	}
+	else {
+		return end($image);
+	}
+}
+
 // return values
 
 function get_value($key, $echo = TRUE) {
@@ -1053,7 +1072,7 @@ function contact_shortcode($atts = [], $content = null, $tag = '') {
 				$html .= '<label for="' . $field . '" class="form-label">' . $data['label'] . '</label>';
 				switch ($data['type']) {
 					case 'textarea': {
-						$html .= '<textarea id="' . $field . '" class="f form-control" name="' . $field . '"></textarea>';
+						$html .= '<textarea id="' . $field . '" class="f form-control" name="' . $field . '" placeholder="' . $data['label'] . '"></textarea>';
 						break;
 					}
 					case 'checkbox': {
@@ -1061,7 +1080,7 @@ function contact_shortcode($atts = [], $content = null, $tag = '') {
 						break;
 					}
 					default: {
-						$html .= '<input id="' . $field . '" type="' . $data['type'] . '" class="f form-control" name="' . $field . '">';
+						$html .= '<input id="' . $field . '" type="' . $data['type'] . '" class="f form-control" name="' . $field . '" placeholder="' . $data['label'] . '">';
 					}
 				}
 			$html .= '</div>';
@@ -1307,8 +1326,19 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 		$attributes .= !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
 		$attributes .= !empty($item->url) ? ' href="' . esc_attr($item->url) . '"' : '';
 
-		$active_class = ($item->current || $item->current_item_ancestor) ? 'active' : '';
-		$nav_link_class = ($depth > 0) ? 'dropdown-item ' : 'nav-link ';
+		$active_class = ($item->current || $item->current_item_ancestor) ? ' active' : '';
+
+		$extra_classes = [];
+		if ((is_array($item->classes)) && (count($item->classes) > 0)) {
+			foreach ($item->classes as $class) {
+				if (substr($class, 0, 9) != 'menu-item') {
+					$extra_classes[] = $class;
+				}
+			}
+		}
+		
+		$nav_link_class = ($depth > 0) ? 'dropdown-item ' : 'nav-link';
+		$nav_link_class .= (count($extra_classes)) ? ' ' . implode(' ', $extra_classes) : '';
 		$attributes .= ($args->walker->has_children) ? ' class="'. $nav_link_class . $active_class . ' dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' : ' class="'. $nav_link_class . $active_class . '"';
 
 		$item_output = $args->before;
