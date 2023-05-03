@@ -18,7 +18,7 @@
 	<link rel="canonical" href="<?php echo get_site_url(); ?>/">
 	<link rel="shortcut icon" type="image/x-icon" href="<?php get_favicon(); ?>">
 	<style>
-		<?php get_fonts(); ?><?php get_colours();?>	<?php get_css(); ?>
+		<?php get_fonts(); ?><?php get_colours();?><?php get_css(); ?>
 
 	</style>
 </head>
