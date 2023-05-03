@@ -6,11 +6,31 @@ jQuery(function($) {
 	var theme = basic_wp;
 	const fields = [
 		'container_class',
+		'header_order',
 		'excerpt_length',
 		'favicon_image',
 		'logo_image_normal',
 		'logo_image_contrast',
 		'nav_logo',
+		'nav_width',
+		'nav_layout',
+		'nav_nav_align',
+		'nav_logo_align',
+		'nav_search_align',
+		'nav_shadow',
+		'sticky_nav',
+		'nav_mobile',
+		'page_colour',
+		'text_colour',
+		'heading_colour',
+		'info_colour',
+		'info_text_colour',
+		'nav_colour',
+		'nav_text_colour',
+		'banner_colour',
+		'banner_text_colour',
+		'footer_colour',
+		'footer_text_colour',
 		'primary_colour',
 		'secondary_colour',
 		'tertiary_colour',
@@ -19,15 +39,11 @@ jQuery(function($) {
 		'nav_font',
 		'body_font',
 		'mono_font',
-		'form_active',
-		'form_email',
-		'form_success',
-		'form_json',
+		'font_awesome',
 		'theme_css',
 		'theme_js'
 	];
 	const editors = [
-		'form_json',
 		'theme_css',
 		'theme_js'
 	];

@@ -4,7 +4,7 @@
 					<p class="post-datetime"><span class="post-date"><?php the_time(get_option('date_format')); ?></span> - <span class="post-time"><?php the_time(); ?></span></p>
 					<p class="post-excerpt">
 <?php if (has_post_thumbnail()) : ?>
-						<img src="/uploads/<?php echo end(explode('/', wp_get_attachment_image_src(get_post_thumbnail_id(), 'post-thumbnail')[0])); ?>">
+						<img src="/uploads/<?php get_featured(); ?>">
 <?php endif; ?>
 						<?php the_excerpt(); ?>
 

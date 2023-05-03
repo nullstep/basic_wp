@@ -4,245 +4,11 @@
  *  URL: nullstep.com
  */
 
-// don't change these if
-// you want updates to work
-
 define('_THEME', 'basic_wp');
-define('_AUTHOR', 'nullstep');
-
-// don't change these unless
-// you know what you're doing
-// and have a good reason
-
-// basic_wp placeholder
-
-define('_IMG_BASIC_WP', 'data:image/png;base64,' .
-	'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSn' . 
-	'cAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAA' . 
-	'AJcEhZcwAADsMAAA7DAcdvqGQAAAAQSURBVBhXY1DEA' .
-	'YaUhKIiAKxPGMHCx0CmAAAAAElFTkSuQmCC
-');
 
 // basic_wp default css
 
-define('_CSS_BASIC_WP', '
-:root {
-	--main-doc-colour: #fff;
-	--info-area-colour: #eee;
-	--info-area-font-colour: #000;
-	--info-area-height: auto;
-	--navbar-colour: var(--secondary-colour);
-	--navitem-hover-colour: #eee;
-	--navlink-colour: #fff;
-	--navlink-hover-colour: var(--secondary-colour);
-	--navtext-transform: uppercase;
-	--banner-area-colour: #eee;
-	--banner-area-font-colour: var(--secondary-colour);
-	--banner-area-height: auto;
-	--banner-area-image: none;
-	--content-area-colour: #fff;
-	--content-area-font-colour: var(--secondary-colour);
-	--footer-area-colour: var(--secondary-colour);
-	--footer-area-font-colour: #fff;
-	--footer-area-height: auto;
-	--link-colour: var(--primary-colour);
-	--link-hover-colour: #222;
-	--heading-colour: var(--tertiary-colour);
-	--heading-transform: uppercase;
-	--border-colour: var(--primary-colour);
-	--h1-size: 2rem;
-	--h2-size: 1.8rem;
-	--h3-size: 1.6rem;
-	--h4-size: 1.4rem;
-	--h5-size: 1.2rem;
-	--h6-size: 1rem;
-	--p-size: 1.25rem;
-	--li-size: 1.25rem;
-	--button-colour: var(--primary-colour);
-	--button-text-colour: #333;
-	--button-hover-colour: #333;
-	--button-hover-text-colour: var(--primary-colour);
-}
-html {
-	background-color: var(--main-doc-colour);
-}
-body {
-	background-color: var(--main-doc-colour);
-	font-family: var(--body-font);
-}
-h1, h2, h3, h4, h5, h6 {
-	font-family: var(--heading-font);
-	color: var(--heading-colour);
-	text-transform: var(--heading-transform);
-}
-h1 {
-	font-size: var(--h1-size);
-	margin-bottom: 1.5rem;
-}
-h2 {
-	font-size: var(--h2-size);
-}
-h3 {
-	font-size: var(--h3-size);
-}
-h4 {
-	font-size: var(--h4-size);
-}
-h5 {
-	font-size: var(--h5-size);
-}
-h6 {
-	font-size: var(--h6-size);
-}
-a {
-	color: var(--link-colour);
-	text-decoration: none !important;
-}
-a:hover {
-	color: var(--link-hover-colour);
-	text-decoration: none !important;
-}
-h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-	color: var(--heading-colour);
-}
-p {
-	font-size: var(--p-size);
-}
-li {
-	font-size: var(--li-size);
-}
-#info-area {
-	height: var(--info-area-height);
-	background-color: var(--info-area-colour);
-	color: var(--info-area-font-colour);
-}
-#banner-area {
-	background-image: var(--banner-area-image);
-	background-size: cover;
-	height: var(--banner-area-height);
-	color: var(--banner-area-font-colour);
-}
-#content-area {
-	background-color: var(--content-area-colour);
-	color: var(--content-area-font-colour);
-	padding: 2rem 0;
-	min-height: 450px;
-}
-#footer-area {
-	height: var(--footer-area-height);
-	background-color: var(--footer-area-colour);
-	color: var(--footer-area-font-colour);
-	padding: 2rem 0;
-}
-#override .btn-primary {
-	font-family: var(--nav-font);
-	text-transform: var(--heading-transform);
-	background-color: var(--button-colour);
-	border: none;
-	border-radius: 0;
-	color: var(--button-text-colour);
-}
-#override .btn-primary:hover {
-	background-color: var(--button-hover-colour);
-	color: var(--button-hover-text-colour);
-}
-#override .bg-dark {
-	background-color: var(--navbar-colour) !important;
-}
-#override .nav-item {
-	font-family: var(--nav-font);
-	text-transform: var(--navtext-transform);
-}
-#override .nav-item:hover {
-	background-color: var(--navitem-hover-colour);
-}
-#override .nav-link {
-	color: var(--navlink-colour);
-}
-#override .nav-link:hover {
-	color: var(--navlink-hover-colour);
-}
-#searchform label {
-	display: block;
-	font-size: var(--p-size);
-}
-#searchform #s {
-	border-radius: 0;
-	border: 1px solid var(--border-colour);
-	width: 65%;
-}
-#searchform #searchsubmit {
-	border-radius: 0;
-	border: none;
-	background: var(--button-colour);
-	color: var(--button-text-colour);
-	font-size: small;
-	width: 25%;
-}
-#searchform #searchsubmit:hover {
-	background: var(--button-hover-colour);
-	color: var(--button-hover-text-colour);	
-}
-.widget_recent_entries .post-date {
-	display: block;
-}
-.widget_recent_entries ul {
-	list-style: none;
-	padding: 0;
-}
-#logo {
-	padding: 15px 0;
-	height: 100px;
-}
-#nav-logo {
-	height: 64px;
-}
-pre {
-	font-family: var(--mono-font) !important;
-}
-.pagination {
-	font-family: var(--nav-font);
-	text-transform: var(--heading-transform);
-	margin: 2rem 0;
-}
-.page-numbers {
-	margin: 0 1rem 0 0;
-	background-color: var(--button-colour);
-	border: none;
-	border-radius: 0;
-	color: var(--button-text-colour);
-	padding: 2px 0.5rem 0;
-}
-.current {
-	background-color: var(--button-hover-colour)
-}
-.page-numbers:hover {
-	background-color: var(--button-hover-colour);
-	color: var(--button-hover-text-colour);
-}
-.post-date {
-	font-size: 14px;
-	font-style: italic;
-}
-.post-time {
-	font-size: 14px;
-	font-style: italic;
-}
-.video {
-	position: relative;
-	padding-bottom: 56.25%;
-	padding-top: 30px;
-	height: 0;
-	overflow: hidden;
-}
-.video iframe, .video object, .video embed {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-}
-');
+define('_CSS_BASIC_WP', '');
 
 // basic_wp data
 
@@ -251,13 +17,13 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => 'container'
 	],
+	'header_order' => [
+		'type' => 'string',
+		'default' => 'info,nav,banner'
+	],
 	'excerpt_length' => [
 		'type' => 'integer',
 		'default' => 20
-	],
-	'sticky_nav' => [
-		'type' => 'string',
-		'default' => 'yes'
 	],
 	'favicon_image' => [
 		'type' => 'string',
@@ -275,21 +41,101 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => 'normal'
 	],
-	'primary_colour' => [
+	'nav_width' => [
+		'type' => 'string',
+		'default' => 'container'
+	],
+	'nav_layout' => [
+		'type' => 'string',
+		'default' => 'nav,logo,search'
+	],
+	'nav_nav_align' => [
+		'type' => 'string',
+		'default' => 'left'
+	],
+	'nav_logo_align' => [
+		'type' => 'string',
+		'default' => 'middle'
+	],
+	'nav_search_align' => [
+		'type' => 'string',
+		'default' => 'right'
+	],
+	'nav_shadow' => [
+		'type' => 'string',
+		'default' => 'yes'
+	],
+	'sticky_nav' => [
+		'type' => 'string',
+		'default' => 'yes'
+	],
+	'nav_mobile' => [
+		'type' => 'string',
+		'default' => 'right'
+	],
+	'doc_colour' => [
+		'type' => 'string',
+		'default' => '#ffffff'
+	],
+	'page_colour' => [
+		'type' => 'string',
+		'default' => '#ffffff'
+	],
+	'text_colour' => [
 		'type' => 'string',
 		'default' => '#333333'
+	],
+	'heading_colour' => [
+		'type' => 'string',
+		'default' => '#333333'
+	],
+	'info_colour' => [
+		'type' => 'string',
+		'default' => '#aaaaaa'
+	],
+	'info_text_colour' => [
+		'type' => 'string',
+		'default' => '#222222'
+	],
+	'nav_colour' => [
+		'type' => 'string',
+		'default' => '#333333'
+	],
+	'nav_text_colour' => [
+		'type' => 'string',
+		'default' => '#eeeeee'
+	],
+	'banner_colour' => [
+		'type' => 'string',
+		'default' => '#aaaaaa'
+	],
+	'banner_text_colour' => [
+		'type' => 'string',
+		'default' => '#222222'
+	],
+	'footer_colour' => [
+		'type' => 'string',
+		'default' => '#333333'
+	],
+	'footer_text_colour' => [
+		'type' => 'string',
+		'default' => '#eeeeee'
+	],
+	'primary_colour' => [
+		'type' => 'string',
+		'default' => '#000000'
 	],
 	'secondary_colour' => [
 		'type' => 'string',
-		'default' => '#333333'
+		'default' => '#000000'
 	],
 	'tertiary_colour' => [
 		'type' => 'string',
-		'default' => '#333333'
+		'default' => '#000000'
 	],
 	'quaternary_colour' => [
 		'type' => 'string',
-		'default' => '#333333'
+		'default' => '#000000'
 	],
 	'heading_font' => [
 		'type' => 'string',
@@ -307,34 +153,9 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
-	'form_email' => [
+	'font_awesome' => [
 		'type' => 'string',
-		'default' => get_option('admin_email')
-	],
-	'form_active' => [
-		'type' => 'string',
-		'default' => 'yes'
-	],
-	'form_success' => [
-		'type' => 'string',
-		'default' => 'Thanks for the message. We will respond as soon as possible.'
-	],
-	'form_json' => [
-		'type' => 'string',
-		'default' => json_encode([[
-			'name' => [
-				'label' => 'Name',
-				'type' => 'text'
-			],
-			'email' => [
-				'label' => 'Email',
-				'type' => 'email'
-			],
-			'message' => [
-				'label' => 'Message',
-				'type' => 'textarea'
-			]
-		]])
+		'default' => ''
 	],
 	'theme_css' => [
 		'type' => 'string',
@@ -359,7 +180,7 @@ define('_ARGS_BASIC_WP', [
 define('_ADMIN_BASIC_WP', [
 	'general' => [
 		'label' => 'General',
-		'columns' => 4,
+		'columns' => 3,
 		'fields' => [
 			'container_class' => [
 				'label' => 'Site Width',
@@ -369,20 +190,32 @@ define('_ADMIN_BASIC_WP', [
 					'container' => 'Fixed Width'
 				]
 			],
+			'header_order' => [
+				'label' => 'Header Order/Layout',
+				'type' => 'select',
+				'values' => [
+					'nav' => 'Nav',
+					'info,nav' => 'Info > Nav',
+					'nav,info' => 'Nav > Info',
+					'banner,nav' => 'Banner > Nav',
+					'nav,banner' => 'Nav > Banner',
+					'info,nav,banner' => 'Info > Nav > Banner',
+					'info,banner,nav' => 'Info > Banner > Nav',
+					'nav,info,banner' => 'Nav > Info > Banner',
+					'nav,banner,info' => 'Nav > Banner > Info',
+					'banner,info,nav' => 'Banner > Info > Nav',
+					'banner,nav,info' => 'Banner > Nav > Info'
+				]
+			],
 			'excerpt_length' => [
 				'label' => 'Excerpt Word Limit',
 				'type' => 'input'
-			],
-			'sticky_nav' => [
-				'label' => 'Sticky Navbar',
-				'type' => 'check'
 			]
-
 		]
 	],
 	'images' => [
 		'label' => 'Images',
-		'columns' => 4,
+		'columns' => 3,
 		'fields' => [
 			'favicon_image' => [
 				'label' => 'Site Favicon',
@@ -395,22 +228,143 @@ define('_ADMIN_BASIC_WP', [
 			'logo_image_contrast' => [
 				'label' => 'Logo Image (contrast)',
 				'type' => 'file'
-			],
+			]
+		]
+	],
+	'navbar' => [
+		'label' => 'Navbar',
+		'columns' => 4,
+		'fields' => [
 			'nav_logo' => [
-				'label' => 'Navbar Logo',
+				'label' => 'Navbar Logo Image',
 				'type' => 'select',
 				'values' => [
 					'none' => 'None',
 					'normal' => 'Normal',
 					'contrast' => 'Contrast'
 				]
+			],
+			'nav_width' => [
+				'label' => 'Navbar Width',
+				'type' => 'select',
+				'values' => [
+					'container-fluid' => 'Full Width',
+					'container' => 'Fixed Width'
+				]
+			],
+			'nav_layout' => [
+				'label' => 'Navbar Layout',
+				'type' => 'select',
+				'values' => [
+					'nav' => 'Nav',
+					'logo,nav' => 'Logo > Nav',
+					'nav,logo' => 'Nav > Logo',
+					'search,nav' => 'Search > Nav',
+					'nav,search' => 'Nav > Search',
+					'logo,nav,search' => 'Logo > Nav > Search',
+					'logo,search,nav' => 'Logo > Search > Nav',
+					'nav,logo,search' => 'Nav > Logo > Search',
+					'nav,search,logo' => 'Nav > Search > Logo',
+					'search,logo,nav' => 'Search > Logo > Nav',
+					'search,nav,logo' => 'Search > Nav > Logo'
+				]
+			],
+			'nav_nav_align' => [
+				'label' => 'Nav Alignment',
+				'type' => 'select',
+				'values' => [
+					'm-none' => 'None',
+					'me-auto' => 'Left',
+					'mx-auto' => 'Middle',
+					'ms-auto' => 'Right'
+				]
+			],
+			'nav_logo_align' => [
+				'label' => 'Logo Alignment',
+				'type' => 'select',
+				'values' => [
+					'm-none' => 'None',
+					'me-auto' => 'Left',
+					'mx-auto' => 'Middle',
+					'ms-auto' => 'Right'
+				]
+			],
+			'nav_search_align' => [
+				'label' => 'Search Alignment',
+				'type' => 'select',
+				'values' => [
+					'm-none' => 'None',
+					'me-auto' => 'Left',
+					'mx-auto' => 'Middle',
+					'ms-auto' => 'Right'
+				]
+			],
+			'nav_mobile' => [
+				'label' => 'Mobile Nav Position',
+				'type' => 'select',
+				'values' => [
+					'left' => 'Left',
+					'right' => 'Right'
+				]
+			],
+			'nav_shadow' => [
+				'label' => 'Navbar Shadow',
+				'type' => 'check'
+			],
+			'sticky_nav' => [
+				'label' => 'Sticky Navbar',
+				'type' => 'check'
 			]
 		]
 	],
-	'visuals' => [
-		'label' => 'Visuals',
+	'colours' => [
+		'label' => 'Colours',
 		'columns' => 4,
 		'fields' => [
+			'page_colour' => [
+				'label' => 'Page Colour',
+				'type' => 'colour'
+			],
+			'text_colour' => [
+				'label' => 'Text Colour',
+				'type' => 'colour'
+			],
+			'heading_colour' => [
+				'label' => 'Headings Colour',
+				'type' => 'colour'
+			],
+			'info_colour' => [
+				'label' => 'Info Colour',
+				'type' => 'colour'
+			],
+			'info_text_colour' => [
+				'label' => 'Info Text Colour',
+				'type' => 'colour'
+			],
+			'nav_colour' => [
+				'label' => 'Nav Colour',
+				'type' => 'colour'
+			],
+			'nav_text_colour' => [
+				'label' => 'Nav Text Colour',
+				'type' => 'colour'
+			],
+			'banner_colour' => [
+				'label' => 'Banner Colour',
+				'type' => 'colour'
+			],
+			'banner_text_colour' => [
+				'label' => 'Banner Text Colour',
+				'type' => 'colour'
+			],
+			'footer_colour' => [
+				'label' => 'Footer Colour',
+				'type' => 'colour'
+			],
+			'footer_text_colour' => [
+				'label' => 'Footer Text Colour',
+				'type' => 'colour'
+			],
 			'primary_colour' => [
 				'label' => 'Primary Colour',
 				'type' => 'colour'
@@ -426,7 +380,13 @@ define('_ADMIN_BASIC_WP', [
 			'quaternary_colour' => [
 				'label' => 'Quaternary Colour',
 				'type' => 'colour'
-			],
+			]
+		]
+	],
+	'fonts' => [
+		'label' => 'Fonts',
+		'columns' => 4,
+		'fields' => [
 			'heading_font' => [
 				'label' => 'Headings Font',
 				'type' => 'font'
@@ -442,27 +402,9 @@ define('_ADMIN_BASIC_WP', [
 			'mono_font' => [
 				'label' => 'Monospace Font',
 				'type' => 'font'
-			]
-		]
-	],
-	'forms' => [
-		'label' => 'Forms',
-		'columns' => 4,
-		'fields' => [
-			'form_json' => [
-				'label' => 'Forms Config',
-				'type' => 'code'
 			],
-			'form_email' => [
-				'label' => 'Forms Email',
-				'type' => 'input'
-			],
-			'form_success' => [
-				'label' => 'Forms Thanks Message',
-				'type' => 'text'
-			],
-			'form_active' => [
-				'label' => 'Forms Active',
+			'font_awesome' => [
+				'label' => 'Use Font Awesome',
 				'type' => 'check'
 			]
 		]
@@ -489,6 +431,25 @@ define('_ADMIN_BASIC_WP', [
 	]
 ]);
 
+// basic_wp rest api routes
+
+define('_API_BASIC_WP', [
+	[
+		'methods' => 'POST',
+		'path' => 'settings',
+		'callback' => 'update_settings',
+		'args' => _themeSettings::args(),
+		'permission_callback' => 'permissions'
+	],
+	[
+		'methods' => 'GET',
+		'path' => 'settings',
+		'callback' => 'get_settings',
+		'args' => [],
+		'permission_callback' => 'permissions'
+	]
+]);
+
 // you can change these
 // if you want to though
 
@@ -501,28 +462,8 @@ define('_OPTIONS_BASIC_WP', [
 // wp menus
 
 define('_MENUS_BASIC_WP', [
-	'primary' => 'Primary Menu'
-]);
-
-// basic_wp api routes
-
-define('_APIPATH_BASIC_WP',
-	'settings'
-);
-
-define('_API_BASIC_WP', [
-	[
-		'methods' => 'POST',
-		'callback' => 'update_settings',
-		'args' => _themeSettings::args(),
-		'permission_callback' => 'permissions'
-	],
-	[
-		'methods' => 'GET',
-		'callback' => 'get_settings',
-		'args' => [],
-		'permission_callback' => 'permissions'
-	]
+	'primary' => 'Primary Menu',
+	'secondary' => 'Secondary Menu'
 ]);
 
 //     ▄████████     ▄███████▄   ▄█   
@@ -538,7 +479,7 @@ class _themeAPI {
 	public function add_routes() {
 		if (count(_API_BASIC_WP)) {
 			foreach(_API_BASIC_WP as $route) {
-				register_rest_route(_THEME . '-api/v1', '/' . _APIPATH_BASIC_WP, [
+				register_rest_route(_THEME . '-api', '/' . $route['path'], [
 					'methods' => $route['methods'],
 					'callback' => [$this, $route['callback']],
 					'args' => $route['args'],
@@ -565,6 +506,15 @@ class _themeAPI {
 		return rest_ensure_response(_themeSettings::get_settings());
 	}
 }
+
+//     ▄████████     ▄████████      ███          ███       ▄█   ███▄▄▄▄▄       ▄██████▄      ▄████████  
+//    ███    ███    ███    ███  ▀█████████▄  ▀█████████▄  ███   ███▀▀▀▀██▄    ███    ███    ███    ███  
+//    ███    █▀     ███    █▀      ▀███▀▀██     ▀███▀▀██  ███▌  ███    ███    ███    █▀     ███    █▀   
+//    ███          ▄███▄▄▄          ███   ▀      ███   ▀  ███▌  ███    ███   ▄███           ███         
+//  ▀███████████  ▀▀███▀▀▀          ███          ███      ███▌  ███    ███  ▀▀███ ████▄   ▀███████████  
+//           ███    ███    █▄       ███          ███      ███   ███    ███    ███    ███           ███  
+//     ▄█    ███    ███    ███      ███          ███      ███   ███    ███    ███    ███     ▄█    ███  
+//   ▄████████▀     ██████████     ▄████▀       ▄████▀    █▀     ▀█    █▀     ████████▀    ▄████████▀ 
 
 class _themeSettings {
 	protected static $option_key = _THEME . '-theme-settings';
@@ -619,6 +569,15 @@ class _themeSettings {
 	}
 }
 
+//    ▄▄▄▄███▄▄▄▄       ▄████████  ███▄▄▄▄▄    ███    █▄   
+//  ▄██▀▀▀███▀▀▀██▄    ███    ███  ███▀▀▀▀██▄  ███    ███  
+//  ███   ███   ███    ███    █▀   ███    ███  ███    ███  
+//  ███   ███   ███   ▄███▄▄▄      ███    ███  ███    ███  
+//  ███   ███   ███  ▀▀███▀▀▀      ███    ███  ███    ███  
+//  ███   ███   ███    ███    █▄   ███    ███  ███    ███  
+//  ███   ███   ███    ███    ███  ███    ███  ███    ███  
+//   ▀█   ███   █▀     ██████████   ▀█    █▀   ████████▀ 
+
 class _themeMenu {
 	protected $slug = _THEME . '-theme-menu';
 	protected $assets_url;
@@ -636,7 +595,9 @@ class _themeMenu {
 			'manage_options',
 			$this->slug,
 			[$this, 'render_admin'],
-			'dashicons-palmtree',
+			'data:image/svg+xml;base64,' . base64_encode(
+				'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="500px" height="500px" viewbox="0 0 500 500"><path fill="#a7aaad" d="M250.2,17.4L49,133.5v232.3L250.2,482l201.2-116.2V133.5L250.2,17.4z M371.8,347H128.4v-48.7h194.7v-48.7H128.4v-97.4h48.7 v48.7h194.7V347z"/></svg>'
+			),
 			2
 		);
 	}
@@ -651,7 +612,7 @@ class _themeMenu {
 				'error' => 'Error'
 			],
 			'api' => [
-				'url' => esc_url_raw(rest_url(_THEME . '-api/v1/settings')),
+				'url' => esc_url_raw(rest_url(_THEME . '-api/settings')),
 				'nonce' => wp_create_nonce('wp_rest')
 			]
 		]);
@@ -668,7 +629,13 @@ class _themeMenu {
 	public function render_admin() {
 		wp_enqueue_media();
 		$this->enqueue_assets();
-		$fonts = json_decode(file_get_contents($this->assets_url . '/fonts.json'));
+		$ctx = stream_context_create([
+			'ssl' => [
+				'verify_peer' => false,
+				'verify_peer_name' => false
+			]
+		]);
+		$fonts = json_decode(file_get_contents(__DIR__ . '/fonts.json', false, $ctx));
 		$opts = '<option value="">None</option>';
 		$types = [
 			'serif',
@@ -765,6 +732,7 @@ class _themeMenu {
 								echo '<select id="' . $fid . '" name="' . $fid . '">';
 									echo $opts;
 								echo '</select>';
+								echo '<div id="' . $fid . '-preview"></div>';
 								break;
 							}
 						}
@@ -779,187 +747,71 @@ class _themeMenu {
 				echo '<div id="' . $name . '-feedback"></div>';
 			echo '</form>';
 		echo '</div>';
+		echo '<script>';
+			
+		echo '</script>';
 	}
 }
 
-//  ███    █▄      ▄███████▄  ████████▄      ▄████████      ███         ▄████████     ▄████████  
-//  ███    ███    ███    ███  ███   ▀███    ███    ███  ▀█████████▄    ███    ███    ███    ███  
-//  ███    ███    ███    ███  ███    ███    ███    ███     ▀███▀▀██    ███    █▀     ███    ███  
-//  ███    ███    ███    ███  ███    ███    ███    ███      ███   ▀   ▄███▄▄▄       ▄███▄▄▄▄██▀  
-//  ███    ███  ▀█████████▀   ███    ███  ▀███████████      ███      ▀▀███▀▀▀      ▀▀███▀▀▀▀▀    
-//  ███    ███    ███         ███    ███    ███    ███      ███        ███    █▄   ▀███████████  
-//  ███    ███    ███         ███   ▄███    ███    ███      ███        ███    ███    ███    ███  
-//  ████████▀    ▄████▀       ████████▀     ███    █▀      ▄████▀      ██████████    ███    ███  
+//   ▄████████   ▄██████▄   ████████▄      ▄████████  
+//  ███    ███  ███    ███  ███   ▀███    ███    ███  
+//  ███    █▀   ███    ███  ███    ███    ███    █▀   
+//  ███         ███    ███  ███    ███   ▄███▄▄▄      
+//  ███         ███    ███  ███    ███  ▀▀███▀▀▀      
+//  ███    █▄   ███    ███  ███    ███    ███    █▄   
+//  ███    ███  ███    ███  ███   ▄███    ███    ███  
+//  ████████▀    ▀██████▀   ████████▀     ██████████   
 
-class _themeUpdater {
-	protected $theme = _THEME;
-	protected $repository = _AUTHOR . '/' . _THEME;
-	protected $domain = 'https://github.com/';
-	protected $raw_domain = 'https://raw.githubusercontent.com/';
-	protected $css_endpoint = '/main/style.css';
-	protected $zip_endpoint = '/releases/download/v';
-	protected $remote_css_uri;
-	protected $remote_zip_uri;
-	protected $remote_version;
-	protected $local_version;
-
-	public function init() {
-		add_filter('auto_update_theme', [
-			$this,
-			'auto_update_theme'
-		], 20, 2);
-		add_filter('upgrader_source_selection', [$this,
-			'upgrader_source_selection'
-		], 10, 4);
-		add_filter('pre_set_site_transient_update_themes', [
-			$this,
-			'pre_set_site_transient_update_themes'
-		]);
+function get_colours() {
+	$css = ':root{';
+	$colours = [
+		'page',
+		'text',
+		'heading',
+		'info',
+		'info_text',
+		'nav',
+		'nav_text',
+		'banner',
+		'banner_text',
+		'footer',
+		'footer_text',
+		'primary',
+		'secondary',
+		'tertiary',
+		'quaternary'
+	];
+	foreach ($colours as $c) {
+		$css .= '--' . str_replace('_', '-', $c) . '-colour:' . _BWP[$c . '_colour'] . ';';
 	}
-
-	public function auto_update_theme($update, $item) {
-		return $this->theme === $item->theme;
-	}
-
-	public function upgrader_source_selection($source, $remote_source, $upgrader, $hook_extra) {
-		global $wp_filesystem;
-
-		$update = [
-			'update-selected',
-			'update-selected-themes',
-			'upgrade-theme'
-		];
-
-		if (!isset($_GET['action']) || !in_array($_GET['action'], $update, true)) {
-			return $source;
-		}
-
-		if (!isset($source, $remote_source)) {
-			return $source;
-		}
-
-		if (false === stristr(basename($source), $this->theme)) {
-			return $source;
-		}
-
-		$basename = basename($source);
-		$upgrader->skin->feedback(esc_html_e('Renaming theme directory.', 'bootstrap'));
-		$corrected_source = str_replace($basename, $this->theme, $source);
-
-		if ($wp_filesystem->move($source, $corrected_source, true)) {
-			$upgrader->skin->feedback(esc_html_e('Rename successful.', 'bootstrap'));
-			return $corrected_source;
-		}
-
-		return new WP_Error();
-	}
-
-	public function pre_set_site_transient_update_themes($transient) {
-		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-		$this->local_version = (wp_get_theme($this->theme))->get('Version');
-
-		if ($this->has_update()) {
-			$response = [
-				'theme' => $this->theme,
-				'new_version' => $this->remote_version,
-				'url' => $this->construct_repository_uri(),
-				'package' => $this->construct_remote_zip_uri(),
-				'branch' => 'master'
-			];
-			$transient->response[$this->theme] = $response;
-		}
-
-		return $transient;
-	}
-
-	protected function construct_remote_stylesheet_uri() {
-		return $this->remote_css_uri = $this->raw_domain . $this->repository . $this->css_endpoint;
-	}
-
-	protected function construct_remote_zip_uri() {
-		return $this->remote_zip_uri = $this->domain . $this->repository . $this->zip_endpoint . $this->remote_version . '/' . $this->theme . '.zip';
-	}
-
-	protected function construct_repository_uri() {
-		return $this->repository_uri = $this->domain . trailingslashit($this->repository);
-	}
-
-	protected function get_remote_version() {
-		$this->remote_stylesheet_uri = $this->construct_remote_stylesheet_uri();
-		$response = $this->remote_get($this->remote_stylesheet_uri);
-		$response = str_replace("\r", "\n", wp_remote_retrieve_body($response));
-		$headers = [
-			'Version' => 'Version'
-		];
-
-		foreach ($headers as $field => $regex) {
-			if (preg_match( '/^[ \t\/*#@]*' . preg_quote($regex, '/') . ':(.*)$/mi', $response, $match) && $match[1]) {
-				$headers[$field] = _cleanup_header_comment($match[1]);
-			}
-			else {
-				$headers[$field] = '';
-			}
-		}
-
-		return $this->remote_version = ('' === $headers['Version']) ? '' : $headers['Version'];
-	}
-
-	protected function has_update() {
-		if (!$this->remote_version) {
-			$this->remote_version = $this->get_remote_version();
-		}
-		return version_compare($this->remote_version, $this->local_version, '>');
-	}
-
-	protected function remote_get($url, $args = []) {
-		return wp_remote_get($url, $args);
-	}
+	echo $css . '}';
 }
-
-//     ▄████████  ███    █▄   ███▄▄▄▄▄     ▄████████     ▄████████  
-//    ███    ███  ███    ███  ███▀▀▀▀██▄  ███    ███    ███    ███  
-//    ███    █▀   ███    ███  ███    ███  ███    █▀     ███    █▀   
-//   ▄███▄▄▄      ███    ███  ███    ███  ███           ███         
-//  ▀▀███▀▀▀      ███    ███  ███    ███  ███         ▀███████████  
-//    ███         ███    ███  ███    ███  ███    █▄            ███  
-//    ███         ███    ███  ███    ███  ███    ███     ▄█    ███  
-//    ███         ████████▀    ▀█    █▀   ████████▀    ▄████████▀   
 
 function get_css() {
-	$css = ':root{' .
-		'--primary-colour:' . _BWP['primary_colour'] . ';' .
-		'--secondary-colour:' . _BWP['secondary_colour'] . ';' .
-		'--tertiary-colour:' . _BWP['tertiary_colour'] . ';' .
-		'--quaternary-colour:' . _BWP['quaternary_colour'] . ';' .
-	'}.dropdown-menu[data-bs-popper]{left:unset;}';
-	$pad = (_BWP['nav_logo'] == 'none') ? '53' : '122';
-	$fix = (_BWP['sticky_nav']) ? ".fix{position:fixed;top:0;width:100%;z-index:3}.fix + .content{padding-top:" . $pad . "px!important}" : '';
-	echo $css . _BWP['theme_css_minified'] . $fix . "\n";
+	echo 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body .navbar .active{color:var(--primary-colour)!important}#body pre,code{font-family:var(--mono-font)}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}article,section{padding:1rem 0} a{color:var(--primary-colour)} h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important} hr{height:5px!important;background:var(--primary-colour)width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem}.mr-none{margin-left:0.5rem;margin-right:0}.mb-none{margin-left:0.5rem;margin-right:0.5rem}#body .btn{color:var(--primary-colour);border-color:var(--primary-colour)}#body .btn:hover{background-color:var(--primary-colour);color:#000}' . _BWP['theme_css_minified'];
 }
 
 function get_js() {
-	$js = 'window.addEventListener(\'load\',(event)=>{if(typeof(boot)===typeof(Function))boot();});';
-	$fix = (_BWP['sticky_nav']) ? "window.onscroll=function(){s()};var n=document.getElementById('nav-area');var o=n.offsetTop;function s(){if(window.pageYOffset>=o){n.classList.add('fix')}else{n.classList.remove('fix')}}" : '';
-	echo $js . $fix . _BWP['theme_js_minified'] . "\n";
+	echo _BWP['theme_js_minified'];
 }
 
 function get_fonts() {
 	$template = '@import url(\'https://fonts.googleapis.com/css2?family=[F]&display=swap\');';
 	$fonts = [
-		'heading_font',
-		'nav_font',
-		'body_font',
-		'mono_font'
+		'heading',
+		'nav',
+		'body',
+		'mono'
 	];
 	$css = '';
 	$root = '';
-	foreach ($fonts as $font) {
-		if (_BWP[$font] != '') {
-			$name = str_replace(' ', '+', _BWP[$font]);
-			if (($css == '') || (strpos($css, $name) === false)) {
+	foreach ($fonts as $f) {
+		if (_BWP[$f . '_font'] != '') {
+			$name = str_replace(' ', '+', _BWP[$f . '_font']);
+			if (($css == '') || (strpos($css, $name) === FALSE)) {
 				$css .= str_replace('[F]', $name, $template);
 			}
-			$root .= '--' . str_replace('_', '-', $font) . ':' . _BWP[$font] . ';';
+			$root .= '--' . str_replace('_', '-', $f . '_font') . ':' . _BWP[$f . '_font'] . ';';
 		}
 	}
 	if ($root != '') {
@@ -974,13 +826,84 @@ function get_favicon() {
 	echo $favicon;
 }
 
-function get_featured($echo = true) {
-	$image = explode('/', wp_get_attachment_image_src(get_post_thumbnail_id(get_queried_object_id()), 'full')[0]);
+function get_featured($echo = TRUE) {
+	$image = explode('/', wp_get_attachment_url(get_post_thumbnail_id(get_queried_object()->ID)));
+
 	if ($echo) {
 		echo end($image);
 	}
 	else {
 		return end($image);
+	}
+}
+
+function get_snippet($post, $count) {
+	echo str_replace(["\r", "\n"], '', substr(strip_tags($post), 0, $count) . '&hellip;');
+}
+
+function get_align($item) {
+	$align = _BWP['nav_' . $item . '_align'];
+	if ($align == 'm-none') {
+		if (end(explode(',', _BWP['nav_layout'])) == $item) {
+			$align = 'mr-none';
+		}
+		else if (explode(',', _BWP['nav_layout'])[0] == $item) {
+			$align = 'ml-none';
+		}
+		else {
+			$align = 'mb-none';
+		}
+	}
+	return $align;
+}
+
+function get_nav($value = NULL) {
+	switch ($value) {
+		case 'logo': {
+			$brand = '<a href="/" class="navbar-brand">' . ((_BWP['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _BWP['logo_image_' . _BWP['nav_logo']] . '">' : 'Brand') . '</a>';
+			$toggle = '<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".target"><span class="navbar-toggler-icon"></span></button>';
+			$logo = (_BWP['nav_mobile'] == 'left') ? $brand . $toggle : $toggle . $brand;
+			echo '<div class="' . get_align('logo') . '">' . $logo . '</div>';
+			break;
+		}
+		case 'nav': {
+			echo '<div id="navbar" class="navbar-collapse collapse target ' . get_align('nav') . '">';
+			wp_nav_menu([
+				'theme_location' => 'primary',
+				'depth' => 0,
+				'container' => FALSE,
+				'menu_class' => 'navbar-nav position-relative',
+				'fallback_cb' => '__return_false',
+				'walker' => new WP_Bootstrap_Navwalker()
+			]);
+			echo '</div>';
+			break;
+		}
+		case 'search': {
+			echo '<form class="d-flex ' . get_align('search') . '">';
+			echo '<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">';
+			echo '<button class="btn btn-outline-primary" type="submit">Search</button>';
+			echo '</form>';
+			break;
+		}
+		case 'width': {
+			echo _BWP['nav_width'];
+			break;
+		}
+		case 'sticky': {
+			echo (_BWP['sticky_nav'] == 'yes') ? 'sticky-top' : '';
+			break;
+		}
+		case 'shadow': {
+			echo (_BWP['nav_shadow'] == 'yes') ? ' shadow' : '';
+			break;
+		}
+		default: {
+			$items = explode(',', _BWP['nav_layout']);
+			foreach ($items as $item) {
+				get_nav($item);
+			}
+		}
 	}
 }
 
@@ -995,10 +918,10 @@ function get_value($key, $echo = TRUE) {
 	}
 }
 
-// wp options
+// header order
 
-function set_wp_options() {
-	define('_BWP', _themeSettings::get_settings());
+function get_order($item) {
+	return explode(',', _BWP['header_order'])[$item];
 }
 
 // pagination
@@ -1014,9 +937,15 @@ function get_pagination() {
 	]);
 }
 
+// wp options
+
+function bwp_set_wp_options() {
+	define('_BWP', _themeSettings::get_settings());
+}
+
 // add admin scripts
 
-function add_scripts($hook) {
+function bwp_add_scripts($hook) {
 	$screen = get_current_screen();
 
 	if (null === $screen || $screen->base !== 'toplevel_page_' . _THEME . '-theme-menu') {
@@ -1028,176 +957,72 @@ function add_scripts($hook) {
 
 // excerpts
 
-function set_excerpt_length($length) {
+function bwp_set_excerpt_length($length) {
 	return _BWP['excerpt_length'];
 }
 
-//     ▄████████     ▄█    █▄      ▄██████▄      ▄████████      ███      
-//    ███    ███    ███    ███    ███    ███    ███    ███  ▀█████████▄  
-//    ███    █▀     ███    ███    ███    ███    ███    ███     ▀███▀▀██  
-//    ███          ▄███▄▄▄▄███▄▄  ███    ███   ▄███▄▄▄▄██▀      ███   ▀  
-//  ▀███████████  ▀▀███▀▀▀▀███▀   ███    ███  ▀▀███▀▀▀▀▀        ███      
-//           ███    ███    ███    ███    ███  ▀███████████      ███      
-//     ▄█    ███    ███    ███    ███    ███    ███    ███      ███      
-//   ▄████████▀     ███    █▀      ▀██████▀     ███    ███     ▄████▀    
+// page column class metadata
 
-//   ▄████████   ▄██████▄   ████████▄      ▄████████     ▄████████  
-//  ███    ███  ███    ███  ███   ▀███    ███    ███    ███    ███  
-//  ███    █▀   ███    ███  ███    ███    ███    █▀     ███    █▀   
-//  ███         ███    ███  ███    ███   ▄███▄▄▄        ███         
-//  ███         ███    ███  ███    ███  ▀▀███▀▀▀      ▀███████████  
-//  ███    █▄   ███    ███  ███    ███    ███    █▄            ███  
-//  ███    ███  ███    ███  ███   ▄███    ███    ███     ▄█    ███  
-//  ████████▀    ▀██████▀   ████████▀     ██████████   ▄████████▀   
+function bwp_add_post_metadata() {
+	$screen = 'page';
+	add_meta_box(
+		'post_meta_box',
+		'CSS Classes',
+		'bwp_add_post_metadata_callback',
+		$screen,
+		'side',
+		'default',
+		null
+	);
+}
+
+function bwp_add_post_metadata_callback($post) {
+	wp_nonce_field('css_class_save_data', 'css_class_nonce');
+	$value = get_post_meta($post->ID, 'css_class', true);
+	echo '<input class="components-text-control__input" style="margin-top:8px" type="text" name="css_class" value="' . esc_attr($value) . '" placeholder="Enter CSS Class...">';
+}
+
+function bwp_save_post_metadata($post_id) {
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+		return;
+	}
+	if (isset($_POST['post_type']) && 'page' == $_POST['post_type']) {
+		if (!current_user_can('edit_page', $post_id)) {
+			return;
+		}
+	}
+	else {
+		if (!current_user_can('edit_post', $post_id)) {
+			return;
+		}
+	}
+	if (isset($_POST['post_type'])) {
+		if (in_array($_POST['post_type'], ['page', 'post'])) {
+			if (!isset($_POST['css_class_nonce'])) {
+				return;
+			}
+			if (!wp_verify_nonce($_POST['css_class_nonce'], 'css_class_save_data')) {
+				return;
+			}
+			$data = sanitize_text_field($_POST['css_class']);
+			update_post_meta($post_id, 'css_class', $data);
+		}
+	}
+}
 
 // logo shortcodes
 
-function logo_normal_shortcode($atts = [], $content = null, $tag = '') {
+function bwp_logo_normal_shortcode($atts = [], $content = null, $tag = '') {
 	return '<img src="/uploads/' . _BWP['logo_image_normal'] . '" class="logo ' . $content .'">';
 }
 
-function logo_contrast_shortcode($atts = [], $content = null, $tag = '') {
+function bwp_logo_contrast_shortcode($atts = [], $content = null, $tag = '') {
 	return '<img src="/uploads/' . _BWP['logo_image_contrast'] . '" class="logo ' . $content .'">';
-}
-
-// contact form shortcode
-
-function contact_shortcode($atts = [], $content = null, $tag = '') {
-	if (_BWP['form_active'] == 'yes') {
-		$html = '<form id="contact-form">';
-		$id = ($content) ? $content : 0;
-		$form = json_decode(_BWP['form_json'], true);
-		foreach ($form[$id] as $field => $data) {
-			$html .= '<div class="mb-3">';
-				$html .= '<label for="' . $field . '" class="form-label">' . $data['label'] . '</label>';
-				switch ($data['type']) {
-					case 'textarea': {
-						$html .= '<textarea id="' . $field . '" class="f form-control" name="' . $field . '" placeholder="' . $data['label'] . '"></textarea>';
-						break;
-					}
-					case 'checkbox': {
-						$html .= '<input id="' . $field . '" type="checkbox" class="form-check-input" name="' . $field . '">';
-						break;
-					}
-					default: {
-						$html .= '<input id="' . $field . '" type="' . $data['type'] . '" class="f form-control" name="' . $field . '" placeholder="' . $data['label'] . '">';
-					}
-				}
-			$html .= '</div>';
-		}
-		$html .= '<div class="mb-3">';
-			$html .= '<input type="hidden" name="action" value="contact_form_action">';
-			$html .= '<input type="hidden" name="form_id" value="' . $id . '">';
-			$html .= wp_nonce_field('contact_form_action', '_acf_nonce', true, false);
-			$html .= '<input id="contact-button" type="button" value="Send">';
-		$html .= '</div>';
-		$html .= '</form>';
-		$html .= '<div id="contact-msg"></div>';
-
-		$url = admin_url('admin-ajax.php');
-
-		$script = "<script>function boot(){
-			$('article').on('click','#contact-button',function(){
-				var f=$('#contact-form');
-				var m=$('#contact-msg');
-				m.text('...');
-				var ne=$('.f').filter(function(){
-					return this.value != '';
-				});
-				if(ne.length==0){
-					m.text('Please complete all the fields.');
-					return false;
-				}else{
-					$.ajax({
-						type:'POST',
-						url:'{$url}',
-						data:f.serialize(),
-						dataType:'json',
-						success:function(res){
-							if(res.status=='success'){
-								f[0].reset();
-							}
-							m.text(res.errmessage);
-						}
-					});
-				}
-			});
-		}</script>";
-
-		return $html . minify_js($script);
-	}
-	else {
-		return null;
-	}
-}
-
-// contact form post handler
-
-function contact_form_callback() {
-	if (!wp_verify_nonce($_POST['_acf_nonce'], $_POST['action'])) {
-		$error = 'verification error, try again.';
-	}
-	else {
-		$id = $_POST['form_id'];
-		$forms = json_decode(_BWP['form_json'], true);
-		$message = 'IP address: ' . $_SERVER['REMOTE_ADDR'] . "\n\n";
-
-		foreach ($forms[$id] as $field => $data) {
-			$sane = '';
-
-			switch ($field) {
-				case 'email': {
-					$sane = filter_var($_POST[$field], FILTER_SANITIZE_EMAIL);
-					break;
-				}
-				case 'message': {
-					$sane = stripslashes($_POST[$field]);
-					break;
-				}
-				default: {
-					$sane = filter_var($_POST[$field], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
-				}
-			}
-
-			$message .= $field . ': ';
-			if (strlen($sane) > 50) {
-				$message .= "\n\n" . $sane . "\n\n";
-			}
-			else {
-				$message .= $sane . "\n";
-			}
-		}
-
-		$subject = 'A messsage from ' . get_option('blogname');
-		$sendmsg = _BWP['form_success'];
-		$to = _BWP['form_email'];
-
-		$parsed = parse_url(site_url());
-
-		$header = 'From: ' . get_option('blogname') . ' <no-reply@' . $parsed['host'] . '>' . "\n";
-		$header .= 'Reply-To: ' . $email . "\n";
-
-		if (wp_mail($to, $subject, $message, $header)) {
-			$status = 'success';
-			$error = $sendmsg;
-		}
-		else {
-			$error = 'error(s)';
-		}
-	}
-
-	$json = [
-		'status' => $status,
-		'errmessage' => $error
-	];
-	
-	header('Content-Type: application/json');
-	die(json_encode($json));
 }
 
 // theme setup
 
-function do_setup() {
+function bwp_do_setup() {
 	if (_OPTIONS_BASIC_WP['thumbnails']) {
 		add_theme_support('post-thumbnails');
 		set_post_thumbnail_size(192, 108);
@@ -1206,55 +1031,12 @@ function do_setup() {
 	register_nav_menus(_MENUS_BASIC_WP);
 }
 
-//   ▄█   ███▄▄▄▄▄     ▄█       ███      
-//  ███   ███▀▀▀▀██▄  ███   ▀█████████▄  
-//  ███▌  ███    ███  ███▌     ▀███▀▀██  
-//  ███▌  ███    ███  ███▌      ███   ▀  
-//  ███▌  ███    ███  ███▌      ███      
-//  ███   ███    ███  ███       ███      
-//  ███   ███    ███  ███       ███      
-//  █▀     ▀█    █▀   █▀       ▄████▀  
+// admin favicon
 
-// theme updater
-
-//$updater = new _themeUpdater();
-
-//add_action('init', [$updater, 'init']);
-add_action('init', 'set_wp_options');
-add_action('init', 'get_pagination');
-add_action('admin_enqueue_scripts', 'add_scripts');
-add_action('after_setup_theme', 'do_setup');
-add_action('wp_ajax_contact_form_action', 'contact_form_callback');
-add_action('wp_ajax_nopriv_contact_form_action', 'contact_form_callback');
-
-// filters
-
-add_filter('post_thumbnail_html', 'remove_thumbnail_dimensions', 10);
-add_filter('image_send_to_editor', 'remove_thumbnail_dimensions', 10);
-
-add_filter('excerpt_length', 'set_excerpt_length', 999);
-
-// shortcodes
-
-add_shortcode('logo-normal', 'logo_normal_shortcode');
-add_shortcode('logo-contrast', 'logo_contrast_shortcode');
-
-add_shortcode('contact-form', 'contact_shortcode');
-
-// boot theme
-
-add_action('init', function() {
-	if (is_admin()) {
-		$assets_url = get_template_directory_uri();
-		new _themeMenu($assets_url);
-	}
-});
-
-add_action('rest_api_init', function() {
-	_themeSettings::args();
-	$api = new _themeAPI();
-	$api->add_routes();
-});
+function bwp_admin_favicon() {
+	$dir = wp_upload_dir();
+	echo '<link rel="shortcut icon" type="image/x-icon" href="' . $dir['url'] . '/' . _BWP['favicon_image'] . '" />';
+}
 
 //     ▄█    █▄        ▄████████   ▄█           ▄███████▄  
 //    ███    ███      ███    ███  ███          ███    ███  
@@ -1326,19 +1108,8 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 		$attributes .= !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
 		$attributes .= !empty($item->url) ? ' href="' . esc_attr($item->url) . '"' : '';
 
-		$active_class = ($item->current || $item->current_item_ancestor) ? ' active' : '';
-
-		$extra_classes = [];
-		if ((is_array($item->classes)) && (count($item->classes) > 0)) {
-			foreach ($item->classes as $class) {
-				if (substr($class, 0, 9) != 'menu-item') {
-					$extra_classes[] = $class;
-				}
-			}
-		}
-		
-		$nav_link_class = ($depth > 0) ? 'dropdown-item ' : 'nav-link';
-		$nav_link_class .= (count($extra_classes)) ? ' ' . implode(' ', $extra_classes) : '';
+		$active_class = ($item->current || $item->current_item_ancestor) ? 'active' : '';
+		$nav_link_class = ($depth > 0) ? 'dropdown-item ' : 'nav-link ';
 		$attributes .= ($args->walker->has_children) ? ' class="'. $nav_link_class . $active_class . ' dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' : ' class="'. $nav_link_class . $active_class . '"';
 
 		$item_output = $args->before;
@@ -1410,4 +1181,46 @@ function minify_js($input) {
 	$input);
 }
 
-// EOF
+//   ▄█   ███▄▄▄▄▄     ▄█       ███      
+//  ███   ███▀▀▀▀██▄  ███   ▀█████████▄  
+//  ███▌  ███    ███  ███▌     ▀███▀▀██  
+//  ███▌  ███    ███  ███▌      ███   ▀  
+//  ███▌  ███    ███  ███▌      ███      
+//  ███   ███    ███  ███       ███      
+//  ███   ███    ███  ███       ███      
+//  █▀     ▀█    █▀   █▀       ▄████▀ 
+
+// actions
+
+add_action('init', 'bwp_set_wp_options');
+add_action('admin_enqueue_scripts', 'bwp_add_scripts');
+add_action('admin_head', 'bwp_admin_favicon');
+add_action('after_setup_theme', 'bwp_do_setup');
+add_action('add_meta_boxes', 'bwp_add_post_metadata');
+add_action('save_post', 'bwp_save_post_metadata');
+
+// filters
+
+add_filter('excerpt_length', 'bwp_set_excerpt_length', 999);
+
+// shortcodes
+
+add_shortcode('logo-normal', 'bwp_logo_normal_shortcode');
+add_shortcode('logo-contrast', 'bwp_logo_contrast_shortcode');
+
+// boot theme
+
+add_action('init', function() {
+	if (is_admin()) {
+		$assets_url = get_template_directory_uri();
+		new _themeMenu($assets_url);
+	}
+});
+
+add_action('rest_api_init', function() {
+	_themeSettings::args();
+	$api = new _themeAPI();
+	$api->add_routes();
+});
+
+// eof
