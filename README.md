@@ -1,9 +1,12 @@
 # basic_wp
 
-a basic, useful wordpress theme featuring:
+a basic, useful wordpress theme based on bs5 featuring:
 - google font selection
 - bootstrap/jquery
 - css/js editor
-- various config options
-- configurable contact forms
+- header order/layout
+- navbar layout
+- favicon
+- logos
+- custom colours
 - child theme available
