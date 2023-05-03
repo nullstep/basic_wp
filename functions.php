@@ -905,6 +905,7 @@ function get_nav($value = NULL) {
 			foreach ($items as $item) {
 				get_nav($item);
 			}
+			echo "\n";
 		}
 	}
 }
