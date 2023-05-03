@@ -10,7 +10,7 @@
 	<meta name="description" content="<?php bloginfo('description'); ?>">
 <?php endif; ?>
 	<title><?php echo wp_title('&#8211;', FALSE, 'right') . get_option('blogname'); ?></title>
-<?php if (get_value('font_awesome') == 'yes'): ?>
+<?php if (get_value('font_awesome', 0) == 'yes'): ?>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 <?php endif; ?>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">

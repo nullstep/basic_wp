@@ -788,7 +788,7 @@ function get_colours() {
 }
 
 function get_css() {
-	echo 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body .navbar .active{color:var(--primary-colour)!important}#body pre,code{font-family:var(--mono-font)}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}article,section{padding:1rem 0} a{color:var(--primary-colour)} h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important} hr{height:5px!important;background:var(--primary-colour)width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem}.mr-none{margin-left:0.5rem;margin-right:0}.mb-none{margin-left:0.5rem;margin-right:0.5rem}#body .btn{color:var(--primary-colour);border-color:var(--primary-colour)}#body .btn:hover{background-color:var(--primary-colour);color:#000}' . _BWP['theme_css_minified'];
+	echo 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body .navbar .active{color:var(--primary-colour)!important}#body pre,code{font-family:var(--mono-font)}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}article,section{padding:1rem 0} a{color:var(--primary-colour)} h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important} hr{height:5px!important;background:var(--primary-colour)width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem}.mr-none{margin-left:0.5rem;margin-right:0}.mb-none{margin-left:0.5rem;margin-right:0.5rem}#body .btn{color:var(--primary-colour);border-color:var(--primary-colour)}#body .btn:hover{background-color:var(--primary-colour);color:var(--nav-colour)}' . _BWP['theme_css_minified'];
 }
 
 function get_js() {
@@ -882,7 +882,9 @@ function get_nav($value = NULL) {
 		case 'search': {
 			echo '<form class="d-flex ' . get_align('search') . '">';
 			echo '<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">';
-			echo '<button class="btn btn-outline-primary" type="submit">Search</button>';
+			echo '<button class="btn btn-outline-primary" type="submit">';
+			echo (_BWP['font_awesome'] == 'yes') ? '<i class="fa-solid fa-magnifying-glass"></i>' : 'Search';
+			echo '</button>';
 			echo '</form>';
 			break;
 		}
