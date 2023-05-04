@@ -39,7 +39,7 @@ define('_ARGS_BASIC_WP', [
 	],
 	'nav_logo' => [
 		'type' => 'string',
-		'default' => 'normal'
+		'default' => 'none'
 	],
 	'nav_width' => [
 		'type' => 'string',
@@ -51,15 +51,15 @@ define('_ARGS_BASIC_WP', [
 	],
 	'nav_nav_align' => [
 		'type' => 'string',
-		'default' => 'left'
+		'default' => 'me-auto'
 	],
 	'nav_logo_align' => [
 		'type' => 'string',
-		'default' => 'middle'
+		'default' => 'mx-auto'
 	],
 	'nav_search_align' => [
 		'type' => 'string',
-		'default' => 'right'
+		'default' => 'ms-auto'
 	],
 	'nav_shadow' => [
 		'type' => 'string',
@@ -860,7 +860,7 @@ function get_align($item) {
 function get_nav($value = NULL) {
 	switch ($value) {
 		case 'logo': {
-			$brand = '<a href="/" class="navbar-brand">' . ((_BWP['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _BWP['logo_image_' . _BWP['nav_logo']] . '">' : 'Brand') . '</a>';
+			$brand = '<a href="/" class="navbar-brand">' . ((_BWP['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _BWP['logo_image_' . _BWP['nav_logo']] . '">' : get_bloginfo('name')) . '</a>';
 			$toggle = '<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".target"><span class="navbar-toggler-icon"></span></button>';
 			$logo = (_BWP['nav_mobile'] == 'left') ? $brand . $toggle : $toggle . $brand;
 			echo '<div class="' . get_align('logo') . '">' . $logo . '</div>';
