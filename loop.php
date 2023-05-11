@@ -4,7 +4,7 @@
 					<p class="post-datetime"><span class="post-date"><?php the_time(get_option('date_format')); ?></span> - <span class="post-time"><?php the_time(); ?></span></p>
 					<p class="post-excerpt">
 <?php if (has_post_thumbnail()) : ?>
-						<img src="/uploads/<?php get_featured(); ?>">
+						<img src="/uploads/<?php BWP::featured(); ?>">
 <?php endif; ?>
 						<?php the_excerpt(); ?>
 

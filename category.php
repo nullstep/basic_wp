@@ -8,7 +8,7 @@
 				</div>
 <?php get_template_part('loop'); ?>
 				<div class="pagination">
-<?php get_pagination(); ?>
+<?php BWP::pagination(); ?>
 
 				</div>
 			</section>
