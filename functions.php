@@ -858,7 +858,7 @@ class _themeUpdater {
 		return $this->repository_uri = $this->domain . trailingslashit($this->repository);
 	}
 
-	public function get_remote_version() {
+	protected function get_remote_version() {
 		$this->remote_stylesheet_uri = $this->construct_remote_stylesheet_uri();
 		$response = $this->remote_get($this->remote_stylesheet_uri);
 		$response = str_replace("\r", "\n", wp_remote_retrieve_body($response));
@@ -867,7 +867,7 @@ class _themeUpdater {
 		];
 
 		foreach ($headers as $field => $regex) {
-			if (preg_match( '/^[ \t\/*#@]*' . preg_quote($regex, '/') . ':(.*)$/mi', $response, $match) && $match[1]) {
+			if (preg_match('/^[ \t\/*#@]*' . preg_quote($regex, '/') . ':(.*)$/mi', $response, $match) && $match[1]) {
 				$headers[$field] = _cleanup_header_comment($match[1]);
 			}
 			else {
@@ -878,7 +878,7 @@ class _themeUpdater {
 		return $this->remote_version = $headers['Version'];
 	}
 
-	public function has_update() {
+	protected function has_update() {
 		if (!$this->remote_version) {
 			$this->remote_version = $this->get_remote_version();
 		}
@@ -1358,7 +1358,6 @@ add_action('save_post', 'bwp_save_post_metadata');
 // filters
 
 add_filter('excerpt_length', 'bwp_set_excerpt_length', 999);
-//add_filter('pre_set_site_transient_update_themes', 'bwp_check_for_update');
 
 // shortcodes
 
