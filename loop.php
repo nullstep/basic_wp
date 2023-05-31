@@ -4,7 +4,11 @@
 						<h2 class="post-title"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h2>
 						<p class="post-datetime"><span class="post-date"><?php the_time(get_option('date_format')); ?></span> - <span class="post-time"><?php the_time(); ?></span></p>
 <?php if (has_post_thumbnail()) : ?>
+<<<<<<< HEAD
 							<img class="w-100 mb-3" src="/uploads/<?php echo basename(get_the_post_thumbnail_url(get_the_ID(), 'full')); ?>">
+=======
+						<img src="/uploads/<?php BWP::featured(); ?>">
+>>>>>>> origin/main
 <?php endif; ?>
 						<p class="post-excerpt">
 							<?php the_excerpt(); ?>
