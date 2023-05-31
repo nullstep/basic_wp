@@ -139,10 +139,6 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => '#000000'
 	],
-	'google_api' => [
-		'type' => 'string',
-		'default' => ''
-	],
 	'heading_font' => [
 		'type' => 'string',
 		'default' => ''
@@ -156,6 +152,10 @@ define('_ARGS_BASIC_WP', [
 		'default' => ''
 	],
 	'mono_font' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'google_api' => [
 		'type' => 'string',
 		'default' => ''
 	],
@@ -393,10 +393,6 @@ define('_ADMIN_BASIC_WP', [
 		'label' => 'Fonts',
 		'columns' => 4,
 		'fields' => [
-			'google_api' => [
-				'label' => 'Google Font API Key',
-				'type' => 'input'
-			],
 			'heading_font' => [
 				'label' => 'Headings Font',
 				'type' => 'font'
@@ -412,6 +408,10 @@ define('_ADMIN_BASIC_WP', [
 			'mono_font' => [
 				'label' => 'Monospace Font',
 				'type' => 'font'
+			],
+			'google_api' => [
+				'label' => 'Google Font API Key',
+				'type' => 'input'
 			],
 			'font_awesome' => [
 				'label' => 'Use Font Awesome',
