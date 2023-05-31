@@ -35,6 +35,7 @@ jQuery(function($) {
 		'secondary_colour',
 		'tertiary_colour',
 		'quaternary_colour',
+		'google_api',
 		'heading_font',
 		'nav_font',
 		'body_font',

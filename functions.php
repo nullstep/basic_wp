@@ -4,6 +4,8 @@
  *  URL: nullstep.com
  */
 
+// -_-
+
 define('_THEME', 'basic_wp');
 
 // basic_wp default css
@@ -39,7 +41,7 @@ define('_ARGS_BASIC_WP', [
 	],
 	'nav_logo' => [
 		'type' => 'string',
-		'default' => 'normal'
+		'default' => 'none'
 	],
 	'nav_width' => [
 		'type' => 'string',
@@ -51,15 +53,15 @@ define('_ARGS_BASIC_WP', [
 	],
 	'nav_nav_align' => [
 		'type' => 'string',
-		'default' => 'left'
+		'default' => 'me-auto'
 	],
 	'nav_logo_align' => [
 		'type' => 'string',
-		'default' => 'middle'
+		'default' => 'mx-auto'
 	],
 	'nav_search_align' => [
 		'type' => 'string',
-		'default' => 'right'
+		'default' => 'ms-auto'
 	],
 	'nav_shadow' => [
 		'type' => 'string',
@@ -136,6 +138,10 @@ define('_ARGS_BASIC_WP', [
 	'quaternary_colour' => [
 		'type' => 'string',
 		'default' => '#000000'
+	],
+	'google_api' => [
+		'type' => 'string',
+		'default' => ''
 	],
 	'heading_font' => [
 		'type' => 'string',
@@ -387,6 +393,10 @@ define('_ADMIN_BASIC_WP', [
 		'label' => 'Fonts',
 		'columns' => 4,
 		'fields' => [
+			'google_api' => [
+				'label' => 'Google Font API Key',
+				'type' => 'input'
+			],
 			'heading_font' => [
 				'label' => 'Headings Font',
 				'type' => 'font'
@@ -629,24 +639,16 @@ class _themeMenu {
 	public function render_admin() {
 		wp_enqueue_media();
 		$this->enqueue_assets();
-		$ctx = stream_context_create([
-			'ssl' => [
-				'verify_peer' => false,
-				'verify_peer_name' => false
-			]
-		]);
-		$fonts = json_decode(file_get_contents(__DIR__ . '/fonts.json', false, $ctx));
+
 		$opts = '<option value="">None</option>';
-		$types = [
-			'serif',
-			'sans-serif',
-			'display',
-			'handwriting',
-			'monospace'
-		];
-		foreach ($fonts as $item) {
-			$font = explode(',', $item);
-			$opts .= '<option value="' . $font[0] . '">' . $font[0] . ' (' . $types[(int)$font[1]] . ')</option>';
+
+		if (_BWP['google_api'] != '') {
+			$fonts = json_decode(
+				curl('https://www.googleapis.com/webfonts/v1/webfonts?key=' . _BWP['google_api'])
+			);
+			foreach ($fonts->items as $item) {
+				$opts .= '<option value="' . $item->family . '">' . $item->family . ' (' . $item->category . ')</option>';
+			}
 		}
 
 		$name = _THEME;
@@ -753,6 +755,331 @@ class _themeMenu {
 	}
 }
 
+//  ███    █▄      ▄███████▄  ████████▄      ▄████████      ███         ▄████████  
+//  ███    ███    ███    ███  ███   ▀███    ███    ███  ▀█████████▄    ███    ███  
+//  ███    ███    ███    ███  ███    ███    ███    ███     ▀███▀▀██    ███    █▀   
+//  ███    ███    ███    ███  ███    ███    ███    ███      ███   ▀   ▄███▄▄▄      
+//  ███    ███  ▀█████████▀   ███    ███  ▀███████████      ███      ▀▀███▀▀▀      
+//  ███    ███    ███         ███    ███    ███    ███      ███        ███    █▄   
+//  ███    ███    ███         ███   ▄███    ███    ███      ███        ███    ███  
+//  ████████▀    ▄████▀       ████████▀     ███    █▀      ▄████▀      ██████████
+
+class _themeUpdater {
+	protected $theme = _THEME;
+	protected $repository = 'nullstep/' . _THEME;
+	protected $domain = 'https://github.com/';
+	protected $raw_domain = 'https://raw.githubusercontent.com/';
+	protected $css_endpoint = '/main/style.css';
+	protected $zip_endpoint = '/releases/download/v';
+	protected $remote_css_uri;
+	protected $remote_zip_uri;
+	protected $remote_version;
+	protected $local_version;
+
+	public function init() {
+		add_filter('auto_update_theme', [
+			$this,
+			'auto_update_theme'
+		], 20, 2);
+		add_filter('upgrader_source_selection', [
+			$this,
+			'upgrader_source_selection'
+		], 10, 4);
+		add_filter('pre_set_site_transient_update_themes', [
+			$this,
+			'pre_set_site_transient_update_themes'
+		]);
+	}
+
+	public function auto_update_theme($update, $item) {
+		return $this->theme === $item->theme;
+	}
+
+	public function upgrader_source_selection($source, $remote_source, $upgrader, $hook_extra) {
+		global $wp_filesystem;
+
+		$update = [
+			'update-selected',
+			'update-selected-themes',
+			'upgrade-theme'
+		];
+
+		if (!isset($_GET['action']) || !in_array($_GET['action'], $update, true)) {
+			return $source;
+		}
+
+		if (!isset($source, $remote_source)) {
+			return $source;
+		}
+
+		if (false === stristr(basename($source), $this->theme)) {
+			return $source;
+		}
+
+		$basename = basename($source);
+		$upgrader->skin->feedback(esc_html_e('Renaming theme directory.', 'bootstrap'));
+		$corrected_source = str_replace($basename, $this->theme, $source);
+
+		if ($wp_filesystem->move($source, $corrected_source, true)) {
+			$upgrader->skin->feedback(esc_html_e('Rename successful.', 'bootstrap'));
+			return $corrected_source;
+		}
+
+		return new WP_Error();
+	}
+
+	public function pre_set_site_transient_update_themes($transient) {
+		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+		$this->local_version = (wp_get_theme($this->theme))->get('Version');
+
+		if ($this->has_update()) {
+			$response = [
+				'theme' => $this->theme,
+				'new_version' => $this->remote_version,
+				'url' => $this->construct_repository_uri(),
+				'package' => $this->construct_remote_zip_uri(),
+				'branch' => 'master'
+			];
+			$transient->response[$this->theme] = $response;
+		}
+
+		return $transient;
+	}
+
+	protected function construct_remote_stylesheet_uri() {
+		return $this->remote_css_uri = $this->raw_domain . $this->repository . $this->css_endpoint;
+	}
+
+	protected function construct_remote_zip_uri() {
+		return $this->remote_zip_uri = $this->domain . $this->repository . $this->zip_endpoint . $this->remote_version . '/' . $this->theme . '.zip';
+	}
+
+	protected function construct_repository_uri() {
+		return $this->repository_uri = $this->domain . trailingslashit($this->repository);
+	}
+
+	protected function get_remote_version() {
+		$this->remote_stylesheet_uri = $this->construct_remote_stylesheet_uri();
+		$response = $this->remote_get($this->remote_stylesheet_uri);
+		$response = str_replace("\r", "\n", wp_remote_retrieve_body($response));
+		$headers = [
+			'Version' => 'Version'
+		];
+
+		foreach ($headers as $field => $regex) {
+			if (preg_match('/^[ \t\/*#@]*' . preg_quote($regex, '/') . ':(.*)$/mi', $response, $match) && $match[1]) {
+				$headers[$field] = _cleanup_header_comment($match[1]);
+			}
+			else {
+				$headers[$field] = '';
+			}
+		}
+
+		return $this->remote_version = $headers['Version'];
+	}
+
+	protected function has_update() {
+		if (!$this->remote_version) {
+			$this->remote_version = $this->get_remote_version();
+		}
+		return version_compare($this->remote_version, $this->local_version, '>');
+	}
+
+	protected function remote_get($url, $args = []) {
+		return wp_remote_get($url, $args);
+	}
+}
+
+//  ▀█████████▄    ▄█     █▄      ▄███████▄  
+//    ███    ███  ███     ███    ███    ███  
+//    ███    ███  ███     ███    ███    ███  
+//   ▄███▄▄▄██▀   ███     ███    ███    ███  
+//  ▀▀███▀▀▀██▄   ███     ███  ▀█████████▀   
+//    ███    ██▄  ███     ███    ███         
+//    ███    ███  ███ ▄█▄ ███    ███         
+//  ▄█████████▀    ▀███▀███▀    ▄████▀       
+
+class BWP {
+	public static function colours() {
+		$css = ':root{';
+		$colours = [
+			'page',
+			'text',
+			'heading',
+			'info',
+			'info_text',
+			'nav',
+			'nav_text',
+			'banner',
+			'banner_text',
+			'footer',
+			'footer_text',
+			'primary',
+			'secondary',
+			'tertiary',
+			'quaternary'
+		];
+		foreach ($colours as $c) {
+			$css .= '--' . str_replace('_', '-', $c) . '-colour:' . _BWP[$c . '_colour'] . ';';
+		}
+		echo $css . '}';
+	}
+
+	public static function css() {
+		echo 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body .navbar .active{color:var(--primary-colour)!important}#body pre,code{font-family:var(--mono-font)}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}article,section{padding:1rem 0} a{color:var(--primary-colour)} h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important} hr{height:5px!important;background:var(--primary-colour)width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem}.mr-none{margin-left:0.5rem;margin-right:0}.mb-none{margin-left:0.5rem;margin-right:0.5rem}#body .btn{color:var(--primary-colour);border-color:var(--primary-colour)}#body .btn:hover{background-color:var(--primary-colour);color:var(--nav-colour)}' . _BWP['theme_css_minified'];
+	}
+
+	public static function js() {
+		echo _BWP['theme_js_minified'];
+	}
+
+	public static function fonts() {
+		$template = '@import url(\'https://fonts.googleapis.com/css2?family=[F]&display=swap\');';
+		$fonts = [
+			'heading',
+			'nav',
+			'body',
+			'mono'
+		];
+		$css = '';
+		$root = '';
+		foreach ($fonts as $f) {
+			if (_BWP[$f . '_font'] != '') {
+				$name = str_replace(' ', '+', _BWP[$f . '_font']);
+				if (($css == '') || (strpos($css, $name) === FALSE)) {
+					$css .= str_replace('[F]', $name, $template);
+				}
+				$root .= '--' . str_replace('_', '-', $f . '_font') . ':' . _BWP[$f . '_font'] . ';';
+			}
+		}
+		if ($root != '') {
+			$css .= ':root{' . $root . '}';
+		}
+		echo $css;
+	}
+
+	public static function favicon() {
+		$setting = _BWP['favicon_image'];
+		$favicon = ($setting != '') ? '/uploads/' . $setting : '/img/favicon.png';
+		echo $favicon;
+	}
+
+	public static function featured($echo = TRUE) {
+		$image = explode('/', wp_get_attachment_url(get_post_thumbnail_id(get_queried_object()->ID)));
+
+		if ($echo) {
+			echo end($image);
+		}
+		else {
+			return end($image);
+		}
+	}
+
+	public static function snippet($post, $count) {
+		echo str_replace(["\r", "\n"], '', substr(strip_tags($post), 0, $count) . '&hellip;');
+	}
+
+	public static function align($item) {
+		$align = _BWP['nav_' . $item . '_align'];
+		if ($align == 'm-none') {
+			if (end(explode(',', _BWP['nav_layout'])) == $item) {
+				$align = 'mr-none';
+			}
+			else if (explode(',', _BWP['nav_layout'])[0] == $item) {
+				$align = 'ml-none';
+			}
+			else {
+				$align = 'mb-none';
+			}
+		}
+		return $align;
+	}
+
+	public static function nav($value = NULL) {
+		switch ($value) {
+			case 'logo': {
+				$logo = '<a href="/" class="navbar-brand">' . ((_BWP['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _BWP['logo_image_' . _BWP['nav_logo']] . '">' : get_bloginfo('name')) . '</a>';
+				echo '<div class="' . BWP::align('logo') . '">' . $logo . '</div>';
+				break;
+			}
+			case 'nav': {
+				$toggle = '<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".target"><span class="navbar-toggler-icon"></span></button>';
+				echo (_BWP['nav_mobile'] == 'left') ? $toggle : '';
+				echo '<div id="navbar" class="navbar-collapse collapse target ' . BWP::align('nav') . '">';
+				wp_nav_menu([
+					'theme_location' => 'primary',
+					'depth' => 0,
+					'container' => FALSE,
+					'menu_class' => 'navbar-nav position-relative',
+					'fallback_cb' => '__return_false',
+					'walker' => new WP_Bootstrap_Navwalker()
+				]);
+				echo '</div>';
+				echo (_BWP['nav_mobile'] == 'right') ? $toggle : '';
+				break;
+			}
+			case 'search': {
+				echo '<form class="d-flex ' . BWP::align('search') . '">';
+				echo '<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">';
+				echo '<button class="btn btn-outline-primary" type="submit">';
+				echo (_BWP['font_awesome'] == 'yes') ? '<i class="fa-solid fa-magnifying-glass"></i>' : 'Search';
+				echo '</button>';
+				echo '</form>';
+				break;
+			}
+			case 'width': {
+				echo _BWP['nav_width'];
+				break;
+			}
+			case 'sticky': {
+				echo (_BWP['sticky_nav'] == 'yes') ? 'sticky-top' : '';
+				break;
+			}
+			case 'shadow': {
+				echo (_BWP['nav_shadow'] == 'yes') ? ' shadow' : '';
+				break;
+			}
+			default: {
+				$items = explode(',', _BWP['nav_layout']);
+				foreach ($items as $item) {
+					BWP::nav($item);
+				}
+				echo "\n";
+			}
+		}
+	}
+
+	// return values
+
+	public static function value($key, $echo = TRUE) {
+		if ($echo) {
+			echo _BWP[$key];
+		}
+		else {
+			return _BWP[$key];
+		}
+	}
+
+	// header order
+
+	public static function order($item) {
+		return explode(',', _BWP['header_order'])[$item];
+	}
+
+	// pagination
+
+	public static function pagination() {
+		global $wp_query;
+		$big = 999999999;
+		echo paginate_links([
+			'base' => str_replace($big, '%#%', get_pagenum_link($big)),
+			'format' => '?paged=%#%',
+			'current' => max(1, get_query_var('paged')),
+			'total' => $wp_query->max_num_pages
+		]);
+	}
+}
+
 //   ▄████████   ▄██████▄   ████████▄      ▄████████  
 //  ███    ███  ███    ███  ███   ▀███    ███    ███  
 //  ███    █▀   ███    ███  ███    ███    ███    █▀   
@@ -760,185 +1087,7 @@ class _themeMenu {
 //  ███         ███    ███  ███    ███  ▀▀███▀▀▀      
 //  ███    █▄   ███    ███  ███    ███    ███    █▄   
 //  ███    ███  ███    ███  ███   ▄███    ███    ███  
-//  ████████▀    ▀██████▀   ████████▀     ██████████   
-
-function get_colours() {
-	$css = ':root{';
-	$colours = [
-		'page',
-		'text',
-		'heading',
-		'info',
-		'info_text',
-		'nav',
-		'nav_text',
-		'banner',
-		'banner_text',
-		'footer',
-		'footer_text',
-		'primary',
-		'secondary',
-		'tertiary',
-		'quaternary'
-	];
-	foreach ($colours as $c) {
-		$css .= '--' . str_replace('_', '-', $c) . '-colour:' . _BWP[$c . '_colour'] . ';';
-	}
-	echo $css . '}';
-}
-
-function get_css() {
-	echo 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body .navbar .active{color:var(--primary-colour)!important}#body pre,code{font-family:var(--mono-font)}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}article,section{padding:1rem 0} a{color:var(--primary-colour)} h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important} hr{height:5px!important;background:var(--primary-colour)width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem}.mr-none{margin-left:0.5rem;margin-right:0}.mb-none{margin-left:0.5rem;margin-right:0.5rem}#body .btn{color:var(--primary-colour);border-color:var(--primary-colour)}#body .btn:hover{background-color:var(--primary-colour);color:var(--nav-colour)}' . _BWP['theme_css_minified'];
-}
-
-function get_js() {
-	echo _BWP['theme_js_minified'];
-}
-
-function get_fonts() {
-	$template = '@import url(\'https://fonts.googleapis.com/css2?family=[F]&display=swap\');';
-	$fonts = [
-		'heading',
-		'nav',
-		'body',
-		'mono'
-	];
-	$css = '';
-	$root = '';
-	foreach ($fonts as $f) {
-		if (_BWP[$f . '_font'] != '') {
-			$name = str_replace(' ', '+', _BWP[$f . '_font']);
-			if (($css == '') || (strpos($css, $name) === FALSE)) {
-				$css .= str_replace('[F]', $name, $template);
-			}
-			$root .= '--' . str_replace('_', '-', $f . '_font') . ':' . _BWP[$f . '_font'] . ';';
-		}
-	}
-	if ($root != '') {
-		$css .= ':root{' . $root . '}';
-	}
-	echo $css;
-}
-
-function get_favicon() {
-	$setting = _BWP['favicon_image'];
-	$favicon = ($setting != '') ? '/uploads/' . $setting : '/img/favicon.png';
-	echo $favicon;
-}
-
-function get_featured($echo = TRUE) {
-	$image = explode('/', wp_get_attachment_url(get_post_thumbnail_id(get_queried_object()->ID)));
-
-	if ($echo) {
-		echo end($image);
-	}
-	else {
-		return end($image);
-	}
-}
-
-function get_snippet($post, $count) {
-	echo str_replace(["\r", "\n"], '', substr(strip_tags($post), 0, $count) . '&hellip;');
-}
-
-function get_align($item) {
-	$align = _BWP['nav_' . $item . '_align'];
-	if ($align == 'm-none') {
-		if (end(explode(',', _BWP['nav_layout'])) == $item) {
-			$align = 'mr-none';
-		}
-		else if (explode(',', _BWP['nav_layout'])[0] == $item) {
-			$align = 'ml-none';
-		}
-		else {
-			$align = 'mb-none';
-		}
-	}
-	return $align;
-}
-
-function get_nav($value = NULL) {
-	switch ($value) {
-		case 'logo': {
-			$brand = '<a href="/" class="navbar-brand">' . ((_BWP['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _BWP['logo_image_' . _BWP['nav_logo']] . '">' : 'Brand') . '</a>';
-			$toggle = '<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".target"><span class="navbar-toggler-icon"></span></button>';
-			$logo = (_BWP['nav_mobile'] == 'left') ? $brand . $toggle : $toggle . $brand;
-			echo '<div class="' . get_align('logo') . '">' . $logo . '</div>';
-			break;
-		}
-		case 'nav': {
-			echo '<div id="navbar" class="navbar-collapse collapse target ' . get_align('nav') . '">';
-			wp_nav_menu([
-				'theme_location' => 'primary',
-				'depth' => 0,
-				'container' => FALSE,
-				'menu_class' => 'navbar-nav position-relative',
-				'fallback_cb' => '__return_false',
-				'walker' => new WP_Bootstrap_Navwalker()
-			]);
-			echo '</div>';
-			break;
-		}
-		case 'search': {
-			echo '<form class="d-flex ' . get_align('search') . '">';
-			echo '<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">';
-			echo '<button class="btn btn-outline-primary" type="submit">';
-			echo (_BWP['font_awesome'] == 'yes') ? '<i class="fa-solid fa-magnifying-glass"></i>' : 'Search';
-			echo '</button>';
-			echo '</form>';
-			break;
-		}
-		case 'width': {
-			echo _BWP['nav_width'];
-			break;
-		}
-		case 'sticky': {
-			echo (_BWP['sticky_nav'] == 'yes') ? 'sticky-top' : '';
-			break;
-		}
-		case 'shadow': {
-			echo (_BWP['nav_shadow'] == 'yes') ? ' shadow' : '';
-			break;
-		}
-		default: {
-			$items = explode(',', _BWP['nav_layout']);
-			foreach ($items as $item) {
-				get_nav($item);
-			}
-			echo "\n";
-		}
-	}
-}
-
-// return values
-
-function get_value($key, $echo = TRUE) {
-	if ($echo) {
-		echo _BWP[$key];
-	}
-	else {
-		return _BWP[$key];
-	}
-}
-
-// header order
-
-function get_order($item) {
-	return explode(',', _BWP['header_order'])[$item];
-}
-
-// pagination
-
-function get_pagination() {
-	global $wp_query;
-	$big = 999999999;
-	echo paginate_links([
-		'base' => str_replace($big, '%#%', get_pagenum_link($big)),
-		'format' => '?paged=%#%',
-		'current' => max(1, get_query_var('paged')),
-		'total' => $wp_query->max_num_pages
-	]);
-}
+//  ████████▀    ▀██████▀   ████████▀     ██████████
 
 // wp options
 
@@ -1184,6 +1333,23 @@ function minify_js($input) {
 	$input);
 }
 
+// curl
+
+function curl($url) {
+	$curl = curl_init();
+
+	curl_setopt($curl, CURLOPT_URL, $url);
+	curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+	$response = curl_exec($curl);
+	curl_close($curl);
+
+	return $response;
+}
+
 //   ▄█   ███▄▄▄▄▄     ▄█       ███      
 //  ███   ███▀▀▀▀██▄  ███   ▀█████████▄  
 //  ███▌  ███    ███  ███▌     ▀███▀▀██  
@@ -1191,7 +1357,12 @@ function minify_js($input) {
 //  ███▌  ███    ███  ███▌      ███      
 //  ███   ███    ███  ███       ███      
 //  ███   ███    ███  ███       ███      
-//  █▀     ▀█    █▀   █▀       ▄████▀ 
+//  █▀     ▀█    █▀   █▀       ▄████▀
+
+// updater
+
+$updater = new _themeUpdater();
+$updater->init();
 
 // actions
 
