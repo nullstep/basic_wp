@@ -1,11 +1,6 @@
 		</div>
-<<<<<<< HEAD
 	</main>
 	<section id="footer-top-area">
-=======
-	</div>
-	<div id="footer-area">
->>>>>>> origin/main
 		<div class="<?php BWP::value('container_class'); ?>">
 			<footer class="row">
 				<div class="col-md-3">

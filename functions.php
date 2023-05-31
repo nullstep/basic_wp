@@ -998,22 +998,13 @@ class BWP {
 	public static function nav($value = NULL) {
 		switch ($value) {
 			case 'logo': {
-<<<<<<< HEAD
 				$logo = '<a href="/" class="navbar-brand">' . ((_BWP['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _BWP['logo_image_' . _BWP['nav_logo']] . '">' : get_bloginfo('name')) . '</a>';
-=======
-				$brand = '<a href="/" class="navbar-brand">' . ((_BWP['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _BWP['logo_image_' . _BWP['nav_logo']] . '">' : get_bloginfo('name')) . '</a>';
-				$toggle = '<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".target"><span class="navbar-toggler-icon"></span></button>';
-				$logo = (_BWP['nav_mobile'] == 'left') ? $brand . $toggle : $toggle . $brand;
->>>>>>> origin/main
 				echo '<div class="' . BWP::align('logo') . '">' . $logo . '</div>';
 				break;
 			}
 			case 'nav': {
-<<<<<<< HEAD
 				$toggle = '<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".target"><span class="navbar-toggler-icon"></span></button>';
 				echo (_BWP['nav_mobile'] == 'left') ? $toggle : '';
-=======
->>>>>>> origin/main
 				echo '<div id="navbar" class="navbar-collapse collapse target ' . BWP::align('nav') . '">';
 				wp_nav_menu([
 					'theme_location' => 'primary',
@@ -1024,10 +1015,7 @@ class BWP {
 					'walker' => new WP_Bootstrap_Navwalker()
 				]);
 				echo '</div>';
-<<<<<<< HEAD
 				echo (_BWP['nav_mobile'] == 'right') ? $toggle : '';
-=======
->>>>>>> origin/main
 				break;
 			}
 			case 'search': {
