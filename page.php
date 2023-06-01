@@ -1,5 +1,5 @@
 <?php get_header(); ?>
-			<section class="row">
+			<div class="row">
 				<article class="col-sm-12">
 <?php if (have_posts()): while (have_posts()) : the_post(); ?>
 					<h2 class="page-title"><?php the_title(); ?></h2>
@@ -9,5 +9,5 @@
 					<h2>No Content</h2>
 <?php endif; ?>
 				</article>
-			</section>
+			</div>
 <?php get_footer(); ?>

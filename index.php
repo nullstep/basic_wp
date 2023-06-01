@@ -1,12 +1,12 @@
 <?php get_header(); ?>
 
 		<main class="row">
-			<section class="col-sm-12">
+			<div class="col-sm-12">
 <?php get_template_part('loop'); ?>
 				<div class="pagination">
 <?php BWP::pagination(); ?>
 
 				</div>
-			</section>
+			</div>
 		</main>
 <?php get_footer(); ?>

@@ -1,13 +1,13 @@
 		</div>
 	</main>
-	<section id="footer-top-area">
+	<div id="footer-top-area">
 		<div class="<?php BWP::value('container_class'); ?>">
 			<footer class="row">
 				<div class="col-md-3">
 					<div class="footer-widget">
 						<div class="navbar-brand">
 							<a href="/">
-								<img src="/uploads/logo-white.svg" alt="Logo" style="height:150px;margin-top:25px">
+								logo
 							</a>
 							<p class="social pt-4">
 								<a href="#" target="_blank"><img src="/uploads/facebook.svg"></a>
@@ -24,7 +24,7 @@
 				</div>
 				<div class="col-md-4">
 					<div class="footer-widget">
-						<h3>Useful Links</h3>
+						<h3>Links</h3>
 						<ul class="footer-links">
 							<li>
 								<i class="fas fa-angle-right"></i>
@@ -57,20 +57,20 @@
 					<div class="footer-widget float-end">
 						<h3>Where to find us</h3>
 						<p>
-							Unit 6<br>
-							Foster Avenue<br>
-							Dunstable<br>
-							Bedfordshire<br>
-							LU5 5TA
+							Address<br>
+							Address<br>
+							Address<br>
+							Address<br>
+							Address
 						</p>
-						<p>01582 477478</p>
-						<p><a href="mailto:info@cotops.ltd.uk">info@cotops.ltd.uk</a></p>
+						<p>telephone</p>
+						<p><a href="">email</a></p>
 					</div>
 				</div>
 			</footer>
 		</div>
-	</section>
-	<section id="footer-area">
+	</div>
+	<div id="footer-area">
 		<div class="<?php BWP::value('container_class'); ?>">
 			<footer class="row pt-3 pb-1">
 				<div class="col-sm-12 text-center">
@@ -78,7 +78,7 @@
 				</div>
 			</footer>
 		</div>
-	</section>
+	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
 	<script>

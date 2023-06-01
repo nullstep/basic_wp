@@ -26,5 +26,5 @@
 <?php get_template_part(BWP::order(0)); ?>
 <?php get_template_part(BWP::order(1)); ?>
 <?php get_template_part(BWP::order(2)); ?>
-	<div id="content-area">
+	<main id="content-area">
 		<div class="<?php BWP::value('container_class'); ?>">

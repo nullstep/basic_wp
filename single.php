@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 
 		<main class="row">
-			<section class="col-sm-12">
+			<div class="col-sm-12">
 <?php if (have_posts()): while (have_posts()) : the_post(); ?>
 				<article>
 					<h2 class="post-title"><?php the_title(); ?></h2>
@@ -15,6 +15,6 @@
 					<h2 class="post-title">No Posts</h2>
 				</article>
 <?php endif; ?>
-			</section>
+			</div>
 		</main>
 <?php get_footer(); ?>
