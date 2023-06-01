@@ -115,6 +115,10 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => '#222222'
 	],
+	'footer_top_colour' => [
+		'type' => 'string',
+		'default' => '#444444'
+	],
 	'footer_colour' => [
 		'type' => 'string',
 		'default' => '#333333'
@@ -136,6 +140,14 @@ define('_ARGS_BASIC_WP', [
 		'default' => '#000000'
 	],
 	'quaternary_colour' => [
+		'type' => 'string',
+		'default' => '#000000'
+	],
+	'light_colour' => [
+		'type' => 'string',
+		'default' => '#ffffff'
+	],
+	'dark_colour' => [
 		'type' => 'string',
 		'default' => '#000000'
 	],
@@ -340,11 +352,11 @@ define('_ADMIN_BASIC_WP', [
 				'type' => 'colour'
 			],
 			'info_colour' => [
-				'label' => 'Info Colour',
+				'label' => 'Info Area Colour',
 				'type' => 'colour'
 			],
 			'info_text_colour' => [
-				'label' => 'Info Text Colour',
+				'label' => 'Info Area Text Colour',
 				'type' => 'colour'
 			],
 			'nav_colour' => [
@@ -361,6 +373,10 @@ define('_ADMIN_BASIC_WP', [
 			],
 			'banner_text_colour' => [
 				'label' => 'Banner Text Colour',
+				'type' => 'colour'
+			],
+			'footer_top_colour' => [
+				'label' => 'Footer Top Area Colour',
 				'type' => 'colour'
 			],
 			'footer_colour' => [
@@ -385,6 +401,14 @@ define('_ADMIN_BASIC_WP', [
 			],
 			'quaternary_colour' => [
 				'label' => 'Quaternary Colour',
+				'type' => 'colour'
+			],
+			'light_colour' => [
+				'label' => 'Light Colour',
+				'type' => 'colour'
+			],
+			'dark_colour' => [
+				'label' => 'Dark Colour',
 				'type' => 'colour'
 			]
 		]
@@ -912,12 +936,15 @@ class BWP {
 			'nav_text',
 			'banner',
 			'banner_text',
+			'footer_top',
 			'footer',
 			'footer_text',
 			'primary',
 			'secondary',
 			'tertiary',
-			'quaternary'
+			'quaternary',
+			'light',
+			'dark'
 		];
 		foreach ($colours as $c) {
 			$css .= '--' . str_replace('_', '-', $c) . '-colour:' . _BWP[$c . '_colour'] . ';';
@@ -926,7 +953,7 @@ class BWP {
 	}
 
 	public static function css() {
-		echo 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body .navbar .active{color:var(--primary-colour)!important}#body pre,code{font-family:var(--mono-font)}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}article,section{padding:1rem 0} a{color:var(--primary-colour)} h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important} hr{height:5px!important;background:var(--primary-colour)width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem}.mr-none{margin-left:0.5rem;margin-right:0}.mb-none{margin-left:0.5rem;margin-right:0.5rem}#body .btn{color:var(--primary-colour);border-color:var(--primary-colour)}#body .btn:hover{background-color:var(--primary-colour);color:var(--nav-colour)}' . _BWP['theme_css_minified'];
+		echo 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)} #body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)} #body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important} #body .navbar .nav-link{color:var(--nav-text-colour)!important} #body .navbar .active{color:var(--primary-colour)!important} #body pre,code{font-family:var(--mono-font)} #info-area{background:var(--info-colour);color:var(--info-text-colour)} #banner-area{background:var(--banner-colour);color:var(--banner-text-colour)} #footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)} #footer-area{background:var(--footer-colour);color:var(--footer-text-colour)} a{color:var(--primary-colour)} h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important} hr{height:5px!important;background:var(--primary-colour)width:75%;margin:1em auto} #body .dropdown-menu[data-bs-popper]{left:unset} #body .navbar-collapse{flex-grow:unset} .ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem} #body .btn-primary{background-color:var(--primary-colour);border:none} #body .btn-primary:hover{box-shadow:0 0 100px 100px rgba(255,255,255,.1) inset;color:var(--text-colour)} .feed a{text-decoration:none;color:var(--text-colour)}' . _BWP['theme_css_minified'];
 	}
 
 	public static function js() {
@@ -1021,7 +1048,7 @@ class BWP {
 			case 'search': {
 				echo '<form class="d-flex ' . BWP::align('search') . '">';
 				echo '<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">';
-				echo '<button class="btn btn-outline-primary" type="submit">';
+				echo '<button class="btn btn-primary" type="submit">';
 				echo (_BWP['font_awesome'] == 'yes') ? '<i class="fa-solid fa-magnifying-glass"></i>' : 'Search';
 				echo '</button>';
 				echo '</form>';
@@ -1348,6 +1375,30 @@ function curl($url) {
 	curl_close($curl);
 
 	return $response;
+}
+
+// contrast colour
+
+function contrast($hex) {
+	$hex = str_split(ltrim($hex, '#'));
+
+	if (count($hex) == 3) {
+		$r = hexdec($hex[0] . $hex[0]);
+		$g = hexdec($hex[1] . $hex[1]);
+		$b = hexdec($hex[2] . $hex[2]);
+	}
+	else {
+		$r = hexdec($hex[0] . $hex[1]);
+		$g = hexdec($hex[2] . $hex[3]);
+		$b = hexdec($hex[4] . $hex[5]);			
+	}
+
+	if (((max($r, $g, $b) + min($r, $g, $b)) / 510.0) >= .8) {
+		return _BWP['light_colour'];
+	}
+	else {
+		return _BWP['dark_colour'];
+	}
 }
 
 //   ▄█   ███▄▄▄▄▄     ▄█       ███      
