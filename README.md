@@ -10,4 +10,16 @@ a basic, useful wordpress theme based on bs5 featuring:
 - favicon
 - logos
 - custom colours
+- useful shortcodes
 - child theme available
+- optional woocommerce support
+
+[children] - show child pages
+[inc]file[/inc] - include a file
+[latest]x[/latest] - show x latest posts
+[page]slug[/page] - show a page
+[video]url[/video] - show a video
+
+you can supply a "container" attribute to the [page] shortcode to override the one in theme settings
+
+eof

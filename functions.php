@@ -175,6 +175,22 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
+	'woo_support' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'woo_per_page' => [
+		'type' => 'string',
+		'default' => '4'
+	],
+	'woo_columns' => [
+		'type' => 'string',
+		'default' => '4'
+	],
+	'woo_cleanup' => [
+		'type' => 'string',
+		'default' => ''
+	],
 	'theme_css' => [
 		'type' => 'string',
 		'default' => _CSS_BASIC_WP
@@ -228,6 +244,22 @@ define('_ADMIN_BASIC_WP', [
 			'excerpt_length' => [
 				'label' => 'Excerpt Word Limit',
 				'type' => 'input'
+			],
+			'woo_support' => [
+				'label' => 'Add Woocommerce Support',
+				'type' => 'check'
+			],
+			'woo_columns' => [
+				'label' => 'Woocommerce Thumbnail Columns',
+				'type' => 'input'
+			],
+			'woo_per_page' => [
+				'label' => 'Woocommerce Items Per Page',
+				'type' => 'input'
+			]
+			'woo_cleanup' => [
+				'label' => 'Clean up Woocommerce Pages',
+				'type' => 'check'
 			]
 		]
 	],
@@ -500,14 +532,14 @@ define('_MENUS_BASIC_WP', [
 	'secondary' => 'Secondary Menu'
 ]);
 
-//     ▄████████     ▄███████▄   ▄█   
-//    ███    ███    ███    ███  ███   
-//    ███    ███    ███    ███  ███▌  
-//    ███    ███    ███    ███  ███▌  
-//  ▀███████████  ▀█████████▀   ███▌  
-//    ███    ███    ███         ███   
-//    ███    ███    ███         ███   
-//    ███    █▀    ▄████▀       █▀   
+//     ▄████████  ████████▄     ▄▄▄▄███▄▄▄▄     ▄█   ███▄▄▄▄▄    
+//    ███    ███  ███   ▀███  ▄██▀▀▀███▀▀▀██▄  ███   ███▀▀▀▀██▄  
+//    ███    ███  ███    ███  ███   ███   ███  ███▌  ███    ███  
+//    ███    ███  ███    ███  ███   ███   ███  ███▌  ███    ███  
+//  ▀███████████  ███    ███  ███   ███   ███  ███▌  ███    ███  
+//    ███    ███  ███    ███  ███   ███   ███  ███   ███    ███  
+//    ███    ███  ███   ▄███  ███   ███   ███  ███   ███    ███  
+//    ███    █▀   ████████▀    ▀█   ███   █▀   █▀     ▀█    █▀   
 
 class _themeAPI {
 	public function add_routes() {
@@ -540,15 +572,6 @@ class _themeAPI {
 		return rest_ensure_response(_themeSettings::get_settings());
 	}
 }
-
-//     ▄████████     ▄████████      ███          ███       ▄█   ███▄▄▄▄▄       ▄██████▄      ▄████████  
-//    ███    ███    ███    ███  ▀█████████▄  ▀█████████▄  ███   ███▀▀▀▀██▄    ███    ███    ███    ███  
-//    ███    █▀     ███    █▀      ▀███▀▀██     ▀███▀▀██  ███▌  ███    ███    ███    █▀     ███    █▀   
-//    ███          ▄███▄▄▄          ███   ▀      ███   ▀  ███▌  ███    ███   ▄███           ███         
-//  ▀███████████  ▀▀███▀▀▀          ███          ███      ███▌  ███    ███  ▀▀███ ████▄   ▀███████████  
-//           ███    ███    █▄       ███          ███      ███   ███    ███    ███    ███           ███  
-//     ▄█    ███    ███    ███      ███          ███      ███   ███    ███    ███    ███     ▄█    ███  
-//   ▄████████▀     ██████████     ▄████▀       ▄████▀    █▀     ▀█    █▀     ████████▀    ▄████████▀ 
 
 class _themeSettings {
 	protected static $option_key = _THEME . '-theme-settings';
@@ -602,15 +625,6 @@ class _themeSettings {
 		update_option(self::$option_key, $settings);
 	}
 }
-
-//    ▄▄▄▄███▄▄▄▄       ▄████████  ███▄▄▄▄▄    ███    █▄   
-//  ▄██▀▀▀███▀▀▀██▄    ███    ███  ███▀▀▀▀██▄  ███    ███  
-//  ███   ███   ███    ███    █▀   ███    ███  ███    ███  
-//  ███   ███   ███   ▄███▄▄▄      ███    ███  ███    ███  
-//  ███   ███   ███  ▀▀███▀▀▀      ███    ███  ███    ███  
-//  ███   ███   ███    ███    █▄   ███    ███  ███    ███  
-//  ███   ███   ███    ███    ███  ███    ███  ███    ███  
-//   ▀█   ███   █▀     ██████████   ▀█    █▀   ████████▀ 
 
 class _themeMenu {
 	protected $slug = _THEME . '-theme-menu';
@@ -788,6 +802,8 @@ class _themeMenu {
 //  ███    ███    ███         ███   ▄███    ███    ███      ███        ███    ███  
 //  ████████▀    ▄████▀       ████████▀     ███    █▀      ▄████▀      ██████████
 
+/*
+
 class _themeUpdater {
 	protected $theme = _THEME;
 	protected $repository = 'nullstep/' . _THEME;
@@ -913,6 +929,8 @@ class _themeUpdater {
 		return wp_remote_get($url, $args);
 	}
 }
+
+*/
 
 //  ▀█████████▄    ▄█     █▄      ▄███████▄  
 //    ███    ███  ███     ███    ███    ███  
@@ -1107,6 +1125,58 @@ class BWP {
 	}
 }
 
+//   ▄█     █▄    ▄██████▄    ▄██████▄   
+//  ███     ███  ███    ███  ███    ███  
+//  ███     ███  ███    ███  ███    ███  
+//  ███     ███  ███    ███  ███    ███  
+//  ███     ███  ███    ███  ███    ███  
+//  ███     ███  ███    ███  ███    ███  
+//  ███ ▄█▄ ███  ███    ███  ███    ███  
+//   ▀███▀███▀    ▀██████▀    ▀██████▀ 
+
+function bwp_woo_setup() {
+	add_theme_support('woocommerce');
+	add_theme_support('wc-product-gallery-zoom');
+	add_theme_support('wc-product-gallery-lightbox');
+	add_theme_support('wc-product-gallery-slider');
+}
+
+function bwp_woo_wrapper_before() {
+?>
+<div id="shop" class="row">
+	<main class="col-md-12">
+<?php
+}
+
+function bwp_woo_change_products_title() {
+    echo '<h2 class="woo-product-title"><a href="' . get_the_permalink() . '">' . get_the_title() . '</a></h2>';
+}
+
+function bwp_woo_wrapper_after() {
+?>
+	</main>
+</div>
+<?php
+}
+
+function bwp_woo_active_body_class($classes) {
+	$classes[] = 'woo';
+	return $classes;
+}
+
+function bwp_woo_thumbnail_columns() {
+	return _BWP['woo_columns'];
+}
+
+function bwp_woo_related_products_args($args) {
+	$defaults = [
+		'posts_per_page' => _BWP['woo_per_page'],
+		'columns' => _BWP['woo_columns']
+	];
+	$args = wp_parse_args($defaults, $args);
+	return $args;
+}
+
 //   ▄████████   ▄██████▄   ████████▄      ▄████████  
 //  ███    ███  ███    ███  ███   ▀███    ███    ███  
 //  ███    █▀   ███    ███  ███    ███    ███    █▀   
@@ -1120,6 +1190,26 @@ class BWP {
 
 function bwp_set_wp_options() {
 	define('_BWP', _themeSettings::get_settings());
+
+	if (_BWP['woo_support'] == 'yes') {
+		add_action('after_setup_theme', 'bwp_woo_setup');
+		add_action('woocommerce_before_main_content', 'bwp_woo_wrapper_before');
+		add_action('woocommerce_shop_loop_item_title', 'bwp_woo_change_products_title', 10);
+		add_action('woocommerce_after_main_content', 'bwp_woo_wrapper_after');
+		
+		add_filter('body_class', 'bwp_woo_active_body_class');
+		add_filter('woocommerce_product_thumbnails_columns', 'bwp_woo_thumbnail_columns');
+		add_filter('woocommerce_output_related_products_args', 'bwp_woo_related_products_args');
+	}
+
+	if (_BWP['woo_cleanup'] == 'yes') {
+		remove_action('woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open', 10);
+		remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5);
+		remove_action('woocommerce_shop_loop_item_title','woocommerce_template_loop_product_title', 10);
+		remove_action('woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10);
+		remove_action('woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10);
+		remove_action('woocommerce_before_main_content', 'woocommerce_breadcrumb', 20, 0);
+	}
 }
 
 // add admin scripts
@@ -1198,6 +1288,138 @@ function bwp_logo_normal_shortcode($atts = [], $content = null, $tag = '') {
 function bwp_logo_contrast_shortcode($atts = [], $content = null, $tag = '') {
 	return '<img src="/uploads/' . _BWP['logo_image_contrast'] . '" class="logo ' . $content .'">';
 }
+
+// include file shortcode
+
+function bwp_inc_shortcode($atts = [], $content = null, $tag = '') {
+	if ($content) {
+		ob_start();
+		get_template_part($content);
+		return ob_get_clean();
+	}
+	else {
+		return '';
+	}
+}
+
+// video shortcode
+
+function bwp_video_shortcode($atts = [], $content = null, $tag = '') {
+	return '<div class="video"><iframe src="' . $content . '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+}
+
+// show child pages shortcode
+
+function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
+	ob_start();
+
+	if (is_page()) {
+		$current_page_id = get_the_ID();
+		$child_pages = get_pages([ 
+			'child_of' => $current_page_id,
+			'sort_column' => 'menu_order',
+			'sort_order' => 'ASC'
+		]);
+
+		if ($child_pages) {
+			echo ($content) ? '<div class="' . $content . '">' : '<div class="row">';
+
+			foreach ($child_pages as $child_page) {
+				$page_id = $child_page->ID;
+				$page_link = get_permalink($page_id);
+				$page_title = $child_page->post_title;
+				$page_content = $child_page->post_content;
+				$page_css_class = get_post_meta($page_id, 'css_class', true);
+				echo '<div class="' . $page_css_class . '">' . do_shortcode($page_content) . '</div>';
+			}
+			echo '</div>';
+		}
+	}
+	return ob_get_clean();
+}
+
+// show page shortcode
+
+function bwp_page_shortcode($atts = [], $content = null, $tag = '') {
+	$a = shortcode_atts([
+		'container' => _BWP['container_class']
+	], $atts );
+
+	$html = '';
+
+	if ($content) {
+		$page = get_page_by_path($content);
+
+		if ($page) {
+					$html .= '</article>';
+				$html .= '</section>';
+			$html .= '</div>';
+			$html .= '<div id="' . $page->post_name . '-section">';
+				$html .= '<div class="' . $a['container'] . '">';
+					$html .= '<div class="row">';
+						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . $page->post_content . '</div>';
+					$html .= '</div>';
+				$html .= '</div>';
+			$html .= '</div>';
+			$html .= '<div class="' . _BWP['container_class'] . '">';
+				$html .= '<section class="row">';
+					$html .= '<article class="col-xs-12">';
+		}
+	}
+	return $html;
+}
+
+// latest posts shortcode
+
+function bwp_latest_shortcode($atts = [], $content = null, $tag = '') {
+	wp_reset_postdata();
+
+	$count = $content;
+	$none = true;
+	$num = 0;
+	$post_id = get_queried_object_id();
+	$cat = get_category_by_slug('uncategorised');
+
+	$query = new WP_Query([
+		'posts_per_page' => $count,
+		'category__not_in' => $cat->term_id
+	]);
+	$html = '<div id="latest-posts">';
+
+	while ($query -> have_posts()) : $query -> the_post();
+		if ((get_the_ID() != $post_id)) {
+			$bg = '';
+
+			if (has_post_thumbnail()) {
+				$array = explode('/', wp_get_attachment_image_src(get_post_thumbnail_id(), 'post-thumbnail')[0]);
+				$bg = end($array);
+			}
+
+			if ($num <= $count) {
+				$html .= '<div class="post-box my-3">';
+					$html .= '<a class="post-link" href="' . get_permalink() . '" title="' . get_the_title() . '">';
+						$html .= '<h4 class="post-title">' . get_the_title() . '</h4>';
+						$html .= '<p class="post-date">' . get_the_time(get_option('date_format')) . ' - ' . get_the_time() . '</p>';
+
+						if ($bg && _BC['bc_latest_images'] == 'yes') {
+							$html .= '<div class="post-img" style="background-image:url(/uploads/' . $bg . ')"></div>';
+						}
+
+						$html .= '<p class="post-excerpt">' . get_the_excerpt() . '</p>';
+					$html .= '</a>';
+				$html .= '</div>';
+				$none = false;
+				$num++;
+			}
+		}
+	endwhile;
+
+	if ($none) {
+		$html .= '<div>No Posts&hellip;</div>';
+	}
+	return $html . '</div>';
+}
+
 
 // theme setup
 
@@ -1412,8 +1634,12 @@ function contrast($hex) {
 
 // updater
 
+/*
+
 $updater = new _themeUpdater();
 $updater->init();
+
+*/
 
 // actions
 
@@ -1432,6 +1658,11 @@ add_filter('excerpt_length', 'bwp_set_excerpt_length', 999);
 
 add_shortcode('logo-normal', 'bwp_logo_normal_shortcode');
 add_shortcode('logo-contrast', 'bwp_logo_contrast_shortcode');
+add_shortcode('children', 'bwp_children_shortcode');
+add_shortcode('inc', 'bwp_inc_shortcode');
+add_shortcode('latest', 'bwp_latest_shortcode');
+add_shortcode('page', 'bwp_page_shortcode');
+add_shortcode('video', 'bwp_video_shortcode');
 
 // boot theme
 
