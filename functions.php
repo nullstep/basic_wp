@@ -214,7 +214,7 @@ define('_ARGS_BASIC_WP', [
 define('_ADMIN_BASIC_WP', [
 	'general' => [
 		'label' => 'General',
-		'columns' => 3,
+		'columns' => 4,
 		'fields' => [
 			'container_class' => [
 				'label' => 'Site Width',
@@ -256,7 +256,7 @@ define('_ADMIN_BASIC_WP', [
 			'woo_per_page' => [
 				'label' => 'Woocommerce Items Per Page',
 				'type' => 'input'
-			]
+			],
 			'woo_cleanup' => [
 				'label' => 'Clean up Woocommerce Pages',
 				'type' => 'check'
