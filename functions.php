@@ -1357,7 +1357,7 @@ function bwp_page_shortcode($atts = [], $content = null, $tag = '') {
 			$html .= '<div id="' . $page->post_name . '-section">';
 				$html .= '<div class="' . $a['container'] . '">';
 					$html .= '<div class="row">';
-						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . $page->post_content . '</div>';
+						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . do_shortcode($page->post_content) . '</div>';
 					$html .= '</div>';
 				$html .= '</div>';
 			$html .= '</div>';
