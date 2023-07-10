@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-		<main class="row">
+		<div class="row">
 			<div class="col-sm-12">
 <?php get_template_part('loop'); ?>
 				<div class="pagination">
@@ -8,5 +8,5 @@
 
 				</div>
 			</div>
-		</main>
+		</div>
 <?php get_footer(); ?>
