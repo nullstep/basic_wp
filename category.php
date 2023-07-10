@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 
-		<main class="row">
-			<section class="col-sm-12">
+		<div class="row">
+			<div class="col-sm-12">
 				<h2 class="feed-title"><?php single_cat_title(); ?></h2>
 				<div class="description">
 					<?php the_archive_description(); ?>
@@ -11,6 +11,6 @@
 <?php BWP::pagination(); ?>
 
 				</div>
-			</section>
-		</main>
+			</div>
+		</div>
 <?php get_footer(); ?>
