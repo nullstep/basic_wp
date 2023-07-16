@@ -20,6 +20,6 @@ a basic, useful wordpress theme based on bs5 featuring:
 [page]slug[/page] - show a page
 [video]url[/video] - show a video
 
-you can supply a "container" attribute to the [page] shortcode to override the one in theme settings
+you can supply a "wide=yes" attribute to the [page] shortcode to override the theme container width
 
 eof
