@@ -548,7 +548,7 @@ define('_API_BASIC_WP', [
 // wp options
 
 define('_OPTIONS_BASIC_WP', [
-	'thumbnails' => true
+	'thumbnails' => TRUE
 ]);
 
 // wp menus
@@ -605,7 +605,7 @@ class _themeSettings {
 	public static function args() {
 		$args = _ARGS_BASIC_WP;
 		foreach (_ARGS_BASIC_WP as $key => $val) {
-			$val['required'] = true;
+			$val['required'] = TRUE;
 			switch ($val['type']) {
 				case 'integer': {
 					$cb = 'absint';
@@ -677,7 +677,7 @@ class _themeMenu {
 	}
 
 	public function register_assets() {
-		$boo = microtime(false);
+		$boo = microtime(FALSE);
 		wp_register_script($this->slug, $this->assets_url . '/' . _THEME . '.js?' . $boo, ['jquery']);
 		wp_register_style($this->slug, $this->assets_url . '/' . _THEME . '.css?' . $boo);
 		wp_localize_script($this->slug, _THEME, [
@@ -875,7 +875,7 @@ class _themeUpdater {
 			'upgrade-theme'
 		];
 
-		if (!isset($_GET['action']) || !in_array($_GET['action'], $update, true)) {
+		if (!isset($_GET['action']) || !in_array($_GET['action'], $update, TRUE)) {
 			return $source;
 		}
 
@@ -883,7 +883,7 @@ class _themeUpdater {
 			return $source;
 		}
 
-		if (false === stristr(basename($source), $this->theme)) {
+		if (FALSE === stristr(basename($source), $this->theme)) {
 			return $source;
 		}
 
@@ -891,7 +891,7 @@ class _themeUpdater {
 		$upgrader->skin->feedback(esc_html_e('Renaming theme directory.', 'bootstrap'));
 		$corrected_source = str_replace($basename, $this->theme, $source);
 
-		if ($wp_filesystem->move($source, $corrected_source, true)) {
+		if ($wp_filesystem->move($source, $corrected_source, TRUE)) {
 			$upgrader->skin->feedback(esc_html_e('Rename successful.', 'bootstrap'));
 			return $corrected_source;
 		}
@@ -1289,7 +1289,7 @@ function bwp_add_post_metadata() {
 
 function bwp_add_post_metadata_callback($post) {
 	wp_nonce_field('css_class_save_data', 'css_class_nonce');
-	$value = get_post_meta($post->ID, 'css_class', true);
+	$value = get_post_meta($post->ID, 'css_class', TRUE);
 	echo '<input class="components-text-control__input" style="margin-top:8px" type="text" name="css_class" value="' . esc_attr($value) . '" placeholder="Enter CSS Class...">';
 }
 
@@ -1376,7 +1376,7 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 				$page_link = get_permalink($page_id);
 				$page_title = $child_page->post_title;
 				$page_content = $child_page->post_content;
-				$page_css_class = get_post_meta($page_id, 'css_class', true);
+				$page_css_class = get_post_meta($page_id, 'css_class', TRUE);
 				echo '<div class="' . $page_css_class . '">' . do_shortcode($page_content) . '</div>';
 			}
 
@@ -1411,7 +1411,7 @@ function bwp_page_shortcode($atts = [], $content = null, $tag = '') {
 			$html .= '<div id="' . $page->post_name . '-section">';
 				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : _BWP['container_class']) . '">';
 					$html .= '<div class="row">';
-						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . do_shortcode($page->post_content) . '</div>';
+						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', TRUE) . '">' . do_shortcode($page->post_content) . '</div>';
 					$html .= '</div>';
 				$html .= '</div>';
 			$html .= '</div>';
@@ -1429,7 +1429,7 @@ function bwp_latest_shortcode($atts = [], $content = null, $tag = '') {
 	wp_reset_postdata();
 
 	$count = $content;
-	$none = true;
+	$none = TRUE;
 	$num = 0;
 	$post_id = get_queried_object_id();
 	$cat = get_category_by_slug('uncategorised');
@@ -1462,7 +1462,7 @@ function bwp_latest_shortcode($atts = [], $content = null, $tag = '') {
 						$html .= '<p class="post-excerpt">' . get_the_excerpt() . '</p>';
 					$html .= '</a>';
 				$html .= '</div>';
-				$none = false;
+				$none = FALSE;
 				$num++;
 			}
 		}
@@ -1651,8 +1651,8 @@ function curl($url) {
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
 
 	$response = curl_exec($curl);
 	curl_close($curl);
