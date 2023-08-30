@@ -15,6 +15,7 @@ jQuery(function($) {
 		'favicon_image',
 		'logo_image_normal',
 		'logo_image_contrast',
+		'latest_images',
 		'nav_logo',
 		'nav_width',
 		'nav_layout',
