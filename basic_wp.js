@@ -93,10 +93,6 @@ jQuery(function($) {
 				if (i.is(':checkbox')) {
 					if (r[item] == 'yes') {
 						i.prop('checked', true);
-						console.log('checkbox yes');
-					}
-					else {
-						console.log('checkbox no');
 					}
 				}
 				if (r[item][0] == '#') {

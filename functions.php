@@ -750,6 +750,14 @@ class _themeMenu {
 		$name = _THEME;
 		$form = _ADMIN_BASIC_WP;
 
+		$pangrams = [
+			'two driven jocks help fax my big quiz',
+			'five quacking zephyrs jolt my waxed bed',
+			'the five boxing wizards jump quickly',
+			'pack my box with five dozen liquor jugs',
+			'a sphinx of black quartz judges my vow'
+		];
+
 		// build form
 
 		echo '<div id="' . $name . '-wrap" class="wrap">';
@@ -761,6 +769,24 @@ class _themeMenu {
 					echo '<a href="#' . $name . '-' . $tid . '" class="nav-tab">' . $tab['label'] . '</a>';
 				}
 				echo '</nav>';
+
+				echo '<script>';
+					echo 'function gfp(e) {
+							var f = jQuery(e).find(":selected").val();
+							var gf = f.replace(/ /g, \'+\');
+							var id = jQuery(e).attr("id");
+							var p = "' . $pangrams[array_rand($pangrams)] . '";
+							if (f) {
+								jQuery("#" + id + "-preview").empty().append("<style>@import url(\'https://fonts.googleapis.com/css2?family=" + gf + "&display=swap\');#" + id + "-preview > p {font-family:\'" + f + "\';font-size:1.2rem;margin:0;padding:0}</style>").append("<p>" + p + "<br>" + p.toUpperCase() + "</p>");
+							}
+						}';
+					echo 'jQuery(function($){
+						$(".gfs").on("change", function(){
+							gfp(this);					
+						});
+					});';
+				echo '</script>';
+
 				echo '<div class="tab-content">';
 				foreach ($form as $tid => $tab) {
 					echo '<div id="' . $name . '-' . $tid . '" class="' . $name . '-tab">';
@@ -830,7 +856,9 @@ class _themeMenu {
 								echo '<select id="' . $fid . '" name="' . $fid . '" class="gfs">';
 									echo $opts;
 								echo '</select>';
-								echo '<div id="' . $fid . '-preview"></div>';
+								echo '<div id="' . $fid . '-preview" style="height:120px">';
+									echo '';
+								echo '</div>';
 								break;
 							}
 						}
@@ -845,14 +873,8 @@ class _themeMenu {
 				echo '<div id="' . $name . '-feedback"></div>';
 			echo '</form>';
 		echo '</div>';
-		echo '<script>';
-			echo 'jQuery(function($){
-				$(".gfs").on("change", function(){
-					var f = $(this).find(":selected").val();
-					//
-				});
-			});';
-		echo '</script>';
+
+
 	}
 }
 
