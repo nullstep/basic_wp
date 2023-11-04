@@ -18,13 +18,11 @@
 	<link rel="canonical" href="<?php echo get_site_url(); ?>/">
 	<link rel="shortcut icon" type="image/x-icon" href="<?php BWP::favicon(); ?>">
 	<style>
-		<?php BWP::fonts(); ?><?php BWP::colours();?><?php BWP::css(); ?>
+		<?php BWP::fonts(); BWP::colours(); BWP::css(); ?>
 
 	</style>
 </head>
 <body id="body" class="<?php echo get_post_field('post_name'); ?>">
-<?php get_template_part(BWP::order(0)); ?>
-<?php get_template_part(BWP::order(1)); ?>
-<?php get_template_part(BWP::order(2)); ?>
+<?php BWP::sections(); ?>
 	<main id="content-area">
 		<div class="<?php BWP::value('container_class'); ?>">

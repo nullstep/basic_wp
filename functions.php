@@ -12,7 +12,7 @@ define('_THEME', 'basic_wp');
 
 // basic_wp default css
 
-define('_CSS_BASIC_WP', '@media (max-width: 576px) {} @media (max-width: 768px) {} @media (max-width: 992px) {} @media (max-width: 1200px) {} @media (max-width: 1400px) {}');
+define('_CSS_BASIC_WP', '#info-area {} #nav-area {} #banner-area {} #content-area {} #footer-top-area {} #footer-area {} @media (max-width: 576px) {} @media (max-width: 768px) {} @media (max-width: 992px) {} @media (max-width: 1200px) {} @media (max-width: 1400px) {}');
 
 // basic_wp data
 
@@ -865,8 +865,6 @@ class _themeMenu {
 //  ███    ███    ███         ███   ▄███    ███    ███      ███        ███    ███  
 //  ████████▀    ▄████▀       ████████▀     ███    █▀      ▄████▀      ██████████
 
-/*
-
 class _themeUpdater {
 	protected $theme = _THEME;
 	protected $repository = 'nullstep/' . _THEME;
@@ -992,8 +990,6 @@ class _themeUpdater {
 		return wp_remote_get($url, $args);
 	}
 }
-
-*/
 
 //  ▀█████████▄    ▄█     █▄      ▄███████▄  
 //    ███    ███  ███     ███    ███    ███  
@@ -1168,10 +1164,14 @@ class BWP {
 		}
 	}
 
-	// header order
+	// get header sections
 
-	public static function order($item) {
-		return explode(',', _BWP['header_order'])[$item];
+	public static function sections() {
+		$array = explode(',', _BWP['header_order']);
+
+		foreach ($array as $template) {
+			get_template_part($template);
+		}
 	}
 
 	// pagination
@@ -1185,6 +1185,32 @@ class BWP {
 			'current' => max(1, get_query_var('paged')),
 			'total' => $wp_query->max_num_pages
 		]);
+	}
+
+	public static function excerpt() {
+		echo implode(' ', array_slice(explode(' ', trim(str_replace(['<p>', '</p>'], [' ', ''], strip_tags(get_the_content_feed(), '<p>')))), 0, _BWP['excerpt_length'])) . '&hellip;';
+	}
+
+	public static function contrast($hex) {
+		$hex = str_split(ltrim($hex, '#'));
+
+		if (count($hex) == 3) {
+			$r = hexdec($hex[0] . $hex[0]);
+			$g = hexdec($hex[1] . $hex[1]);
+			$b = hexdec($hex[2] . $hex[2]);
+		}
+		else {
+			$r = hexdec($hex[0] . $hex[1]);
+			$g = hexdec($hex[2] . $hex[3]);
+			$b = hexdec($hex[4] . $hex[5]);			
+		}
+
+		if (((max($r, $g, $b) + min($r, $g, $b)) / 510.0) >= .8) {
+			return _BWP['light_colour'];
+		}
+		else {
+			return _BWP['dark_colour'];
+		}
 	}
 }
 
@@ -1277,6 +1303,15 @@ function bwp_set_wp_options() {
 	if (_BWP['editor_width'] != '') {
 		add_theme_support('align-wide');
 		add_action('admin_head', 'bwp_editor_width');
+	}
+
+	if (_BWP['filter_post_list'] == 'yes') {
+		add_action('pre_get_posts', 'bwp_filter_access');
+	}
+
+	if (_BWP['paginate_same_author'] == 'yes') {
+		add_filter('get_next_post_where', 'bwp_keep_same_author', 10, 3);
+		add_filter('get_previous_post_where', 'bwp_keep_same_author', 10, 3);
 	}
 }
 
@@ -1383,6 +1418,16 @@ function bwp_filter_access($wp_query) {
 	}
 }
 
+// set bootstrap class names
+
+function bwp_set_class_names($content) {
+	if (is_singular() && in_the_loop() && is_main_query()) {
+        return $content . '<pre>filtered</pre>';
+    }
+
+    return $content;
+}
+
 // logo shortcodes
 
 function bwp_logo_normal_shortcode($atts = [], $content = null, $tag = '') {
@@ -1458,10 +1503,12 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 
 function bwp_page_shortcode($atts = [], $content = null, $tag = '') {
 	$a = shortcode_atts([
-		'wide' => ''
+		'wide' => '',
+		'bg' => ''
 	], $atts );
 
 	$html = '';
+	$bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : ''; 
 
 	if ($content) {
 		$page = get_page_by_path($content);
@@ -1471,7 +1518,7 @@ function bwp_page_shortcode($atts = [], $content = null, $tag = '') {
 				$html .= '</div>';
 			$html .= '</div>';
 			$html .= '<div id="' . $page->post_name . '-section">';
-				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : _BWP['container_class']) . '">';
+				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : _BWP['container_class']) . '"' . $bg . '>';
 					$html .= '<div class="row">';
 						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', TRUE) . '">' . do_shortcode($page->post_content) . '</div>';
 					$html .= '</div>';
@@ -1517,7 +1564,7 @@ function bwp_latest_shortcode($atts = [], $content = null, $tag = '') {
 						$html .= '<h4 class="post-title">' . get_the_title() . '</h4>';
 						$html .= '<p class="post-date">' . get_the_time(get_option('date_format')) . ' - ' . get_the_time() . '</p>';
 
-						if ($bg && _BC['bc_latest_images'] == 'yes') {
+						if ($bg && _BWP['latest_images'] == 'yes') {
 							$html .= '<div class="post-img" style="background-image:url(/uploads/' . $bg . ')"></div>';
 						}
 
@@ -1722,30 +1769,6 @@ function curl($url) {
 	return $response;
 }
 
-// contrast colour
-
-function contrast($hex) {
-	$hex = str_split(ltrim($hex, '#'));
-
-	if (count($hex) == 3) {
-		$r = hexdec($hex[0] . $hex[0]);
-		$g = hexdec($hex[1] . $hex[1]);
-		$b = hexdec($hex[2] . $hex[2]);
-	}
-	else {
-		$r = hexdec($hex[0] . $hex[1]);
-		$g = hexdec($hex[2] . $hex[3]);
-		$b = hexdec($hex[4] . $hex[5]);			
-	}
-
-	if (((max($r, $g, $b) + min($r, $g, $b)) / 510.0) >= .8) {
-		return _BWP['light_colour'];
-	}
-	else {
-		return _BWP['dark_colour'];
-	}
-}
-
 //   ▄█   ███▄▄▄▄▄     ▄█       ███      
 //  ███   ███▀▀▀▀██▄  ███   ▀█████████▄  
 //  ███▌  ███    ███  ███▌     ▀███▀▀██  
@@ -1757,12 +1780,8 @@ function contrast($hex) {
 
 // updater
 
-/*
-
 $updater = new _themeUpdater();
 $updater->init();
-
-*/
 
 // actions
 
@@ -1773,18 +1792,10 @@ add_action('after_setup_theme', 'bwp_do_setup');
 add_action('add_meta_boxes', 'bwp_add_post_metadata');
 add_action('save_post', 'bwp_save_post_metadata');
 
-if (_BWP['filter_post_list'] == 'yes') {
-	add_action('pre_get_posts', 'bwp_filter_access');
-}
-
 // filters
 
 add_filter('excerpt_length', 'bwp_set_excerpt_length', 999);
-
-if (_BWP['paginate_same_author'] == 'yes') {
-	add_filter('get_next_post_where', 'bwp_keep_same_author', 10, 3);
-	add_filter('get_previous_post_where', 'bwp_keep_same_author', 10, 3);
-}
+add_filter('the_content', 'bwp_set_class_names', 1);
 
 // shortcodes
 
@@ -1795,6 +1806,14 @@ add_shortcode('inc', 'bwp_inc_shortcode');
 add_shortcode('latest', 'bwp_latest_shortcode');
 add_shortcode('page', 'bwp_page_shortcode');
 add_shortcode('video', 'bwp_video_shortcode');
+
+// fix ob flush issues
+
+remove_action('shutdown', 'wp_ob_end_flush_all', 1);
+
+add_action('shutdown', function() {
+   while (@ob_end_flush());
+});
 
 // boot theme
 
