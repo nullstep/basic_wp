@@ -103,6 +103,9 @@ jQuery(function($) {
 				item.codemirror.setValue($('#' + editors[index]).val());
 			});
 		});
+		if (typeof bwp_go !== 'undefined') {
+			bwp_go();
+		}
 	});
 	editors.forEach(function(item, index, arr) {
 		var eid = $('#' + item);

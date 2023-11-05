@@ -66,6 +66,18 @@
 	height: 200px;
 }
 
+#basic_wp-form .gfp {
+	display: inline-block;
+	margin-top: 4px;
+	width: 75%;
+	height: 130px;
+	border: 1px solid #8c8f94;
+	border-radius: 3px;	
+	padding: 8px;
+	background: #fff;
+	box-sizing: border-box;
+}
+
 #basic_wp-form .choose-file-button {
 	position: relative;
 	height: 30px;

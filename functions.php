@@ -709,7 +709,7 @@ class _themeMenu {
 	}
 
 	public function register_assets() {
-		$boo = microtime(FALSE);
+		$boo = md5(microtime(TRUE));
 		wp_register_script($this->slug, $this->assets_url . '/' . _THEME . '.js?' . $boo, ['jquery']);
 		wp_register_style($this->slug, $this->assets_url . '/' . _THEME . '.css?' . $boo);
 		wp_localize_script($this->slug, _THEME, [
@@ -761,6 +761,25 @@ class _themeMenu {
 		// build form
 
 		echo '<div id="' . $name . '-wrap" class="wrap">';
+			echo '<script>';
+				echo 'function gfp(e) {
+						var f = jQuery(e).find(":selected").val();
+						var gf = f.replace(/ /g, \'+\');
+						var id = jQuery(e).attr("id");
+						var p = "' . $pangrams[array_rand($pangrams)] . '";
+						var pre = jQuery("#" + id + "-preview");
+						pre.empty();
+						if (f) {
+							pre.append("<style>@import url(\'https://fonts.googleapis.com/css2?family=" + gf + "&display=swap\');#" + id + "-preview > p {font-family:\'" + f + "\';font-size:1.2rem;margin:0;padding:0}</style>").append("<p>" + p + " " + p.toUpperCase() + " 1234567890 \"!?-=+\'</p>");
+						}
+					}';
+				echo 'jQuery(function($) {
+					$(".gfs").on("change", function() {
+						gfp(this);					
+					});
+				});';
+			echo '</script>';
+
 			echo '<h1>' . $name . '</h1>';
 			echo '<p>Configure your ' . $name . ' settings...</p>';
 			echo '<form id="' . $name . '-form" method="post">';
@@ -769,24 +788,6 @@ class _themeMenu {
 					echo '<a href="#' . $name . '-' . $tid . '" class="nav-tab">' . $tab['label'] . '</a>';
 				}
 				echo '</nav>';
-
-				echo '<script>';
-					echo 'function gfp(e) {
-							var f = jQuery(e).find(":selected").val();
-							var gf = f.replace(/ /g, \'+\');
-							var id = jQuery(e).attr("id");
-							var p = "' . $pangrams[array_rand($pangrams)] . '";
-							if (f) {
-								jQuery("#" + id + "-preview").empty().append("<style>@import url(\'https://fonts.googleapis.com/css2?family=" + gf + "&display=swap\');#" + id + "-preview > p {font-family:\'" + f + "\';font-size:1.2rem;margin:0;padding:0}</style>").append("<p>" + p + "<br>" + p.toUpperCase() + "</p>");
-							}
-						}';
-					echo 'jQuery(function($){
-						$(".gfs").on("change", function(){
-							gfp(this);					
-						});
-					});';
-				echo '</script>';
-
 				echo '<div class="tab-content">';
 				foreach ($form as $tid => $tab) {
 					echo '<div id="' . $name . '-' . $tid . '" class="' . $name . '-tab">';
@@ -856,7 +857,7 @@ class _themeMenu {
 								echo '<select id="' . $fid . '" name="' . $fid . '" class="gfs">';
 									echo $opts;
 								echo '</select>';
-								echo '<div id="' . $fid . '-preview" style="height:120px">';
+								echo '<div id="' . $fid . '-preview" class="gfp">';
 									echo '';
 								echo '</div>';
 								break;
@@ -873,8 +874,13 @@ class _themeMenu {
 				echo '<div id="' . $name . '-feedback"></div>';
 			echo '</form>';
 		echo '</div>';
-
-
+		echo '<script>';
+			echo 'function bwp_go() {
+				jQuery(".gfs").each(function(i, o) {
+					gfp(jQuery(this));
+				});
+			}';
+		echo '</script>';
 	}
 }
 
