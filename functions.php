@@ -1476,10 +1476,16 @@ function bwp_set_class_names($content) {
         return str_replace([
 	        	'has-text-align-left',
 	        	'has-text-align-right',
-	        	'has-text-align-center'
+	        	'has-text-align-center',
+	        	'alignleft',
+	        	'alignright',
+	        	'aligncenter'
 	        ], [
 	        	'text-start',
 	        	'text-end',
+	        	'text-center',
+	        	'float-start',
+	        	'float-end',
 	        	'text-center'
 	        ],
         	$content
