@@ -1096,14 +1096,37 @@ class BWP {
 		echo $favicon;
 	}
 
-	public static function featured($echo = TRUE) {
+	public static function featured($type = '', $echo = TRUE) {
 		$image = explode('/', wp_get_attachment_url(get_post_thumbnail_id(get_queried_object()->ID)));
 
-		if ($echo) {
-			echo end($image);
+		if (end($image)) {
+			switch ($type) {
+				case 'bg': {
+					$return = 'style="background:url(/uploads/' . end($image) . ')"';
+					break;
+				}
+				case 'img': {
+					$return = '<img src="/uploads/' . end($image) . '">';
+					break;				
+				}
+				case 'img-fluid': {
+					$return = '<img class="img-fluid" src="/uploads/' . end($image) . '">';
+					break;				
+				}
+				default: {
+					$return = end($image);
+				}
+			}
 		}
 		else {
-			return end($image);
+			$return = '';
+		}
+
+		if ($echo) {
+			echo $return;
+		}
+		else {
+			return $return;
 		}
 	}
 
@@ -1216,7 +1239,7 @@ class BWP {
 	}
 
 	public static function excerpt() {
-		echo implode(' ', array_slice(explode(' ', trim(str_replace(['<p>', '</p>'], [' ', ''], strip_tags(get_the_content_feed(), '<p>')))), 0, _BWP['excerpt_length'])) . '&hellip;';
+		echo implode(' ', array_slice(explode(' ', trim(preg_replace ('/<[^>]*>/', ' ', get_the_content_feed()))), 0, _BWP['excerpt_length'])) . '&hellip;';
 	}
 
 	public static function contrast($hex) {
@@ -1450,11 +1473,39 @@ function bwp_filter_access($wp_query) {
 
 function bwp_set_class_names($content) {
 	if (is_singular() && in_the_loop() && is_main_query()) {
-        return $content . '<pre>filtered</pre>';
+        return str_replace([
+	        	'has-text-align-left',
+	        	'has-text-align-right',
+	        	'has-text-align-center'
+	        ], [
+	        	'text-start',
+	        	'text-end',
+	        	'text-center'
+	        ],
+        	$content
+        );
     }
 
     return $content;
 }
+
+//     ▄████████     ▄█    █▄      ▄██████▄      ▄████████      ███      
+//    ███    ███    ███    ███    ███    ███    ███    ███  ▀█████████▄  
+//    ███    █▀     ███    ███    ███    ███    ███    ███     ▀███▀▀██  
+//    ███          ▄███▄▄▄▄███▄▄  ███    ███   ▄███▄▄▄▄██▀      ███   ▀  
+//  ▀███████████  ▀▀███▀▀▀▀███▀   ███    ███  ▀▀███▀▀▀▀▀        ███      
+//           ███    ███    ███    ███    ███  ▀███████████      ███      
+//     ▄█    ███    ███    ███    ███    ███    ███    ███      ███      
+//   ▄████████▀     ███    █▀      ▀██████▀     ███    ███     ▄████▀
+
+//   ▄████████   ▄██████▄   ████████▄      ▄████████     ▄████████  
+//  ███    ███  ███    ███  ███   ▀███    ███    ███    ███    ███  
+//  ███    █▀   ███    ███  ███    ███    ███    █▀     ███    █▀   
+//  ███         ███    ███  ███    ███   ▄███▄▄▄        ███         
+//  ███         ███    ███  ███    ███  ▀▀███▀▀▀      ▀███████████  
+//  ███    █▄   ███    ███  ███    ███    ███    █▄            ███  
+//  ███    ███  ███    ███  ███   ▄███    ███    ███     ▄█    ███  
+//  ████████▀    ▀██████▀   ████████▀     ██████████   ▄████████▀
 
 // logo shortcodes
 
@@ -1610,6 +1661,16 @@ function bwp_latest_shortcode($atts = [], $content = null, $tag = '') {
 	}
 	return $html . '</div>';
 }
+
+//    ▄▄▄▄███▄▄▄▄     ▄█      ▄████████   ▄████████  
+//  ▄██▀▀▀███▀▀▀██▄  ███     ███    ███  ███    ███  
+//  ███   ███   ███  ███▌    ███    █▀   ███    █▀   
+//  ███   ███   ███  ███▌    ███         ███         
+//  ███   ███   ███  ███▌  ▀███████████  ███         
+//  ███   ███   ███  ███            ███  ███    █▄   
+//  ███   ███   ███  ███      ▄█    ███  ███    ███  
+//   ▀█   ███   █▀   █▀     ▄████████▀   ████████▀
+
 
 
 // theme setup
