@@ -1,4 +1,4 @@
-// theme admin script
+// basic_wp admin script
 
 jQuery(function($) {
 	// config
@@ -6,6 +6,7 @@ jQuery(function($) {
 	var theme = basic_wp;
 	const fields = [
 		'container_class',
+		'custom_content',
 		'header_order',
 		'excerpt_length',
 		'filter_post_list',
@@ -53,14 +54,19 @@ jQuery(function($) {
 		'nav_font',
 		'body_font',
 		'mono_font',
+		'headings_upper',
+		'nav_upper',
 		'font_awesome',
 		'theme_css',
 		'theme_js'
 	];
+	// code editors
 	const editors = [
 		'theme_css',
 		'theme_js'
 	];
+	// content editors
+	const content = [];
 	// let's go
 	var cm = [];
 	$('#' + id + '-form .tab-content .' + id + '-tab').eq(0).show();
@@ -124,6 +130,15 @@ jQuery(function($) {
 			editor.codemirror.on('change', function(cMirror) {
 				editor.codemirror.save();
 				eid.change();
+			});
+		}
+	});
+	content.forEach(function(item, index, arr) {
+		var eid = $('#wp-custom_content-wrap').find('[data-id="' + item + '"]');
+		if (eid.length) {
+			eid.on('change', function() {
+				$('#' + item).val(eid.html());
+				console.log(eid.html());
 			});
 		}
 	});
@@ -201,4 +216,4 @@ jQuery(function($) {
 	});
 });
 
-// EOF
+// eof

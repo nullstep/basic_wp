@@ -12,7 +12,7 @@ define('_THEME', 'basic_wp');
 
 // basic_wp default css
 
-define('_CSS_BASIC_WP', '#info-area {} #nav-area {} #banner-area {} #content-area {} #footer-top-area {} #footer-area {} @media (max-width: 576px) {} @media (max-width: 768px) {} @media (max-width: 992px) {} @media (max-width: 1200px) {} @media (max-width: 1400px) {}');
+define('_CSS_BASIC_WP', '#info-area {}' . EOL . '#nav-area {}' . EOL . '#banner-area {}' . EOL . '#content-area {}' . EOL . '#footer-top-area {}' . EOL . '#footer-area {}' . EOL . '@media (max-width: 576px) {}' . EOL . '@media (max-width: 768px) {}' . EOL . '@media (max-width: 992px) {}' . EOL . '@media (max-width: 1200px) {}' . EOL . '@media (max-width: 1400px) {}');
 
 // basic_wp data
 
@@ -190,6 +190,14 @@ define('_ARGS_BASIC_WP', [
 		'default' => ''
 	],
 	'mono_font' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'headings_upper' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'nav_upper' => [
 		'type' => 'string',
 		'default' => ''
 	],
@@ -523,6 +531,14 @@ define('_ADMIN_BASIC_WP', [
 				'label' => 'Monospace Font',
 				'type' => 'font'
 			],
+			'headings_upper' => [
+				'label' => 'Uppercase Headings',
+				'type' => 'check'
+			],
+			'nav_upper' => [
+				'label' => 'Uppercase Navigation',
+				'type' => 'check'
+			],
 			'google_api' => [
 				'label' => 'Google Font API Key',
 				'type' => 'input'
@@ -842,6 +858,16 @@ class _themeMenu {
 								echo '<textarea id="' . $fid . '" class="code" name="' . $fid . '"></textarea>';
 								break;
 							}
+							case 'content': {
+								echo '<label for="' . $fid . '">';
+									echo $field['label'] . ':';
+								echo '</label>';
+								wp_editor('', $fid, [
+									'media_buttons' => TRUE,
+									'textarea_name' => $fid
+								]);
+								break;
+							}
 							case 'check': {
 								echo '<em>' . $field['label'] . ':</em>';
 								echo '<label class="switch">';
@@ -1051,14 +1077,48 @@ class BWP {
 			'light',
 			'dark'
 		];
+
 		foreach ($colours as $c) {
 			$css .= '--' . str_replace('_', '-', $c) . '-colour:' . _BWP[$c . '_colour'] . ';';
 		}
+
+		$contrasts = [
+			'primary',
+			'secondary',
+			'tertiary',
+			'quaternary'
+		];
+
+		foreach ($contrasts as $c) {
+			$css .= '--' . str_replace('_', '-', $c) . '-contrast:' . BWP::contrast(_BWP[$c . '_colour']) . ';';
+		}		
+
 		echo $css . '}';
 	}
 
 	public static function css() {
-		echo 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body pre,code{font-family:var(--mono-font)} #info-area{background:var(--info-colour);color:var(--info-text-colour)} #banner-area{background:var(--banner-colour);color:var(--banner-text-colour)} #footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)} #footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}a{color:var(--primary-colour)}h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important}hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem}#body .btn-primary{background-color:var(--primary-colour);border:none}#body .btn-primary:hover{box-shadow:0 0 100px 100px rgba(255,255,255,.1) inset;color:var(--text-colour)}.feed a{text-decoration:none;color:var(--text-colour)}#content-area .alignright{float:right}#content-area .alignleft{float:left}#content-area .has-text-align-center{text-align:center}#content-area .has-text-align-left{text-align:left}#content-area .has-text-align-right{text-align:right}#content-area figure.aligncenter{text-align:center}#content-area figure.size-full img{max-width:100%;height:auto}' . _BWP['theme_css_minified'];
+		$css = 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body pre,code{font-family:var(--mono-font)} #info-area{background:var(--info-colour);color:var(--info-text-colour)} #banner-area{background:var(--banner-colour);color:var(--banner-text-colour)} #footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)} #footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}#content-area a{color:var(--primary-colour)}h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important}hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem}.feed a{text-decoration:none;color:var(--text-colour)}#content-area figure.size-full img{max-width:100%;height:auto}';
+
+		if (_BWP['headings_upper'] == 'yes') {
+			$css .= 'h1,h2,h3,h4,h5,h6{text-transform:uppercase}';
+		}
+
+		if (_BWP['nav_upper'] == 'yes') {
+			$css .= '#nav-area nav .nav-item{text-transform:uppercase}';
+		}
+
+		$buttons = [
+			'primary',
+			'secondary',
+			'tertiary',
+			'quaternary'
+		];
+
+		foreach ($buttons as $b) {
+			$css .= str_replace('bwp', $b, '#body .btn-bwp,#body .btn-bwp.disabled,#body .btn-bwp.disabled.active,#body .btn-bwp.disabled:active,#body .btn-bwp.disabled:focus,#body .btn-bwp.disabled:hover,#body .btn-bwp[disabled],#body .btn-bwp[disabled].active,#body .btn-bwp[disabled]:active,#body .btn-bwp[disabled]:focus,#body .btn-bwp[disabled]:hover,#body fieldset[disabled] .btn-bwp,#body fieldset[disabled] .btn-bwp.active,#body fieldset[disabled] .btn-bwp:active,#body fieldset[disabled] .btn-bwp:focus,#body fieldset[disabled] .btn-bwp:hover{background-color:var(--bwp-colour);border-color:var(--bwp-colour);color:var(--bwp-contrast)}#body .btn-bwp.active,#body .btn-bwp:active,#body .btn-bwp:focus,#body .btn-bwp:hover,#body .open .dropdown-toggle.btn-bwp{color:var(--bwp-contrast);background-color:var(--bwp-colour);border-color:var(--bwp-colour);box-shadow:0 0 100px 100px rgba(255,255,255,.1) inset}#body .btn-bwp.active,#body .btn-bwp:active,#body .open .dropdown-toggle.btn-bwp{background-image:none}#body .btn-bwp .badge{color:var(--bwp-colour);background-color:var(--bwp-contrast)}');
+		}		
+
+		echo $css . _BWP['theme_css_minified'];
 	}
 
 	public static function js() {
@@ -1268,10 +1328,10 @@ class BWP {
 		}
 
 		if (((max($r, $g, $b) + min($r, $g, $b)) / 510.0) >= .8) {
-			return _BWP['light_colour'];
+			return _BWP['dark_colour'];
 		}
 		else {
-			return _BWP['dark_colour'];
+			return _BWP['light_colour'];
 		}
 	}
 }
@@ -1580,7 +1640,8 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 		'bg' => ''
 	], $atts);
 
-	ob_start();
+	$html = '';
+	$bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : '';
 
 	if (is_page()) {
 		$current_page_id = get_the_ID();
@@ -1592,13 +1653,13 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 
 		if ($child_pages) {
 			if ($wide) {
-						echo '</div>';
-					echo '</div>';
-				echo '</div>';
-				echo '<div class="' . (($a['wide']) ? 'container-fluid' : _BWP['container_class']) . '"' . $bg . '>';
+						$html .= '</div>';
+					$html .= '</div>';
+				$html .= '</div>';
+				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : _BWP['container_class']) . '"' . $bg . '>';
 			}
 			else {
-				echo '<div class="row">';
+				$html .= '<div class="row">';
 			}
 
 			foreach ($child_pages as $child_page) {
@@ -1607,21 +1668,21 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 				$page_title = $child_page->post_title;
 				$page_content = $child_page->post_content;
 				$page_css_class = get_post_meta($page_id, 'css_class', TRUE);
-				echo '<div class="' . $page_css_class . '">' . do_shortcode($page_content) . '</div>';
+				$html .= '<div class="' . $page_css_class . '">' . do_shortcode($page_content) . '</div>';
 			}
 
 			if ($wide) {
-				echo '</div>';
-				echo '<div class="' . _BWP['container_class'] . '">';
-					echo '<div class="row">';
-						echo '<div class="col-xs-12">';
+				$html .= '</div>';
+				$html .= '<div class="' . _BWP['container_class'] . '">';
+					$html .= '<div class="row">';
+						$html .= '<div class="col-xs-12">';
 			}
 			else {
-				echo '</div>';
+				$html .= '</div>';
 			}
 		}
 	}
-	return ob_get_clean();
+	return $html;
 }
 
 // show page shortcode
@@ -1633,7 +1694,7 @@ function bwp_page_shortcode($atts = [], $content = null, $tag = '') {
 	], $atts);
 
 	$html = '';
-	$bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : ''; 
+	$bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : '';
 
 	if ($content) {
 		$page = get_page_by_path($content);
