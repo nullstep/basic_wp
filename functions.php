@@ -1102,7 +1102,7 @@ class BWP {
 		if (end($image)) {
 			switch ($type) {
 				case 'bg': {
-					$return = 'style="background:url(/uploads/' . end($image) . ')"';
+					$return = 'style="background:url(/uploads/' . end($image) . ') top center"';
 					break;
 				}
 				case 'img': {
@@ -1112,6 +1112,16 @@ class BWP {
 				case 'img-fluid': {
 					$return = '<img class="img-fluid" src="/uploads/' . end($image) . '">';
 					break;				
+				}
+				case 'width': {
+					list($width, $height) = getimagesize($_SERVER['DOCUMENT_ROOT'] . '/wp-content/uploads/' . end($image));
+					$return = $width;
+					break;
+				}
+				case 'height': {
+					list($width, $height) = getimagesize($_SERVER['DOCUMENT_ROOT'] . '/wp-content/uploads/' . end($image));
+					$return = $height;
+					break;
 				}
 				default: {
 					$return = end($image);
@@ -1239,7 +1249,8 @@ class BWP {
 	}
 
 	public static function excerpt() {
-		echo implode(' ', array_slice(explode(' ', trim(preg_replace ('/<[^>]*>/', ' ', get_the_content_feed()))), 0, _BWP['excerpt_length'])) . '&hellip;';
+		$content = preg_replace('%\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))%s', '', get_the_content_feed());
+		echo implode(' ', array_slice(explode(' ', trim(preg_replace('/<[^>]*>/', ' ', $content))), 0, _BWP['excerpt_length'])) . '&hellip;';
 	}
 
 	public static function contrast($hex) {
@@ -1536,6 +1547,25 @@ function bwp_inc_shortcode($atts = [], $content = null, $tag = '') {
 	}
 }
 
+// button shortcode
+
+function bwp_button_shortcode($atts = [], $content = null, $tag = '') {
+	$a = shortcode_atts([
+		'link' => '#',
+		'align' => '',
+		'class' => 'btn-custom'
+	], $atts);
+
+	$button = '<a class="btn ' . $a['class'] . '" href="' . $a['link'] . '">' . $content . '</a>';
+
+	if ($a['align']) {
+		return '<div class="w-100 ' . $a['align'] . '">' . $button . '</div>';
+	}
+	else {
+		return $button;
+	}
+}
+
 // video shortcode
 
 function bwp_video_shortcode($atts = [], $content = null, $tag = '') {
@@ -1590,7 +1620,7 @@ function bwp_page_shortcode($atts = [], $content = null, $tag = '') {
 	$a = shortcode_atts([
 		'wide' => '',
 		'bg' => ''
-	], $atts );
+	], $atts);
 
 	$html = '';
 	$bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : ''; 
@@ -1901,6 +1931,7 @@ add_shortcode('inc', 'bwp_inc_shortcode');
 add_shortcode('latest', 'bwp_latest_shortcode');
 add_shortcode('page', 'bwp_page_shortcode');
 add_shortcode('video', 'bwp_video_shortcode');
+add_shortcode('button', 'bwp_button_shortcode');
 
 // fix ob flush issues
 
