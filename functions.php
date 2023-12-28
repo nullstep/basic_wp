@@ -1575,6 +1575,11 @@ function bwp_video_shortcode($atts = [], $content = null, $tag = '') {
 // show child pages shortcode
 
 function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
+	$a = shortcode_atts([
+		'wide' => '',
+		'bg' => ''
+	], $atts);
+
 	ob_start();
 
 	if (is_page()) {
@@ -1586,12 +1591,15 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 		]);
 
 		if ($child_pages) {
-//					echo '</div>';
-//				echo '</div>';
-//			echo '</div>';
-//			echo ($content) ? '<div class="' . ($content) ?? 'container' . '">' : '<div class="row">';
-
-			echo '<div class="row">';
+			if ($wide) {
+						echo '</div>';
+					echo '</div>';
+				echo '</div>';
+				echo '<div class="' . (($a['wide']) ? 'container-fluid' : _BWP['container_class']) . '"' . $bg . '>';
+			}
+			else {
+				echo '<div class="row">';
+			}
 
 			foreach ($child_pages as $child_page) {
 				$page_id = $child_page->ID;
@@ -1602,13 +1610,15 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 				echo '<div class="' . $page_css_class . '">' . do_shortcode($page_content) . '</div>';
 			}
 
-			echo '</div>';
-
-
-//			echo '</div>';
-//			echo '<div class="' . _BWP['container_class'] . '">';
-//				echo '<div class="row">';
-//					echo '<div class="col-xs-12">';
+			if ($wide) {
+				echo '</div>';
+				echo '<div class="' . _BWP['container_class'] . '">';
+					echo '<div class="row">';
+						echo '<div class="col-xs-12">';
+			}
+			else {
+				echo '</div>';
+			}
 		}
 	}
 	return ob_get_clean();
