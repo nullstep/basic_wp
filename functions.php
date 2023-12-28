@@ -690,6 +690,9 @@ class _themeSettings {
 				unset($settings[$i]);
 			}
 			if ($i == 'theme_css') {
+				if ($setting == '?') {
+					$settings[$i] = _CSS_BASIC_WP;
+				}
 				$settings['theme_css_minified'] = minify_css($setting);
 			}
 			if ($i == 'theme_js') {
