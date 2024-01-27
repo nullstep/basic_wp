@@ -78,7 +78,15 @@
 	box-sizing: border-box;
 }
 
+#basic_wp-form .button-primary {
+	background: var(--admin-highlight);
+	color: var(--admin-contrast);
+}
+
 #basic_wp-form .choose-file-button {
+	background: var(--admin-highlight);
+	color: var(--admin-contrast);
+	border: 1px solid var(--admin-highlight);
 	position: relative;
 	height: 30px;
 	top: 0;
@@ -88,7 +96,7 @@
 #basic_wp-form .choose-colour-button {
 	position: relative;
 	height: 30px;
-	top: 3px;
+	top: 4px;
 	left: 2px;
 }
 
@@ -131,11 +139,11 @@
 }
 
 #basic_wp-form input:checked + .slider {
-	background-color: #2271b1;
+	background-color: var(--admin-highlight);
 }
 
 #basic_wp-form input:focus + .slider {
-	box-shadow: 0 0 1px #2271b1;
+	box-shadow: 0 0 1px var(--admin-highlight);
 }
 
 #basic_wp-form input:checked + .slider:before {
@@ -164,4 +172,4 @@
 	margin-right: 15px;
 }
 
-/* EOF */
+/* eof */
