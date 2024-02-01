@@ -1363,7 +1363,7 @@ function bwp_woo_wrapper_before() {
 }
 
 function bwp_woo_change_products_title() {
-    echo '<h2 class="woo-product-title"><a href="' . get_the_permalink() . '">' . get_the_title() . '</a></h2>';
+	echo '<h2 class="woo-product-title"><a href="' . get_the_permalink() . '">' . get_the_title() . '</a></h2>';
 }
 
 function bwp_woo_wrapper_after() {
@@ -1458,6 +1458,10 @@ function bwp_add_scripts($hook) {
 	wp_enqueue_code_editor(['type' => 'application/x-httpd-php']);
 }
 
+function bwp_inline_scripts() {
+	echo '<script></script>';
+}
+
 // excerpts
 
 function bwp_set_excerpt_length($length) {
@@ -1547,27 +1551,40 @@ function bwp_filter_access($wp_query) {
 
 function bwp_set_class_names($content) {
 	if (is_singular() && in_the_loop() && is_main_query()) {
-        return str_replace([
-	        	'has-text-align-left',
-	        	'has-text-align-right',
-	        	'has-text-align-center',
-	        	'alignleft',
-	        	'alignright',
-	        	'aligncenter'
-	        ], [
-	        	'text-start',
-	        	'text-end',
-	        	'text-center',
-	        	'float-start',
-	        	'float-end',
-	        	'text-center'
-	        ],
-        	$content
-        );
-    }
+		return str_replace([
+				'has-text-align-left',
+				'has-text-align-right',
+				'has-text-align-center',
+				'alignleft',
+				'alignright',
+				'aligncenter'
+			], [
+				'text-start',
+				'text-end',
+				'text-center',
+				'float-start',
+				'float-end',
+				'text-center'
+			],
+			$content
+		);
+	}
 
-    return $content;
+	return $content;
 }
+
+// media selector favourites query
+
+function bwp_query_attachments($args) {
+	return $args;
+}
+
+function bwp_favorite_image_filter($settings) {
+	$settings['mimeTypes']['favoritesimages'] = 'Favorites';
+
+	return $settings;
+}
+
 
 //     ▄████████     ▄█    █▄      ▄██████▄      ▄████████      ███      
 //    ███    ███    ███    ███    ███    ███    ███    ███  ▀█████████▄  
@@ -1991,6 +2008,10 @@ add_action('admin_head', 'bwp_admin_styling', 999);
 add_action('after_setup_theme', 'bwp_do_setup');
 add_action('add_meta_boxes', 'bwp_add_post_metadata');
 add_action('save_post', 'bwp_save_post_metadata');
+
+if (is_admin()) {
+	add_action('admin_print_scripts', 'bwp_inline_scripts');
+}
 
 // filters
 
