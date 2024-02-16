@@ -1655,6 +1655,8 @@ function bwp_video_shortcode($atts = [], $content = null, $tag = '') {
 // show child pages shortcode
 
 function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
+	global $bwp;
+
 	$a = shortcode_atts([
 		'wide' => '',
 		'bg' => ''
@@ -1664,7 +1666,7 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 	$bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : '';
 
 	if (is_page()) {
-		$current_page_id = get_the_ID();
+		$current_page_id = $bwp['page_id'] ?? get_the_ID();
 		$child_pages = get_pages([ 
 			'child_of' => $current_page_id,
 			'sort_column' => 'menu_order',
@@ -1708,6 +1710,8 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 // show page shortcode
 
 function bwp_page_shortcode($atts = [], $content = null, $tag = '') {
+	global $bwp;
+
 	$a = shortcode_atts([
 		'wide' => '',
 		'bg' => ''
@@ -1720,6 +1724,8 @@ function bwp_page_shortcode($atts = [], $content = null, $tag = '') {
 		$page = get_page_by_path($content);
 
 		if ($page) {
+			$bwp['page_id'] = $page->ID;
+
 					$html .= '</div>';
 				$html .= '</div>';
 			$html .= '</div>';
@@ -1999,6 +2005,10 @@ function curl($url) {
 
 $updater = new _themeUpdater();
 $updater->init();
+
+// oh mah gawd a global!
+
+global $bwp;
 
 // actions
 
