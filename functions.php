@@ -1690,7 +1690,7 @@ function bwp_children_shortcode($atts = [], $content = null, $tag = '') {
 				$page_title = $child_page->post_title;
 				$page_content = $child_page->post_content;
 				$page_css_class = get_post_meta($page_id, 'css_class', TRUE);
-				$html .= '<div class="' . $page_css_class . '">' . do_shortcode($page_content) . '</div>';
+				$html .= '<div id="' . $child_page->post_name .  '-section" class="' . $page_css_class . '">' . do_shortcode($page_content) . '</div>';
 			}
 
 			if ($wide) {
