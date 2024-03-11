@@ -1,4 +1,4 @@
-	<div id="banner-area" class="py-0">
+	<header id="banner-area" class="py-0">
 <?php if (is_front_page()): ?>
 		<div id="home-banner-image">
 			<div class="<?php B::value('container_class'); ?>"<?php B::featured('bg'); ?>>
@@ -30,4 +30,4 @@
 			</div>
 		</div>
 <?php endif; ?>
-	</div>
+	</header>
