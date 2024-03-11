@@ -804,6 +804,9 @@ class _themeMenu {
 					$(".gfs").on("change", function() {
 						gfp(this);					
 					});
+					$(".ceb").on("change", function() {
+						$("#col-" + $(this).attr("id")).val($(this).val());
+					});
 				});';
 			echo '</script>';
 
@@ -858,8 +861,8 @@ class _themeMenu {
 								echo '<label for="' . $fid . '">';
 									echo $field['label'] . ':';
 								echo '</label>';
-								echo '<input id="' . $fid . '" type="text" name="' . $fid . '">';
-								echo '<input data-id="' . $fid . '" type="color" class="choose-colour-button" value="#000000">';
+								echo '<input id="' . $fid . '" class="ceb" type="text" name="' . $fid . '">';
+								echo '<input id="col-' . $fid . '" data-id="' . $fid . '" type="color" class="choose-colour-button" value="#000000">';
 								break;
 							}
 							case 'code': {
