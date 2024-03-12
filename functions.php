@@ -1036,8 +1036,8 @@ class B {
 				break;
 			}
 			case 'search': {
-				echo '<form class="d-flex ' . B::align('search') . '">';
-				echo '<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">';
+				echo '<form class="d-flex ' . B::align('search') . '" method="get" action="' . get_site_url() . '">';
+				echo '<input class="form-control me-2" type="search" name="s" placeholder="Search">';
 				echo '<button class="btn btn-primary" type="submit">';
 				echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-magnifying-glass"></i>' : 'Search';
 				echo '</button>';
