@@ -1471,6 +1471,7 @@ function b_children_shortcode($atts = [], $content = null, $tag = '') {
 	], $atts);
 
 	$html = '';
+	$wide = ($a['wide']) ? true : false;
 	$bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : '';
 
 	if (is_page()) {
@@ -1486,7 +1487,7 @@ function b_children_shortcode($atts = [], $content = null, $tag = '') {
 						$html .= '</div>';
 					$html .= '</div>';
 				$html .= '</div>';
-				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : _B['container_class']) . '"' . $bg . '>';
+				$html .= '<div class="container-fluid"' . $bg . '>';
 			}
 			else {
 				$html .= '<div class="row">';
@@ -1920,8 +1921,8 @@ if (!class_exists('WPU')) {
 		private $authorize_token;
 		private $github_response;
 
-		public $requires;
-		public $tested;
+		private $requires;
+		private $tested;
 
 		public function __construct($file) {
 			$this->file = $file;
@@ -1934,6 +1935,11 @@ if (!class_exists('WPU')) {
 			$this->plugin = get_plugin_data($this->file);
 			$this->basename = plugin_basename($this->file);
 			$this->active = is_plugin_active($this->basename);
+		}
+
+		public function set_versions($requires, $tested) {
+			$this->requires = $requires;
+			$this->tested = $tested;
 		}
 
 		public function set_username($username) {
@@ -2079,8 +2085,7 @@ if (!class_exists('WPU')) {
 
 if (get_option('auth_key') !== '') {
 	$updater = new WPU(__FILE__);
-	$updater->$requires = '6.4';
-	$updater->$tested = '6.4.3';
+	$updater->set_versions('6.4', '6.4.3');
 	$updater->set_username('nullstep');
 	$updater->set_repository('basic_wp');
 	$updater->authorize(get_option('auth_key'));
