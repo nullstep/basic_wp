@@ -427,6 +427,10 @@ define('_ADMIN_BASIC_WP', [
 				'label' => 'Navbar Shadow',
 				'type' => 'check'
 			],
+			'nav_dark' => [
+				'label' => 'Navbar Dark',
+				'type' => 'check'
+			],
 			'sticky_nav' => [
 				'label' => 'Sticky Navbar',
 				'type' => 'check'
