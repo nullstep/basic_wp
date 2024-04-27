@@ -27,6 +27,7 @@ jQuery(function($) {
 		'nav_logo_align',
 		'nav_search_align',
 		'nav_shadow',
+		'nav_dark',
 		'sticky_nav',
 		'nav_mobile',
 		'page_colour',

@@ -85,6 +85,10 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => 'yes'
 	],
+	'nav_dark' => [
+		'type' => 'string',
+		'default' => 'yes'
+	],
 	'sticky_nav' => [
 		'type' => 'string',
 		'default' => 'yes'
@@ -1054,6 +1058,10 @@ class B {
 			}
 			case 'shadow': {
 				echo (_B['nav_shadow'] == 'yes') ? ' shadow' : '';
+				break;
+			}
+			case 'dark': {
+				echo (_B['nav_dark'] == 'yes') ? 'dark' : 'light';
 				break;
 			}
 			default: {
