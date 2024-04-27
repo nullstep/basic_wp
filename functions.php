@@ -1375,19 +1375,12 @@ function b_add_post_metadata_callback($post) {
 	<div id="b-meta">
 		<input class="components-text-control__input" style="margin-top:8px" type="text" name="css_class" value="<?php echo esc_attr($css_class); ?>" placeholder="Enter CSS Class...">
 		<br><br>
-		<p>"<?php echo $is_element; ?>"</p>
-		<br><br>
 		<label class="switch">
 			<input type="checkbox" name="is_element" value="yes"<?php echo $checked; ?>>
 			<span class="slider"></span>
 		</label>
 		<span class="components-checkbox-control__label">Is Element?</span>
 	</div>
-	<script>
-		jQuery(function($){
-
-		});
-	</script>
 <?php
 }
 
@@ -1997,7 +1990,7 @@ function generate_css() {
 
 	$css .= '}';
 
-	$css .= 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body pre,code{font-family:var(--mono-font)}#body .relative{position:relative}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#banner-area div{height:100%}.banner-box{display:grid}.banner-content{margin:auto;text-align:center}#footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)}.bottom{position:absolute;bottom:0}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}#content-area a{color:var(--primary-colour)}h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important}hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem}.feed a{text-decoration:none;color:var(--text-colour)}#content-area figure.size-full img{max-width:100%;height:auto}';
+	$css .= 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body pre,code{font-family:var(--mono-font)}#body .relative{position:relative}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)}.bottom{position:absolute;bottom:0}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}#content-area a{color:var(--primary-colour)}h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important}hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem}.feed a{text-decoration:none;color:var(--text-colour)}#content-area figure.size-full img{max-width:100%;height:auto}';
 
 	if ($s['headings_upper'] == 'yes') {
 		$css .= 'h1,h2,h3,h4,h5,h6{text-transform:uppercase}';
