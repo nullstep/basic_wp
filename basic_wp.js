@@ -139,7 +139,6 @@ jQuery(function($) {
 		if (eid.length) {
 			eid.on('change', function() {
 				$('#' + item).val(eid.html());
-				console.log(eid.html());
 			});
 		}
 	});

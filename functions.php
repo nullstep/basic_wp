@@ -10,6 +10,8 @@ define('EOL', "\r\n");
 
 define('_THEME', 'basic_wp');
 
+define('_LOGO', 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDE5MjAgMjUzIj48Zz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNMjMxLjMsMTkxLjZsLTIyMi4yLDBsMC00M2wxNzcuOC0wLjFsMC00M0w5LDEwNS43bC0wLjItODZsNDQuNSwwbDAsNDNsMTc3LjcsMEwyMzEuMywxOTEuNnoiLz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNNDk4LDE5MS41bC00NC41LDBsLTAuMi04NmwtMTMzLjQsMGwwLDQzbDg4LjksMGwwLDQzbC0xMzMuNCwwbC0wLjMtMTI5bDIyMi4yLDBMNDk4LDE5MS41eiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik03NjQuNCwxMDUuNWwtODguOSwwbDAuMiw4NmwtMTMzLjQsMGwwLTQzbDg4LjksMGwtMC4yLTg2bDEzMy40LDBMNzY0LjQsMTA1LjV6Ii8+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTg1My4yLDU4LjJsLTQ0LjUsMGwwLTQzbDQ0LjUsMEw4NTMuMiw1OC4yeiBNODUzLjQsMTkxLjVsLTQ0LjUsMGwtMC4yLTkwLjNsNDQuNSwwTDg1My40LDE5MS41eiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik0xMTIwLDE0OC41bDAsNDNsLTIyMi4yLDBsLTAuMy0xMjlsMjIyLjIsMGwwLDQzbC0xNzcuNywwbDAsNDNMMTEyMCwxNDguNXoiLz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNMTE2NC40LDE0OC40bDE3Ny43LDBsMCw0M2wtMTc3LjcsMEwxMTY0LjQsMTQ4LjR6Ii8+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTE2MDksMTkxLjNsLTIyMi4yLDBsLTAuMy0xMjlsNDQuNSwwbDAuMiw4Nmw0NC41LDBsLTAuMi04Nmw0NC41LDBsMC4yLDg2bDQ0LjUsMGwtMC4yLTg2bDQ0LjUsMEwxNjA5LDE5MS4zeiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik0xODc1LjYsMTkxLjNsLTE3Ny43LDBsMCw0M2wtNDQuNSwwbC0wLjItODZsMTc3LjcsMGwwLTQzbC0xNzcuNywwbDAtNDNsMjIyLjIsMEwxODc1LjYsMTkxLjN6Ii8+PC9nPjwvc3ZnPg==');
+
 // basic_wp default css
 
 define('_CSS_BASIC_WP', '#info-area {}' . EOL . '#nav-area {}' . EOL . '#banner-area {}' . EOL . '#content-area {}' . EOL . '#footer-top-area {}' . EOL . '#footer-area {}' . EOL . '@media (max-width: 576px) {}' . EOL . '@media (max-width: 768px) {}' . EOL . '@media (max-width: 992px) {}' . EOL . '@media (max-width: 1200px) {}' . EOL . '@media (max-width: 1400px) {}');
@@ -818,7 +820,7 @@ class _themeMenu {
 				});';
 			echo '</script>';
 
-			echo '<h1>' . $name . '</h1>';
+			echo '<h1><img src="data:image/svg+xml;base64,' . _LOGO . '" style="height:32px"></h1>';
 			echo '<p>Configure your ' . $name . ' settings...</p>';
 			echo '<form id="' . $name . '-form" method="post">';
 				echo '<nav id="' . $name . '-nav" class="nav-tab-wrapper">';
@@ -1249,6 +1251,19 @@ function b_set_wp_options() {
 		add_filter('get_next_post_where', 'b_keep_same_author', 10, 3);
 		add_filter('get_previous_post_where', 'b_keep_same_author', 10, 3);
 	}
+
+	if (is_admin()) {
+		// init updater
+
+		if (get_option('auth_key') !== '') {
+			$updater = new WPU(__FILE__);
+			$updater->set_versions('6.4', '6.4.3');
+			$updater->set_username('nullstep');
+			$updater->set_repository('basic_wp');
+			$updater->authorize(get_option('auth_key'));
+			$updater->initialize();
+		}
+	}
 }
 
 // admin notice - search engine visbility
@@ -1283,13 +1298,13 @@ function b_set_excerpt_length($length) {
 	return _B['excerpt_length'];
 }
 
-// page column class metadata
+// page metadata
 
 function b_add_post_metadata() {
 	$screen = 'page';
 	add_meta_box(
 		'post_meta_box',
-		'CSS Classes',
+		'Additional',
 		'b_add_post_metadata_callback',
 		$screen,
 		'side',
@@ -1299,9 +1314,81 @@ function b_add_post_metadata() {
 }
 
 function b_add_post_metadata_callback($post) {
-	wp_nonce_field('css_class_save_data', 'css_class_nonce');
-	$value = get_post_meta($post->ID, 'css_class', true);
-	echo '<input class="components-text-control__input" style="margin-top:8px" type="text" name="css_class" value="' . esc_attr($value) . '" placeholder="Enter CSS Class...">';
+	wp_nonce_field('post_save_data', 'post_meta_nonce');
+
+	$css_class = get_post_meta($post->ID, 'css_class', true);
+	$is_element = get_post_meta($post->ID, 'is_element', true);
+
+	$checked = ($is_element == 'yes') ? ' checked' : '';
+?>
+	<style>
+#b-meta .switch {
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 24px;
+	margin: 3px 5px 3px 0;
+}
+
+#b-meta .switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+#b-meta .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	transition: .4s;
+	border-radius: 24px;
+}
+
+#b-meta .slider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	transition: .4s;
+	border-radius: 50%;
+}
+
+#b-meta input:checked + .slider {
+	background-color: var(--wp-admin-theme-color);
+}
+
+#b-meta input:focus + .slider {
+	box-shadow: 0 0 1px var(--wp-admin-theme-color);
+}
+
+#b-meta input:checked + .slider:before {
+	transform: translateX(26px);
+}
+	</style>
+	<div id="b-meta">
+		<input class="components-text-control__input" style="margin-top:8px" type="text" name="css_class" value="<?php echo esc_attr($css_class); ?>" placeholder="Enter CSS Class...">
+		<br><br>
+		<p>"<?php echo $is_element; ?>"</p>
+		<br><br>
+		<label class="switch">
+			<input type="checkbox" name="is_element" value="yes"<?php echo $checked; ?>>
+			<span class="slider"></span>
+		</label>
+		<span class="components-checkbox-control__label">Is Element?</span>
+	</div>
+	<script>
+		jQuery(function($){
+
+		});
+	</script>
+<?php
 }
 
 function b_save_post_metadata($post_id) {
@@ -1320,15 +1407,81 @@ function b_save_post_metadata($post_id) {
 	}
 	if (isset($_POST['post_type'])) {
 		if (in_array($_POST['post_type'], ['page', 'post'])) {
-			if (!isset($_POST['css_class_nonce'])) {
+			if (!isset($_POST['post_meta_nonce'])) {
 				return;
 			}
-			if (!wp_verify_nonce($_POST['css_class_nonce'], 'css_class_save_data')) {
+			if (!wp_verify_nonce($_POST['post_meta_nonce'], 'post_save_data')) {
 				return;
 			}
-			$data = sanitize_text_field($_POST['css_class']);
-			update_post_meta($post_id, 'css_class', $data);
+			$css_class = sanitize_text_field($_POST['css_class']);
+			update_post_meta($post_id, 'css_class', $css_class);
+			$is_element = sanitize_text_field($_POST['is_element']);
+			update_post_meta($post_id, 'is_element', $is_element);
 		}
+	}
+}
+
+// filter page edit list
+
+function b_load_edit() {
+	if (is_admin()) {
+		if ($_GET['post_type'] !== 'page') {
+			return;
+		}
+
+		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
+
+		switch ($current) {
+			case 'pages': {
+				add_action('pre_get_posts', function($query) {
+					$query->set('meta_query', [
+						'relation' => 'OR',
+						[
+							'key' => 'is_element',
+							'value' => 'blah',
+							'compare' => 'NOT EXISTS'
+						],
+						[
+							'key' => 'is_element',
+							'value' => 'yes',
+							'compare' => '!='
+						]
+					]);
+				});
+
+				break;
+			}
+			case 'elements': {
+				add_action('pre_get_posts', function($query) {
+					$query->set('meta_query', [
+						'relation' => 'OR',
+						[
+							'key' => 'is_element',
+							'value' => 'yes',
+							'compare' => '=='
+						]
+					]);
+				});
+
+				break;
+			}
+		}
+
+	}
+}
+
+// add buttons to pages list
+
+function b_add_buttons($which) {
+	if ($which == 'top') {
+		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
+?>
+	<span style="display:inline-block;margin:5px 5px 0 5px">Show: </span>
+	<style>.tablenav .button.active {background:#c1c2c4;box-shadow:none}</style>
+	<a href="/wp-admin/edit.php?post_type=page" class="button<?php echo ($current == 'all') ? ' active' : ''; ?>">All</a>
+	<a href="/wp-admin/edit.php?post_type=page&show=pages" class="button<?php echo ($current == 'pages') ? ' active' : ''; ?>">Pages</a>
+	<a href="/wp-admin/edit.php?post_type=page&show=elements" class="button<?php echo ($current == 'elements') ? ' active' : ''; ?>">Elements</a>
+<?php
 	}
 }
 
@@ -1345,9 +1498,9 @@ function b_filter_access($wp_query) {
 	if (is_user_logged_in()) {
 		global $current_user;
 
-		if (_CS['filter_post_list'] == 'yes') {
+		if (_B['filter_post_list'] == 'yes') {
 			if (isset($wp_query->query['post_type']) && (is_admin() && in_array($wp_query->query['post_type'], ['attachment', 'page', 'post']))) {
-				if (_CS['admin_sees_all_posts'] == 'yes') {
+				if (_B['admin_sees_all_posts'] == 'yes') {
 					if (!current_user_can('manage_options')) {
 						if (in_array('editor', $current_user->roles)) {
 							$wp_query->set('author', $current_user->ID);
@@ -2093,17 +2246,6 @@ if (!class_exists('WPU')) {
 //  ███   ███    ███  ███       ███      
 //  █▀     ▀█    █▀   █▀       ▄████▀
 
-// init updater
-
-if (get_option('auth_key') !== '') {
-	$updater = new WPU(__FILE__);
-	$updater->set_versions('6.4', '6.4.3');
-	$updater->set_username('nullstep');
-	$updater->set_repository('basic_wp');
-	$updater->authorize(get_option('auth_key'));
-	$updater->initialize();
-}
-
 // oh mah gawd a global!
 
 global $evil;
@@ -2116,6 +2258,8 @@ add_action('admin_head', 'b_admin_styling', 999);
 add_action('after_setup_theme', 'b_do_setup');
 add_action('add_meta_boxes', 'b_add_post_metadata');
 add_action('save_post', 'b_save_post_metadata');
+add_action('load-edit.php', 'b_load_edit');
+add_action('manage_posts_extra_tablenav', 'b_add_buttons', 10, 1);
 
 // filters
 
