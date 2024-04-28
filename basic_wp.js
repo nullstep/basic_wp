@@ -16,6 +16,8 @@ jQuery(function($) {
 		'woo_per_page',
 		'woo_columns',
 		'editor_width',
+		'ld_mode',
+		'stt_icon',
 		'favicon_image',
 		'logo_image_normal',
 		'logo_image_contrast',

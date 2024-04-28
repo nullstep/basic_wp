@@ -215,6 +215,14 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
+	'stt_icon' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'ld_mode' => [
+		'type' => 'string',
+		'default' => ''
+	],
 	'woo_support' => [
 		'type' => 'string',
 		'default' => ''
@@ -332,6 +340,14 @@ define('_ADMIN_BASIC_WP', [
 			'editor_width' => [
 				'label' => 'Set Width of Gutenberg Editor',
 				'type' => 'input'
+			],
+			'ld_mode' => [
+				'label' => 'Light/Dark Mode Active',
+				'type' => 'check'
+			],
+			'stt_icon' => [
+				'label' => 'Scroll To Top Icon',
+				'type' => 'file'
 			]
 		]
 	],
