@@ -344,10 +344,6 @@ define('_ADMIN_BASIC_WP', [
 			'ld_mode' => [
 				'label' => 'Light/Dark Mode Active',
 				'type' => 'check'
-			],
-			'stt_icon' => [
-				'label' => 'Scroll To Top Icon',
-				'type' => 'file'
 			]
 		]
 	],
@@ -365,6 +361,10 @@ define('_ADMIN_BASIC_WP', [
 			],
 			'logo_image_contrast' => [
 				'label' => 'Logo Image (contrast)',
+				'type' => 'file'
+			],
+			'stt_icon' => [
+				'label' => 'Scroll To Top Icon',
 				'type' => 'file'
 			],
 			'latest_images' => [
@@ -1754,6 +1754,15 @@ function b_page_shortcode($atts = [], $content = null, $tag = '') {
 function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 	wp_reset_postdata();
 
+	$a = shortcode_atts([
+		'class' => '',
+		'bg' => 'no',
+		'row' => 'no'
+	], $atts);
+
+	$row = ($a['row'] == 'yes') ? ' class="row"' : '';
+	$class = ($a['class']) ? ' ' . $a['class'] : '';
+
 	$count = $content;
 	$none = true;
 	$num = 0;
@@ -1764,30 +1773,41 @@ function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 		'posts_per_page' => $count,
 		'category__not_in' => $cat->term_id
 	]);
-	$html = '<div id="latest-posts">';
+	$html = '<div id="latest-posts"' . $row . '>';
 
 	while ($query -> have_posts()) : $query -> the_post();
 		if ((get_the_ID() != $post_id)) {
 			$bg = '';
 
-			if (has_post_thumbnail()) {
-				$array = explode('/', wp_get_attachment_image_src(get_post_thumbnail_id(), 'post-thumbnail')[0]);
-				$bg = end($array);
+			if (_B['latest_images'] == 'yes') {
+				if (has_post_thumbnail()) {
+					$array = explode('/', wp_get_attachment_image_src(get_post_thumbnail_id(), 'post-thumbnail')[0]);
+					$bg = end($array);
+				}				
 			}
 
 			if ($num <= $count) {
-				$html .= '<div class="post-box my-3">';
+				$html .= '<div class="post-box my-3' . $class . '">';
 					$html .= '<a class="post-link" href="' . get_permalink() . '" title="' . get_the_title() . '">';
-						$html .= '<h4 class="post-title">' . get_the_title() . '</h4>';
-						$html .= '<p class="post-date">' . get_the_time(get_option('date_format')) . ' - ' . get_the_time() . '</p>';
 
 						if ($bg && _B['latest_images'] == 'yes') {
-							$html .= '<div class="post-img" style="background-image:url(/uploads/' . $bg . ')"></div>';
+							if ($a['bg'] == 'yes') {
+								$html .= '<div class="post-img" style="background-image:url(/uploads/' . $bg . ')"><h4 class="post-title">' . get_the_title() . '</h4></div>';
+							}
+							else {
+								$html .= '<img class="post-img" src="/uploads/' . $bg . '">';
+								$html .= '<h4 class="post-title">' . get_the_title() . '</h4>';
+							}
+						}
+						else {
+							$html .= '<h4 class="post-title">' . get_the_title() . '</h4>';
 						}
 
+						$html .= '<p class="post-date">' . get_the_time(get_option('date_format')) . ' - ' . get_the_time() . '</p>';
 						$html .= '<p class="post-excerpt">' . get_the_excerpt() . '</p>';
 					$html .= '</a>';
 				$html .= '</div>';
+
 				$none = false;
 				$num++;
 			}
