@@ -59,11 +59,15 @@ jQuery(function($) {
 		'nav_upper',
 		'font_awesome',
 		'theme_css',
+		'light_css',
+		'dark_css',
 		'theme_js'
 	];
 	// code editors
 	const editors = [
 		'theme_css',
+		'light_css',
+		'dark_css',
 		'theme_js'
 	];
 	// content editors

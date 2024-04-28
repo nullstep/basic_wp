@@ -243,6 +243,14 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
+	'light_css' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'dark_css' => [
+		'type' => 'string',
+		'default' => ''
+	],
 	'auto_css' => [
 		'type' => 'string',
 		'default' => ''
@@ -565,10 +573,18 @@ define('_ADMIN_BASIC_WP', [
 	],
 	'css' => [
 		'label' => 'CSS',
-		'columns' => 1,
+		'columns' => 3,
 		'fields' => [
 			'theme_css' => [
 				'label' => 'Theme Styles',
+				'type' => 'code'
+			],
+			'light_css' => [
+				'label' => 'Light Mode Styles',
+				'type' => 'code'
+			],
+			'dark_css' => [
+				'label' => 'Dark Mode Styles',
 				'type' => 'code'
 			]
 		]
@@ -1406,8 +1422,10 @@ function b_save_post_metadata($post_id) {
 			if (!wp_verify_nonce($_POST['post_meta_nonce'], 'post_save_data')) {
 				return;
 			}
+
 			$css_class = sanitize_text_field($_POST['css_class']);
 			update_post_meta($post_id, 'css_class', $css_class);
+
 			$is_element = sanitize_text_field($_POST['is_element']);
 			update_post_meta($post_id, 'is_element', $is_element);
 		}
@@ -2039,7 +2057,7 @@ function generate_css() {
 		$fonts .= ':root{' . $root . '}';
 	}
 
-	return $fonts . $css;
+	return $fonts . $css . minify_css($s['light_css']) . minify_css($s['dark_css']);
 }
 
 // curl
