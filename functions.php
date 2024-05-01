@@ -1266,8 +1266,7 @@ function b_set_wp_options() {
 	}
 
 	if (_B['editor_width'] != '') {
-		add_theme_support('align-wide');
-		add_action('admin_head', 'b_editor_width');
+		add_filter('block_editor_settings_all', 'b_editor_settings', 10, 2);
 	}
 
 	if (get_option('blog_public') == '0') {
@@ -1308,8 +1307,14 @@ function b_admin_notice_sev() {
 
 // set editor width
 
-function b_editor_width() {
-	echo '<style>.wp-block{max-width:' . _B['editor_width'] . ' !important}</style>';
+function b_editor_settings($settings, $context) {
+	$settings['styles'][] = [
+		'css' => 'html :where(.wp-block) { max-width:' . _B['editor_width'] . ' !important }',
+		'__unstableType' => 'base-layout',
+		'isGlobalStyles' => true
+	];
+
+	return $settings;
 }
 
 // add admin scripts
@@ -1504,7 +1509,7 @@ function b_add_buttons($which) {
 		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
 ?>
 	<span style="display:inline-block;margin:5px 5px 0 5px">Show: </span>
-	<style>.tablenav .button.active {background:#c1c2c4;box-shadow:none}</style>
+	<style>.tablenav .button.active {background:var(--admin-highlight) !important; color:var(--admin-contrast) !important;box-shadow:none}.tablenav .button.active:hover {box-shadow: inset 0 0 100px 100px rgba(255,255,255,0.2)}</style>
 	<a href="/wp-admin/edit.php?post_type=page" class="button<?php echo ($current == 'all') ? ' active' : ''; ?>">All</a>
 	<a href="/wp-admin/edit.php?post_type=page&show=pages" class="button<?php echo ($current == 'pages') ? ' active' : ''; ?>">Pages</a>
 	<a href="/wp-admin/edit.php?post_type=page&show=elements" class="button<?php echo ($current == 'elements') ? ' active' : ''; ?>">Elements</a>
@@ -1818,6 +1823,46 @@ function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 		$html .= '<div>No Posts&hellip;</div>';
 	}
 	return $html . '</div>';
+}
+
+//   ▄██████▄   ███    █▄       ███         ▄███████▄  ███    █▄       ███      
+//  ███    ███  ███    ███  ▀█████████▄    ███    ███  ███    ███  ▀█████████▄  
+//  ███    ███  ███    ███     ▀███▀▀██    ███    ███  ███    ███     ▀███▀▀██  
+//  ███    ███  ███    ███      ███   ▀    ███    ███  ███    ███      ███   ▀  
+//  ███    ███  ███    ███      ███      ▀█████████▀   ███    ███      ███      
+//  ███    ███  ███    ███      ███        ███         ███    ███      ███      
+//  ███    ███  ███    ███      ███        ███         ███    ███      ███      
+//   ▀██████▀   ████████▀      ▄████▀     ▄████▀       ████████▀      ▄████▀
+
+function b_filter_output($html) {
+	$html = preg_replace('/\swp-container-core-columns-is-layout-\w+/', '', $html);
+	$html = preg_replace('/\swp-block-columns-is-layout-\w+/', '', $html);
+	$html = preg_replace('/\swp-block-column-is-layout-\w+/', '', $html);
+	$html = preg_replace('/\sis-layout-\w+/', '', $html);
+
+	$html = str_replace([
+		'has-text-align-left',
+		'has-text-align-right',
+		'has-text-align-center',
+		'alignleft',
+		'alignright',
+		'aligncenter',
+		'wp-block-columns',
+		'wp-block-column'
+	], [
+		'text-start',
+		'text-end',
+		'text-center',
+		'float-start',
+		'float-end',
+		'text-center',
+		'row',
+		'col'
+	],
+		$html
+	);
+
+	return $html;
 }
 
 //    ▄▄▄▄███▄▄▄▄     ▄█      ▄████████   ▄████████  
@@ -2297,6 +2342,10 @@ if (!class_exists('WPU')) {
 
 global $evil;
 
+// output buffer on
+
+ob_start();
+
 // actions
 
 add_action('init', 'b_set_wp_options');
@@ -2311,7 +2360,8 @@ add_action('manage_posts_extra_tablenav', 'b_add_buttons', 10, 1);
 // filters
 
 add_filter('excerpt_length', 'b_set_excerpt_length', 999);
-add_filter('the_content', 'b_set_class_names', 999);
+add_filter('final_output', 'b_filter_output');
+//add_filter('the_content', 'b_set_class_names', 999);
 
 // shortcodes
 
@@ -2328,9 +2378,19 @@ add_shortcode('button', 'b_button_shortcode');
 
 remove_action('shutdown', 'wp_ob_end_flush_all', 1);
 
+// run our output filter
+
 add_action('shutdown', function() {
-   while (@ob_end_flush());
-});
+	$final = '';
+	$levels = ob_get_level();
+
+	for ($i = 0; $i < $levels; $i++) {
+		$final .= ob_get_clean();
+	}
+
+	//echo $final;
+	echo apply_filters('final_output', $final);
+}, 999);
 
 // boot theme
 
