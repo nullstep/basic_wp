@@ -1358,57 +1358,7 @@ function b_add_post_metadata_callback($post) {
 
 	$checked = ($is_element == 'yes') ? ' checked' : '';
 ?>
-	<style>
-#b-meta .switch {
-	position: relative;
-	display: inline-block;
-	width: 50px;
-	height: 24px;
-	margin: 3px 5px 3px 0;
-}
-
-#b-meta .switch input {
-	opacity: 0;
-	width: 0;
-	height: 0;
-}
-
-#b-meta .slider {
-	position: absolute;
-	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: #ccc;
-	transition: .4s;
-	border-radius: 24px;
-}
-
-#b-meta .slider:before {
-	position: absolute;
-	content: "";
-	height: 16px;
-	width: 16px;
-	left: 4px;
-	bottom: 4px;
-	background-color: white;
-	transition: .4s;
-	border-radius: 50%;
-}
-
-#b-meta input:checked + .slider {
-	background-color: var(--wp-admin-theme-color);
-}
-
-#b-meta input:focus + .slider {
-	box-shadow: 0 0 1px var(--wp-admin-theme-color);
-}
-
-#b-meta input:checked + .slider:before {
-	transform: translateX(26px);
-}
-	</style>
+	<style>#b-meta .switch{position:relative;display:inline-block;width:50px;height:24px;margin:3px 5px 3px 0}#b-meta .switch input{opacity:0;width:0;height:0}#b-meta .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:0.4s;border-radius:24px}#b-meta .slider:before{position:absolute;content:"";height:16px;width:16px;left:4px;bottom:4px;background-color:white;transition:0.4s;border-radius:50%}#b-meta input:checked + .slider{background-color:var(--wp-admin-theme-color)}#b-meta input:focus + .slider{box-shadow:0 0 1px var(--wp-admin-theme-color)}#b-meta input:checked + .slider:before{transform:translateX(26px)}</style>
 	<div id="b-meta">
 		<input class="components-text-control__input" style="margin-top:8px" type="text" name="css_class" value="<?php echo esc_attr($css_class); ?>" placeholder="Enter CSS Class...">
 		<br><br>
@@ -1545,50 +1495,6 @@ function b_filter_access($wp_query) {
 			}
 		}
 	}
-}
-
-// set bootstrap class names
-
-function b_set_class_names($content) {
-	if (is_singular() && in_the_loop() && is_main_query()) {
-		$content = str_replace([
-			'has-text-align-left',
-			'has-text-align-right',
-			'has-text-align-center',
-			'alignleft',
-			'alignright',
-			'aligncenter',
-			'wp-container-core-columns-',
-			'wp-block-columns-is-layout-flex',
-			'is-layout-flex',
-			'is-layout-flow',
-			'wp-block-column-is-layout-flow',
-			'is-not-stacked-on-mobile',
-			'wp-block-columns',
-			'wp-block-column'
-		], [
-			'text-start',
-			'text-end',
-			'text-center',
-			'float-start',
-			'float-end',
-			'text-center',
-			'',
-			'',
-			'',
-			'',
-			'',
-			'',
-			'row',
-			'col'
-		],
-			$content
-		);
-
-		$content = preg_replace('/layout-\d+/', '', $content);
-	}
-
-	return $content;
 }
 
 //     ▄████████     ▄█    █▄      ▄██████▄      ▄████████      ███      
@@ -2342,9 +2248,13 @@ if (!class_exists('WPU')) {
 
 global $evil;
 
-// output buffer on
+// output buffer on if not admin
 
-ob_start();
+if (!is_admin()) {
+	ob_start();
+
+	add_filter('final_output', 'b_filter_output');
+}
 
 // actions
 
@@ -2360,8 +2270,6 @@ add_action('manage_posts_extra_tablenav', 'b_add_buttons', 10, 1);
 // filters
 
 add_filter('excerpt_length', 'b_set_excerpt_length', 999);
-add_filter('final_output', 'b_filter_output');
-//add_filter('the_content', 'b_set_class_names', 999);
 
 // shortcodes
 
@@ -2381,15 +2289,16 @@ remove_action('shutdown', 'wp_ob_end_flush_all', 1);
 // run our output filter
 
 add_action('shutdown', function() {
-	$final = '';
-	$levels = ob_get_level();
+	if (!is_admin()) {
+		$final = '';
+		$levels = ob_get_level();
 
-	for ($i = 0; $i < $levels; $i++) {
-		$final .= ob_get_clean();
+		for ($i = 0; $i < $levels; $i++) {
+			$final .= ob_get_clean();
+		}
+
+		echo apply_filters('final_output', $final);
 	}
-
-	//echo $final;
-	echo apply_filters('final_output', $final);
 }, 999);
 
 // boot theme
