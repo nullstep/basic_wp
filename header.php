@@ -22,7 +22,7 @@
 
 	</style>
 </head>
-<body id="body" class="<?php echo get_post_field('post_name'); ?>">
+<body id="body" class="<?php echo get_post_field('post_name'); ?> light">
 <?php B::sections(); ?>
 	<main id="content-area">
 		<div class="<?php B::value('container_class'); ?>">

@@ -981,7 +981,7 @@ class B {
 	}
 
 	public static function js() {
-		echo _B['theme_js_minified'];
+		echo '$(function(){$("#mode").on("click",function(){var b=$("#body");if(b.hasClass("light")){b.removeClass("light").addClass("dark");}else{b.removeClass("dark").addClass("light");}});});' . _B['theme_js_minified'];
 	}
 
 	public static function favicon() {
@@ -1078,11 +1078,14 @@ class B {
 				break;
 			}
 			case 'search': {
+				echo '<div id="mode-switch" class="d-flex">';
+					B::nav('mode');
+				echo '</div>';
 				echo '<form class="d-flex ' . B::align('search') . '" method="get" action="' . get_site_url() . '">';
-				echo '<input class="form-control me-2" type="search" name="s" placeholder="Search">';
-				echo '<button class="btn btn-primary" type="submit">';
-				echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-magnifying-glass"></i>' : 'Search';
-				echo '</button>';
+					echo '<input class="form-control me-2" type="search" name="s" placeholder="Search">';
+					echo '<button class="btn btn-primary" type="submit">';
+						echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-magnifying-glass"></i>' : 'Search';
+					echo '</button>';
 				echo '</form>';
 				break;
 			}
@@ -1095,11 +1098,17 @@ class B {
 				break;
 			}
 			case 'shadow': {
-				echo (_B['nav_shadow'] == 'yes') ? ' shadow' : '';
+				echo (_B['nav_shadow'] == 'yes') ? 'shadow' : '';
 				break;
 			}
 			case 'dark': {
-				echo (_B['nav_dark'] == 'yes') ? 'dark' : 'light';
+				echo (_B['nav_dark'] == 'yes') ? 'dark ' : 'light ';
+				break;
+			}
+			case 'mode': {
+				echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-sun"></i>' : 'sun';
+				echo '<span class="toggle" id="mode"></span>';
+				echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-moon"></i>' : 'moon';
 				break;
 			}
 			default: {
@@ -1115,11 +1124,30 @@ class B {
 	// return values
 
 	public static function value($key, $echo = true) {
+		$value = _B[$key];
+
+		// special case for container_class
+		// as it is dependant on possible meta data
+
+		if ($key == 'container_class') {
+			$id = (isset($evil['page_id'])) ? $evil['page_id'] : get_queried_object_id();
+			$width = get_post_meta($id, 'page_width', true);
+
+			switch ($width) {
+				case '1':
+					$value = 'container-fluid';
+					break;
+				case '2':
+					$value = 'container';
+					break;
+			}
+		}
+
 		if ($echo) {
-			echo _B[$key];
+			echo $value;
 		}
 		else {
-			return _B[$key];
+			return $value;
 		}
 	}
 
@@ -1355,18 +1383,25 @@ function b_add_post_metadata_callback($post) {
 
 	$css_class = get_post_meta($post->ID, 'css_class', true);
 	$is_element = get_post_meta($post->ID, 'is_element', true);
+	$page_width = get_post_meta($post->ID, 'page_width', true) ?? '0';
 
 	$checked = ($is_element == 'yes') ? ' checked' : '';
 ?>
 	<style>#b-meta .switch{position:relative;display:inline-block;width:50px;height:24px;margin:3px 5px 3px 0}#b-meta .switch input{opacity:0;width:0;height:0}#b-meta .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:0.4s;border-radius:24px}#b-meta .slider:before{position:absolute;content:"";height:16px;width:16px;left:4px;bottom:4px;background-color:white;transition:0.4s;border-radius:50%}#b-meta input:checked + .slider{background-color:var(--wp-admin-theme-color)}#b-meta input:focus + .slider{box-shadow:0 0 1px var(--wp-admin-theme-color)}#b-meta input:checked + .slider:before{transform:translateX(26px)}</style>
 	<div id="b-meta">
-		<input class="components-text-control__input" style="margin-top:8px" type="text" name="css_class" value="<?php echo esc_attr($css_class); ?>" placeholder="Enter CSS Class...">
+		<input class="components-text-control__input" style="margin-top:8px;height:30px !important" type="text" name="css_class" value="<?php echo esc_attr($css_class); ?>" placeholder="Enter CSS Class...">
 		<br><br>
 		<label class="switch">
 			<input type="checkbox" name="is_element" value="yes"<?php echo $checked; ?>>
 			<span class="slider"></span>
 		</label>
 		<span class="components-checkbox-control__label">Is Element?</span>
+		<br><br>
+		<select style="box-sizing:border-box;border-radius:2px;border:1px solid rgb(148,148,148);width:100%" name="page_width">
+			<option value="0" <?php selected($page_width, 0); ?>>Page Width: Default</option>
+			<option value="1" <?php selected($page_width, 1); ?>>Page Width: Full</option>
+			<option value="2" <?php selected($page_width, 2); ?>>Page Width: Fixed</option>
+		</select>
 	</div>
 <?php
 }
@@ -1400,6 +1435,8 @@ function b_save_post_metadata($post_id) {
 			$is_element = sanitize_text_field($_POST['is_element']);
 			update_post_meta($post_id, 'is_element', $is_element);
 
+			$page_width = sanitize_text_field($_POST['page_width']);
+			update_post_meta($post_id, 'page_width', $page_width);
 		}
 
 	}
@@ -1466,21 +1503,6 @@ function b_load_edit() {
 			}
 		}
 
-	}
-}
-
-// add buttons to pages list
-
-function b_add_buttons($which) {
-	if ($which == 'top') {
-		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
-?>
-	<span style="display:inline-block;margin:5px 5px 0 5px">Show: </span>
-	<style>.tablenav .button.active {background:var(--admin-highlight) !important; color:var(--admin-contrast) !important;box-shadow:none}.tablenav .button.active:hover {box-shadow: inset 0 0 100px 100px rgba(255,255,255,0.2)}</style>
-	<a href="/wp-admin/edit.php?post_type=page" class="button<?php echo ($current == 'all') ? ' active' : ''; ?>">All</a>
-	<a href="/wp-admin/edit.php?post_type=page&show=pages" class="button<?php echo ($current == 'pages') ? ' active' : ''; ?>">Pages</a>
-	<a href="/wp-admin/edit.php?post_type=page&show=elements" class="button<?php echo ($current == 'elements') ? ' active' : ''; ?>">Elements</a>
-<?php
 	}
 }
 
@@ -1661,13 +1683,13 @@ function b_page_shortcode($atts = [], $content = null, $tag = '') {
 				$html .= '</div>';
 			$html .= '</div>';
 			$html .= '<div id="' . $page->post_name . '-section">';
-				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : _B['container_class']) . '"' . $bg . '>';
+				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : B::value('container_class')) . '"' . $bg . '>';
 					$html .= '<div class="row">';
 						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . do_shortcode($page->post_content) . '</div>';
 					$html .= '</div>';
 				$html .= '</div>';
 			$html .= '</div>';
-			$html .= '<div class="' . _B['container_class'] . '">';
+			$html .= '<div class="' . B::value('container_class') . '">';
 				$html .= '<div class="row">';
 					$html .= '<div class="col-xs-12">';
 		}
@@ -1994,9 +2016,7 @@ function generate_css() {
 		$css .= '--' . str_replace('_', '-', $c) . '-contrast:' . B::contrast($s[$c . '_colour']) . ';';
 	}		
 
-	$css .= '}';
-
-
+	$css .= '}body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)} #body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)} #body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important} #body .navbar .nav-link{color:var(--nav-text-colour)!important} #body .navbar .active{color:var(--primary-colour)!important} #body pre,code{font-family:var(--mono-font)} #info-area{background:var(--info-colour);color:var(--info-text-colour)} #banner-area{background:var(--banner-colour);color:var(--banner-text-colour)} #footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)} #footer-area{background:var(--footer-colour);color:var(--footer-text-colour)} a{color:var(--primary-colour)} h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important} hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto} #body .dropdown-menu[data-bs-popper]{left:unset} #body .navbar-collapse{flex-grow:unset} .ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem} #body .btn-primary{background-color:var(--primary-colour);border:none} #body .btn-primary:hover{box-shadow:0 0 100px 100px rgba(255,255,255,.1) inset;color:var(--text-colour)} .feed a{text-decoration:none;color:var(--text-colour)}.size-full img{max-width:100%;}#mode-switch{color:var(--nav-text-colour);}.toggle{margin:0 0.25rem;display:block;height:1rem;width:2rem;border-radius:0.5rem;background:#777879;position:relative;transition:0.25s;}.toggle:after{transition:0.25s !important;content:"";display:block;position:absolute;top:0;bottom:0;margin:auto;width:0.75rem;height:0.75rem;background:#ffffff;border-radius:50%;margin-left:0.125rem;}body.dark .toggle:after{left:1rem;}body.light .toggle:after{left:0;}';
 
 	if ($s['headings_upper'] == 'yes') {
 		$css .= 'h1,h2,h3,h4,h5,h6{text-transform:uppercase}';
@@ -2267,7 +2287,6 @@ add_action('add_meta_boxes', 'b_add_post_metadata');
 add_action('save_post', 'b_save_post_metadata');
 add_action('load-edit.php', 'b_load_edit');
 add_action('manage_posts_extra_tablenav', 'b_add_buttons', 10, 1);
-
 
 // filters
 
