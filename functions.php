@@ -1399,7 +1399,24 @@ function b_save_post_metadata($post_id) {
 
 			$is_element = sanitize_text_field($_POST['is_element']);
 			update_post_meta($post_id, 'is_element', $is_element);
+
 		}
+
+	}
+}
+
+// add buttons to pages list
+
+function b_add_buttons($which) {
+	if ($which == 'top') {
+		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
+?>
+	<span style="display:inline-block;margin:5px 5px 0 5px">Show: </span>
+	<style>.tablenav .button.active {background:var(--admin-highlight) !important; color:var(--admin-contrast) !important;box-shadow:none}.tablenav .button.active:hover {box-shadow: inset 0 0 100px 100px rgba(255,255,255,0.2)}</style>
+	<a href="/wp-admin/edit.php?post_type=page" class="button<?php echo ($current == 'all') ? ' active' : ''; ?>">All</a>
+	<a href="/wp-admin/edit.php?post_type=page&show=pages" class="button<?php echo ($current == 'pages') ? ' active' : ''; ?>">Pages</a>
+	<a href="/wp-admin/edit.php?post_type=page&show=elements" class="button<?php echo ($current == 'elements') ? ' active' : ''; ?>">Elements</a>
+<?php
 	}
 }
 
@@ -1497,23 +1514,6 @@ function b_filter_access($wp_query) {
 	}
 }
 
-// menu item meta handling
-
-function b_menu_meta($item_id, $item) {
-	$is_megamenu = get_post_meta($item_id, '_mega-menu', true);
-?>
-	<p class="description description-wide">
-		<label for="b-menu-item-button-<?php echo $item_id; ?>" >
-			<input type="checkbox" id="b-menu-item-button-<?php echo $item_id; ?>" name="b-menu-item-button[<?php echo $item_id; ?>]" <?php checked($is_megamenu, true); ?>> Is MegaMenu
-		</label>
-	</p>
-<?php
-}
-
-function b_menu_save_meta($menu_id, $menu_item_db_id) {
-	$value = (isset($_POST['b-menu-item-button'][$menu_item_db_id]) && $_POST['b-menu-item-button'][$menu_item_db_id] == 'on') ? true : false;
-	update_post_meta($menu_item_db_id, '_mega-menu', $value);
-}
 
 //     ▄████████     ▄█    █▄      ▄██████▄      ▄████████      ███      
 //    ███    ███    ███    ███    ███    ███    ███    ███  ▀█████████▄  
@@ -1996,7 +1996,7 @@ function generate_css() {
 
 	$css .= '}';
 
-	$css .= 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body pre,code{font-family:var(--mono-font)}#body .relative{position:relative}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)}.bottom{position:absolute;bottom:0}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}#content-area a{color:var(--primary-colour)}h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important}hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem}.feed a{text-decoration:none;color:var(--text-colour)}#content-area figure.size-full img{max-width:100%;height:auto}nav a.dropdown-toggle{cursor:pointer}';
+
 
 	if ($s['headings_upper'] == 'yes') {
 		$css .= 'h1,h2,h3,h4,h5,h6{text-transform:uppercase}';
@@ -2267,8 +2267,7 @@ add_action('add_meta_boxes', 'b_add_post_metadata');
 add_action('save_post', 'b_save_post_metadata');
 add_action('load-edit.php', 'b_load_edit');
 add_action('manage_posts_extra_tablenav', 'b_add_buttons', 10, 1);
-add_action('wp_nav_menu_item_custom_fields', 'b_menu_meta', 10, 2);
-add_action('wp_update_nav_menu_item', 'b_menu_save_meta', 10, 2);
+
 
 // filters
 
