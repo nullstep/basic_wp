@@ -10,6 +10,8 @@ define('EOL', "\r\n");
 
 define('_THEME', 'basic_wp');
 
+define('_LOGO', 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDE5MjAgMjUzIj48Zz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNMjMxLjMsMTkxLjZsLTIyMi4yLDBsMC00M2wxNzcuOC0wLjFsMC00M0w5LDEwNS43bC0wLjItODZsNDQuNSwwbDAsNDNsMTc3LjcsMEwyMzEuMywxOTEuNnoiLz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNNDk4LDE5MS41bC00NC41LDBsLTAuMi04NmwtMTMzLjQsMGwwLDQzbDg4LjksMGwwLDQzbC0xMzMuNCwwbC0wLjMtMTI5bDIyMi4yLDBMNDk4LDE5MS41eiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik03NjQuNCwxMDUuNWwtODguOSwwbDAuMiw4NmwtMTMzLjQsMGwwLTQzbDg4LjksMGwtMC4yLTg2bDEzMy40LDBMNzY0LjQsMTA1LjV6Ii8+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTg1My4yLDU4LjJsLTQ0LjUsMGwwLTQzbDQ0LjUsMEw4NTMuMiw1OC4yeiBNODUzLjQsMTkxLjVsLTQ0LjUsMGwtMC4yLTkwLjNsNDQuNSwwTDg1My40LDE5MS41eiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik0xMTIwLDE0OC41bDAsNDNsLTIyMi4yLDBsLTAuMy0xMjlsMjIyLjIsMGwwLDQzbC0xNzcuNywwbDAsNDNMMTEyMCwxNDguNXoiLz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNMTE2NC40LDE0OC40bDE3Ny43LDBsMCw0M2wtMTc3LjcsMEwxMTY0LjQsMTQ4LjR6Ii8+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTE2MDksMTkxLjNsLTIyMi4yLDBsLTAuMy0xMjlsNDQuNSwwbDAuMiw4Nmw0NC41LDBsLTAuMi04Nmw0NC41LDBsMC4yLDg2bDQ0LjUsMGwtMC4yLTg2bDQ0LjUsMEwxNjA5LDE5MS4zeiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik0xODc1LjYsMTkxLjNsLTE3Ny43LDBsMCw0M2wtNDQuNSwwbC0wLjItODZsMTc3LjcsMGwwLTQzbC0xNzcuNywwbDAtNDNsMjIyLjIsMEwxODc1LjYsMTkxLjN6Ii8+PC9nPjwvc3ZnPg==');
+
 // basic_wp default css
 
 define('_CSS_BASIC_WP', '#info-area {}' . EOL . '#nav-area {}' . EOL . '#banner-area {}' . EOL . '#content-area {}' . EOL . '#footer-top-area {}' . EOL . '#footer-area {}' . EOL . '@media (max-width: 576px) {}' . EOL . '@media (max-width: 768px) {}' . EOL . '@media (max-width: 992px) {}' . EOL . '@media (max-width: 1200px) {}' . EOL . '@media (max-width: 1400px) {}');
@@ -82,6 +84,10 @@ define('_ARGS_BASIC_WP', [
 		'default' => 'ms-auto'
 	],
 	'nav_shadow' => [
+		'type' => 'string',
+		'default' => 'yes'
+	],
+	'nav_dark' => [
 		'type' => 'string',
 		'default' => 'yes'
 	],
@@ -209,6 +215,14 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
+	'stt_icon' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'ld_mode' => [
+		'type' => 'string',
+		'default' => ''
+	],
 	'woo_support' => [
 		'type' => 'string',
 		'default' => ''
@@ -234,6 +248,14 @@ define('_ARGS_BASIC_WP', [
 		'default' => _CSS_BASIC_WP
 	],
 	'theme_css_minified' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'light_css' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'dark_css' => [
 		'type' => 'string',
 		'default' => ''
 	],
@@ -318,6 +340,10 @@ define('_ADMIN_BASIC_WP', [
 			'editor_width' => [
 				'label' => 'Set Width of Gutenberg Editor',
 				'type' => 'input'
+			],
+			'ld_mode' => [
+				'label' => 'Light/Dark Mode Active',
+				'type' => 'check'
 			]
 		]
 	],
@@ -335,6 +361,10 @@ define('_ADMIN_BASIC_WP', [
 			],
 			'logo_image_contrast' => [
 				'label' => 'Logo Image (contrast)',
+				'type' => 'file'
+			],
+			'stt_icon' => [
+				'label' => 'Scroll To Top Icon',
 				'type' => 'file'
 			],
 			'latest_images' => [
@@ -421,6 +451,10 @@ define('_ADMIN_BASIC_WP', [
 			],
 			'nav_shadow' => [
 				'label' => 'Navbar Shadow',
+				'type' => 'check'
+			],
+			'nav_dark' => [
+				'label' => 'Navbar Dark',
 				'type' => 'check'
 			],
 			'sticky_nav' => [
@@ -555,10 +589,18 @@ define('_ADMIN_BASIC_WP', [
 	],
 	'css' => [
 		'label' => 'CSS',
-		'columns' => 1,
+		'columns' => 3,
 		'fields' => [
 			'theme_css' => [
 				'label' => 'Theme Styles',
+				'type' => 'code'
+			],
+			'light_css' => [
+				'label' => 'Light Mode Styles',
+				'type' => 'code'
+			],
+			'dark_css' => [
+				'label' => 'Dark Mode Styles',
 				'type' => 'code'
 			]
 		]
@@ -810,7 +852,7 @@ class _themeMenu {
 				});';
 			echo '</script>';
 
-			echo '<h1>' . $name . '</h1>';
+			echo '<h1><img src="data:image/svg+xml;base64,' . _LOGO . '" style="height:32px"></h1>';
 			echo '<p>Configure your ' . $name . ' settings...</p>';
 			echo '<form id="' . $name . '-form" method="post">';
 				echo '<nav id="' . $name . '-nav" class="nav-tab-wrapper">';
@@ -1027,7 +1069,7 @@ class B {
 					'theme_location' => 'primary',
 					'depth' => 0,
 					'container' => false,
-					'menu_class' => 'navbar-nav position-relative',
+					'menu_class' => 'navbar-nav mr-auto', //'navbar-nav position-relative',
 					'fallback_cb' => '__return_false',
 					'walker' => new WP_Bootstrap_Navwalker()
 				]);
@@ -1054,6 +1096,10 @@ class B {
 			}
 			case 'shadow': {
 				echo (_B['nav_shadow'] == 'yes') ? ' shadow' : '';
+				break;
+			}
+			case 'dark': {
+				echo (_B['nav_dark'] == 'yes') ? 'dark' : 'light';
 				break;
 			}
 			default: {
@@ -1220,8 +1266,7 @@ function b_set_wp_options() {
 	}
 
 	if (_B['editor_width'] != '') {
-		add_theme_support('align-wide');
-		add_action('admin_head', 'b_editor_width');
+		add_filter('block_editor_settings_all', 'b_editor_settings', 10, 2);
 	}
 
 	if (get_option('blog_public') == '0') {
@@ -1237,6 +1282,19 @@ function b_set_wp_options() {
 		add_filter('get_next_post_where', 'b_keep_same_author', 10, 3);
 		add_filter('get_previous_post_where', 'b_keep_same_author', 10, 3);
 	}
+
+	if (is_admin()) {
+		// init updater
+
+		if (get_option('auth_key') !== '') {
+			$updater = new WPU(__FILE__);
+			$updater->set_versions('6.4', '6.4.3');
+			$updater->set_username('nullstep');
+			$updater->set_repository('basic_wp');
+			$updater->authorize(get_option('auth_key'));
+			$updater->initialize();
+		}
+	}
 }
 
 // admin notice - search engine visbility
@@ -1249,8 +1307,14 @@ function b_admin_notice_sev() {
 
 // set editor width
 
-function b_editor_width() {
-	echo '<style>.wp-block{max-width:' . _B['editor_width'] . ' !important}</style>';
+function b_editor_settings($settings, $context) {
+	$settings['styles'][] = [
+		'css' => 'html :where(.wp-block) { max-width:' . _B['editor_width'] . ' !important }',
+		'__unstableType' => 'base-layout',
+		'isGlobalStyles' => true
+	];
+
+	return $settings;
 }
 
 // add admin scripts
@@ -1271,13 +1335,13 @@ function b_set_excerpt_length($length) {
 	return _B['excerpt_length'];
 }
 
-// page column class metadata
+// page metadata
 
 function b_add_post_metadata() {
 	$screen = 'page';
 	add_meta_box(
 		'post_meta_box',
-		'CSS Classes',
+		'Additional',
 		'b_add_post_metadata_callback',
 		$screen,
 		'side',
@@ -1287,9 +1351,24 @@ function b_add_post_metadata() {
 }
 
 function b_add_post_metadata_callback($post) {
-	wp_nonce_field('css_class_save_data', 'css_class_nonce');
-	$value = get_post_meta($post->ID, 'css_class', true);
-	echo '<input class="components-text-control__input" style="margin-top:8px" type="text" name="css_class" value="' . esc_attr($value) . '" placeholder="Enter CSS Class...">';
+	wp_nonce_field('post_save_data', 'post_meta_nonce');
+
+	$css_class = get_post_meta($post->ID, 'css_class', true);
+	$is_element = get_post_meta($post->ID, 'is_element', true);
+
+	$checked = ($is_element == 'yes') ? ' checked' : '';
+?>
+	<style>#b-meta .switch{position:relative;display:inline-block;width:50px;height:24px;margin:3px 5px 3px 0}#b-meta .switch input{opacity:0;width:0;height:0}#b-meta .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:0.4s;border-radius:24px}#b-meta .slider:before{position:absolute;content:"";height:16px;width:16px;left:4px;bottom:4px;background-color:white;transition:0.4s;border-radius:50%}#b-meta input:checked + .slider{background-color:var(--wp-admin-theme-color)}#b-meta input:focus + .slider{box-shadow:0 0 1px var(--wp-admin-theme-color)}#b-meta input:checked + .slider:before{transform:translateX(26px)}</style>
+	<div id="b-meta">
+		<input class="components-text-control__input" style="margin-top:8px" type="text" name="css_class" value="<?php echo esc_attr($css_class); ?>" placeholder="Enter CSS Class...">
+		<br><br>
+		<label class="switch">
+			<input type="checkbox" name="is_element" value="yes"<?php echo $checked; ?>>
+			<span class="slider"></span>
+		</label>
+		<span class="components-checkbox-control__label">Is Element?</span>
+	</div>
+<?php
 }
 
 function b_save_post_metadata($post_id) {
@@ -1308,15 +1387,83 @@ function b_save_post_metadata($post_id) {
 	}
 	if (isset($_POST['post_type'])) {
 		if (in_array($_POST['post_type'], ['page', 'post'])) {
-			if (!isset($_POST['css_class_nonce'])) {
+			if (!isset($_POST['post_meta_nonce'])) {
 				return;
 			}
-			if (!wp_verify_nonce($_POST['css_class_nonce'], 'css_class_save_data')) {
+			if (!wp_verify_nonce($_POST['post_meta_nonce'], 'post_save_data')) {
 				return;
 			}
-			$data = sanitize_text_field($_POST['css_class']);
-			update_post_meta($post_id, 'css_class', $data);
+
+			$css_class = sanitize_text_field($_POST['css_class']);
+			update_post_meta($post_id, 'css_class', $css_class);
+
+			$is_element = sanitize_text_field($_POST['is_element']);
+			update_post_meta($post_id, 'is_element', $is_element);
 		}
+	}
+}
+
+// filter page edit list
+
+function b_load_edit() {
+	if (is_admin()) {
+		if ($_GET['post_type'] !== 'page') {
+			return;
+		}
+
+		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
+
+		switch ($current) {
+			case 'pages': {
+				add_action('pre_get_posts', function($query) {
+					$query->set('meta_query', [
+						'relation' => 'OR',
+						[
+							'key' => 'is_element',
+							'value' => 'blah',
+							'compare' => 'NOT EXISTS'
+						],
+						[
+							'key' => 'is_element',
+							'value' => 'yes',
+							'compare' => '!='
+						]
+					]);
+				});
+
+				break;
+			}
+			case 'elements': {
+				add_action('pre_get_posts', function($query) {
+					$query->set('meta_query', [
+						'relation' => 'OR',
+						[
+							'key' => 'is_element',
+							'value' => 'yes',
+							'compare' => '=='
+						]
+					]);
+				});
+
+				break;
+			}
+		}
+
+	}
+}
+
+// add buttons to pages list
+
+function b_add_buttons($which) {
+	if ($which == 'top') {
+		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
+?>
+	<span style="display:inline-block;margin:5px 5px 0 5px">Show: </span>
+	<style>.tablenav .button.active {background:var(--admin-highlight) !important; color:var(--admin-contrast) !important;box-shadow:none}.tablenav .button.active:hover {box-shadow: inset 0 0 100px 100px rgba(255,255,255,0.2)}</style>
+	<a href="/wp-admin/edit.php?post_type=page" class="button<?php echo ($current == 'all') ? ' active' : ''; ?>">All</a>
+	<a href="/wp-admin/edit.php?post_type=page&show=pages" class="button<?php echo ($current == 'pages') ? ' active' : ''; ?>">Pages</a>
+	<a href="/wp-admin/edit.php?post_type=page&show=elements" class="button<?php echo ($current == 'elements') ? ' active' : ''; ?>">Elements</a>
+<?php
 	}
 }
 
@@ -1333,9 +1480,9 @@ function b_filter_access($wp_query) {
 	if (is_user_logged_in()) {
 		global $current_user;
 
-		if (_CS['filter_post_list'] == 'yes') {
+		if (_B['filter_post_list'] == 'yes') {
 			if (isset($wp_query->query['post_type']) && (is_admin() && in_array($wp_query->query['post_type'], ['attachment', 'page', 'post']))) {
-				if (_CS['admin_sees_all_posts'] == 'yes') {
+				if (_B['admin_sees_all_posts'] == 'yes') {
 					if (!current_user_can('manage_options')) {
 						if (in_array('editor', $current_user->roles)) {
 							$wp_query->set('author', $current_user->ID);
@@ -1350,48 +1497,22 @@ function b_filter_access($wp_query) {
 	}
 }
 
-// set bootstrap class names
+// menu item meta handling
 
-function b_set_class_names($content) {
-	if (is_singular() && in_the_loop() && is_main_query()) {
-		$content = str_replace([
-			'has-text-align-left',
-			'has-text-align-right',
-			'has-text-align-center',
-			'alignleft',
-			'alignright',
-			'aligncenter',
-			'wp-container-core-columns-',
-			'wp-block-columns-is-layout-flex',
-			'is-layout-flex',
-			'is-layout-flow',
-			'wp-block-column-is-layout-flow',
-			'is-not-stacked-on-mobile',
-			'wp-block-columns',
-			'wp-block-column'
-		], [
-			'text-start',
-			'text-end',
-			'text-center',
-			'float-start',
-			'float-end',
-			'text-center',
-			'',
-			'',
-			'',
-			'',
-			'',
-			'',
-			'row',
-			'col'
-		],
-			$content
-		);
+function b_menu_meta($item_id, $item) {
+	$is_megamenu = get_post_meta($item_id, '_mega-menu', true);
+?>
+	<p class="description description-wide">
+		<label for="b-menu-item-button-<?php echo $item_id; ?>" >
+			<input type="checkbox" id="b-menu-item-button-<?php echo $item_id; ?>" name="b-menu-item-button[<?php echo $item_id; ?>]" <?php checked($is_megamenu, true); ?>> Is MegaMenu
+		</label>
+	</p>
+<?php
+}
 
-		$content = preg_replace('/layout-\d+/', '', $content);
-	}
-
-	return $content;
+function b_menu_save_meta($menu_id, $menu_item_db_id) {
+	$value = (isset($_POST['b-menu-item-button'][$menu_item_db_id]) && $_POST['b-menu-item-button'][$menu_item_db_id] == 'on') ? true : false;
+	update_post_meta($menu_item_db_id, '_mega-menu', $value);
 }
 
 //     ▄████████     ▄█    █▄      ▄██████▄      ▄████████      ███      
@@ -1562,6 +1683,15 @@ function b_page_shortcode($atts = [], $content = null, $tag = '') {
 function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 	wp_reset_postdata();
 
+	$a = shortcode_atts([
+		'class' => '',
+		'bg' => 'no',
+		'row' => 'no'
+	], $atts);
+
+	$row = ($a['row'] == 'yes') ? ' class="row"' : '';
+	$class = ($a['class']) ? ' ' . $a['class'] : '';
+
 	$count = $content;
 	$none = true;
 	$num = 0;
@@ -1572,30 +1702,41 @@ function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 		'posts_per_page' => $count,
 		'category__not_in' => $cat->term_id
 	]);
-	$html = '<div id="latest-posts">';
+	$html = '<div id="latest-posts"' . $row . '>';
 
 	while ($query -> have_posts()) : $query -> the_post();
 		if ((get_the_ID() != $post_id)) {
 			$bg = '';
 
-			if (has_post_thumbnail()) {
-				$array = explode('/', wp_get_attachment_image_src(get_post_thumbnail_id(), 'post-thumbnail')[0]);
-				$bg = end($array);
+			if (_B['latest_images'] == 'yes') {
+				if (has_post_thumbnail()) {
+					$array = explode('/', wp_get_attachment_image_src(get_post_thumbnail_id(), 'post-thumbnail')[0]);
+					$bg = end($array);
+				}				
 			}
 
 			if ($num <= $count) {
-				$html .= '<div class="post-box my-3">';
+				$html .= '<div class="post-box my-3' . $class . '">';
 					$html .= '<a class="post-link" href="' . get_permalink() . '" title="' . get_the_title() . '">';
-						$html .= '<h4 class="post-title">' . get_the_title() . '</h4>';
-						$html .= '<p class="post-date">' . get_the_time(get_option('date_format')) . ' - ' . get_the_time() . '</p>';
 
 						if ($bg && _B['latest_images'] == 'yes') {
-							$html .= '<div class="post-img" style="background-image:url(/uploads/' . $bg . ')"></div>';
+							if ($a['bg'] == 'yes') {
+								$html .= '<div class="post-img" style="background-image:url(/uploads/' . $bg . ')"><h4 class="post-title">' . get_the_title() . '</h4></div>';
+							}
+							else {
+								$html .= '<img class="post-img" src="/uploads/' . $bg . '">';
+								$html .= '<h4 class="post-title">' . get_the_title() . '</h4>';
+							}
+						}
+						else {
+							$html .= '<h4 class="post-title">' . get_the_title() . '</h4>';
 						}
 
+						$html .= '<p class="post-date">' . get_the_time(get_option('date_format')) . ' - ' . get_the_time() . '</p>';
 						$html .= '<p class="post-excerpt">' . get_the_excerpt() . '</p>';
 					$html .= '</a>';
 				$html .= '</div>';
+
 				$none = false;
 				$num++;
 			}
@@ -1606,6 +1747,46 @@ function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 		$html .= '<div>No Posts&hellip;</div>';
 	}
 	return $html . '</div>';
+}
+
+//   ▄██████▄   ███    █▄       ███         ▄███████▄  ███    █▄       ███      
+//  ███    ███  ███    ███  ▀█████████▄    ███    ███  ███    ███  ▀█████████▄  
+//  ███    ███  ███    ███     ▀███▀▀██    ███    ███  ███    ███     ▀███▀▀██  
+//  ███    ███  ███    ███      ███   ▀    ███    ███  ███    ███      ███   ▀  
+//  ███    ███  ███    ███      ███      ▀█████████▀   ███    ███      ███      
+//  ███    ███  ███    ███      ███        ███         ███    ███      ███      
+//  ███    ███  ███    ███      ███        ███         ███    ███      ███      
+//   ▀██████▀   ████████▀      ▄████▀     ▄████▀       ████████▀      ▄████▀
+
+function b_filter_output($html) {
+	$html = preg_replace('/\swp-container-core-columns-is-layout-\w+/', '', $html);
+	$html = preg_replace('/\swp-block-columns-is-layout-\w+/', '', $html);
+	$html = preg_replace('/\swp-block-column-is-layout-\w+/', '', $html);
+	$html = preg_replace('/\sis-layout-\w+/', '', $html);
+
+	$html = str_replace([
+		'has-text-align-left',
+		'has-text-align-right',
+		'has-text-align-center',
+		'alignleft',
+		'alignright',
+		'aligncenter',
+		'wp-block-columns',
+		'wp-block-column'
+	], [
+		'text-start',
+		'text-end',
+		'text-center',
+		'float-start',
+		'float-end',
+		'text-center',
+		'row',
+		'col'
+	],
+		$html
+	);
+
+	return $html;
 }
 
 //    ▄▄▄▄███▄▄▄▄     ▄█      ▄████████   ▄████████  
@@ -1655,32 +1836,14 @@ function b_admin_styling() {
 // bootstrap 5 nav walker
 
 class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
+
 	private $current_item;
-	private $dropdown_menu_alignment_values = [
-		'dropdown-menu-start',
-		'dropdown-menu-end',
-		'dropdown-menu-sm-start',
-		'dropdown-menu-sm-end',
-		'dropdown-menu-md-start',
-		'dropdown-menu-md-end',
-		'dropdown-menu-lg-start',
-		'dropdown-menu-lg-end',
-		'dropdown-menu-xl-start',
-		'dropdown-menu-xl-end',
-		'dropdown-menu-xxl-start',
-		'dropdown-menu-xxl-end'
-	];
 
 	function start_lvl(&$output, $depth = 0, $args = null) {
-		$dropdown_menu_class[] = '';
-		foreach ($this->current_item->classes as $class) {
-			if (in_array($class, $this->dropdown_menu_alignment_values)) {
-				$dropdown_menu_class[] = $class;
-			}
-		}
-		$indent = str_repeat("\t", $depth);
+		$is_megamenu = get_post_meta($args->walker->current_item->ID, '_mega-menu', true);
 		$submenu = ($depth > 0) ? ' sub-menu' : '';
-		$output .= "$indent<ul class=\"dropdown-menu$submenu " . esc_attr(implode(" ", $dropdown_menu_class)) . " $depth\">";
+		$megamenu = ($is_megamenu) ? ' is-megamenu' : '';
+		$output .= '<ul class="dropdown-menu' . $submenu . $megamenu . '">';
 	}
 
 	function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
@@ -1707,6 +1870,7 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 		$id = strlen($id) ? ' id="' . esc_attr($id) . '"' : '';
 
 		$output .= $indent . '<li' . $id . $value . $class_names . $li_attributes . '>';
+		//$output .= "\n" . '<!-- ' . var_export($item->classes, true) . ' -->' . "\n";
 
 		$attributes = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
 		$attributes .= !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
@@ -1832,7 +1996,7 @@ function generate_css() {
 
 	$css .= '}';
 
-	$css .= 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body pre,code{font-family:var(--mono-font)}#body .relative{position:relative}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#banner-area div{height:100%}.banner-box{display:grid}.banner-content{margin:auto;text-align:center}#footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)}.bottom{position:absolute;bottom:0}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}#content-area a{color:var(--primary-colour)}h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important}hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem}.feed a{text-decoration:none;color:var(--text-colour)}#content-area figure.size-full img{max-width:100%;height:auto}';
+	$css .= 'body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important}#body .navbar .nav-link{color:var(--nav-text-colour)!important}#body pre,code{font-family:var(--mono-font)}#body .relative{position:relative}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)}.bottom{position:absolute;bottom:0}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}#content-area a{color:var(--primary-colour)}h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important}hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem}.feed a{text-decoration:none;color:var(--text-colour)}#content-area figure.size-full img{max-width:100%;height:auto}nav a.dropdown-toggle{cursor:pointer}';
 
 	if ($s['headings_upper'] == 'yes') {
 		$css .= 'h1,h2,h3,h4,h5,h6{text-transform:uppercase}';
@@ -1881,7 +2045,7 @@ function generate_css() {
 		$fonts .= ':root{' . $root . '}';
 	}
 
-	return $fonts . $css;
+	return $fonts . $css . minify_css($s['light_css']) . minify_css($s['dark_css']);
 }
 
 // curl
@@ -2081,20 +2245,17 @@ if (!class_exists('WPU')) {
 //  ███   ███    ███  ███       ███      
 //  █▀     ▀█    █▀   █▀       ▄████▀
 
-// init updater
-
-if (get_option('auth_key') !== '') {
-	$updater = new WPU(__FILE__);
-	$updater->set_versions('6.4', '6.4.3');
-	$updater->set_username('nullstep');
-	$updater->set_repository('basic_wp');
-	$updater->authorize(get_option('auth_key'));
-	$updater->initialize();
-}
-
 // oh mah gawd a global!
 
 global $evil;
+
+// output buffer on if not admin
+
+if (!is_admin()) {
+	ob_start();
+
+	add_filter('final_output', 'b_filter_output');
+}
 
 // actions
 
@@ -2104,11 +2265,14 @@ add_action('admin_head', 'b_admin_styling', 999);
 add_action('after_setup_theme', 'b_do_setup');
 add_action('add_meta_boxes', 'b_add_post_metadata');
 add_action('save_post', 'b_save_post_metadata');
+add_action('load-edit.php', 'b_load_edit');
+add_action('manage_posts_extra_tablenav', 'b_add_buttons', 10, 1);
+add_action('wp_nav_menu_item_custom_fields', 'b_menu_meta', 10, 2);
+add_action('wp_update_nav_menu_item', 'b_menu_save_meta', 10, 2);
 
 // filters
 
 add_filter('excerpt_length', 'b_set_excerpt_length', 999);
-add_filter('the_content', 'b_set_class_names', 999);
 
 // shortcodes
 
@@ -2121,13 +2285,24 @@ add_shortcode('page', 'b_page_shortcode');
 add_shortcode('video', 'b_video_shortcode');
 add_shortcode('button', 'b_button_shortcode');
 
-// fix ob flush issues
+// we don't want these
 
 remove_action('shutdown', 'wp_ob_end_flush_all', 1);
 
+// run our output filter
+
 add_action('shutdown', function() {
-   while (@ob_end_flush());
-});
+	if (!is_admin()) {
+		$final = '';
+		$levels = ob_get_level();
+
+		for ($i = 0; $i < $levels; $i++) {
+			$final .= ob_get_clean();
+		}
+
+		echo apply_filters('final_output', $final);
+	}
+}, 999);
 
 // boot theme
 

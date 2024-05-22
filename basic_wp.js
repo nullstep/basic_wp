@@ -16,6 +16,8 @@ jQuery(function($) {
 		'woo_per_page',
 		'woo_columns',
 		'editor_width',
+		'ld_mode',
+		'stt_icon',
 		'favicon_image',
 		'logo_image_normal',
 		'logo_image_contrast',
@@ -27,6 +29,7 @@ jQuery(function($) {
 		'nav_logo_align',
 		'nav_search_align',
 		'nav_shadow',
+		'nav_dark',
 		'sticky_nav',
 		'nav_mobile',
 		'page_colour',
@@ -58,11 +61,15 @@ jQuery(function($) {
 		'nav_upper',
 		'font_awesome',
 		'theme_css',
+		'light_css',
+		'dark_css',
 		'theme_js'
 	];
 	// code editors
 	const editors = [
 		'theme_css',
+		'light_css',
+		'dark_css',
 		'theme_js'
 	];
 	// content editors
@@ -138,7 +145,6 @@ jQuery(function($) {
 		if (eid.length) {
 			eid.on('change', function() {
 				$('#' + item).val(eid.html());
-				console.log(eid.html());
 			});
 		}
 	});
