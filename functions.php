@@ -981,7 +981,7 @@ class B {
 	}
 
 	public static function js() {
-		echo '$(function(){$("#mode").on("click",function(){var b=$("#body");if(b.hasClass("light")){b.removeClass("light").addClass("dark");}else{b.removeClass("dark").addClass("light");}});});' . _B['theme_js_minified'];
+		echo 'function sc(e,t){var n=new Date;n.setTime(n.getTime()+2592e6),document.cookie=e+"="+t+";expires="+n.toUTCString()+";path=/"}function gc(e){e+="=";for(var t=decodeURIComponent(document.cookie).split(";"),n=0;n<t.length;n++){for(var o=t[n];" "==o.charAt(0);)o=o.substring(1);if(0==o.indexOf(e))return o.substring(e.length,o.length)}return""}function sm(){var e=$("#body");e.hasClass("light")?(e.removeClass("light").addClass("dark"),sc("mode","dark")):(e.removeClass("dark").addClass("light"),sc("mode","light"))}$((function(){"dark"==(gc("mode")||"light")&&sm(),$("#mode").on("click",(function(){sm()}))}));' . _B['theme_js_minified'];
 	}
 
 	public static function favicon() {
