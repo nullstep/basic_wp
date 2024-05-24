@@ -1662,43 +1662,52 @@ function b_children_shortcode($atts = [], $content = null, $tag = '') {
 
 // show page shortcode
 
-function b_page_shortcode($atts = [], $content = null, $tag = '') {
-	global $evil;
+function b_page_shortcode($atts = [], $content = NULL, $tag = '') {
+    global $evil;
 
-	$a = shortcode_atts([
-		'wide' => '',
-		'bg' => ''
-	], $atts);
+    $a = shortcode_atts([
+        'wide' => '',
+        'bg' => '',
+        'class' => ''
+    ], $atts);
 
-	$html = '';
-	$bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : '';
+    $html = '';
+    $bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : '';
+    $class = ($a['class']) ? ' class="' . $a['class'] . '"' : '';
 
-	if ($content) {
-		$page = get_page_by_path($content);
+    if ($content) {
+        $page = get_posts([
+            'name' => $content,
+            'post_type' => 'page'
+        ]);
 
-		if ($page) {
-			$evil['page_id'] = $page->ID;
+        if (is_array($page)) {
+            $page = $page[0];
+        }
 
-					$html .= '</div>';
-				$html .= '</div>';
-			$html .= '</div>';
-			$html .= '<div id="' . $page->post_name . '-section">';
-				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : B::value('container_class')) . '"' . $bg . '>';
-					$html .= '<div class="row">';
-						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . do_shortcode($page->post_content) . '</div>';
-					$html .= '</div>';
-				$html .= '</div>';
-			$html .= '</div>';
-			$html .= '<div class="' . B::value('container_class') . '">';
-				$html .= '<div class="row">';
-					$html .= '<div class="col-xs-12">';
-		}
-	}
+        if ($page) {
+            $evil['page_id'] = $page->ID;
 
-	unset($evil['page_id']);
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '<div id="' . $page->post_name . '-section"' . $class . '>';
+            $html .= '<div class="' . (($a['wide']) ? 'container-fluid' : B::value('container_class')) . '"' . $bg . '>';
+            $html .= '<div class="row">';
+            $html .= '<div class="' . get_post_meta($page->ID, 'css_class', TRUE) . '">' . do_shortcode($page->post_content) . '</div>';
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '<div class="' . B::value('container_class') . '">';
+            $html .= '<div class="row">';
+            $html .= '<div class="col-xs-12">';
+        }
+    }
 
-	return $html;
-}
+    unset($evil['page_id']);
+
+    return $html;
+} 
 
 // latest posts shortcode
 
