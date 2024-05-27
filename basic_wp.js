@@ -24,10 +24,12 @@ jQuery(function($) {
 		'latest_images',
 		'nav_logo',
 		'nav_width',
+		'nav_elements',
 		'nav_layout',
-		'nav_nav_align',
+		'nav_links_align',
 		'nav_logo_align',
 		'nav_search_align',
+		'nav_mode_align',
 		'nav_shadow',
 		'nav_dark',
 		'sticky_nav',
@@ -116,8 +118,8 @@ jQuery(function($) {
 				item.codemirror.setValue($('#' + editors[index]).val());
 			});
 		});
-		if (typeof bwp_go !== 'undefined') {
-			bwp_go();
+		if (typeof b_go !== 'undefined') {
+			b_go();
 		}
 	});
 	editors.forEach(function(item, index, arr) {

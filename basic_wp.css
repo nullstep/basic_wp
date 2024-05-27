@@ -150,6 +150,35 @@
 	transform: translateX(26px);
 }
 
+#basic_wp-form .sortable {
+	height: 30px;
+	width: 75%;
+	border: 1px solid #8c8f94;
+	border-radius: 3px;	
+	padding: 1px 8px 0;
+	margin: 4px 1px 0;
+	background: #fff;
+	box-sizing: border-box;
+}
+
+#basic_wp-form .sortable li.si {
+	display: inline;
+	font-size: 13px;
+	margin-top: 3px;
+	padding: 2px 8px 3px;
+	line-height: 2;
+	margin-right: 5px;
+	background: var(--admin-highlight);
+	color: var(--admin-contrast);
+	border-radius: 99px;
+	cursor: pointer;
+}
+
+#basic_wp-form .sortable li.si:empty {
+	background: none;
+	padding: 0;
+}
+
 @media screen and (max-width: 782px) {
 	#basic_wp-form .col-4,
 	#basic_wp-form .col-3,
