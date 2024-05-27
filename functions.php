@@ -67,11 +67,15 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => 'container'
 	],
+	'nav_elements' => [
+		'type' => 'string',
+		'default' => 'logo,mode'
+	],
 	'nav_layout' => [
 		'type' => 'string',
-		'default' => 'nav,logo,search'
+		'default' => 'links,search'
 	],
-	'nav_nav_align' => [
+	'nav_links_align' => [
 		'type' => 'string',
 		'default' => 'me-auto'
 	],
@@ -82,6 +86,10 @@ define('_ARGS_BASIC_WP', [
 	'nav_search_align' => [
 		'type' => 'string',
 		'default' => 'ms-auto'
+	],
+	'nav_mode_align' => [
+		'type' => 'string',
+		'default' => 'mx-auto'
 	],
 	'nav_shadow' => [
 		'type' => 'string',
@@ -377,6 +385,18 @@ define('_ADMIN_BASIC_WP', [
 		'label' => 'Navbar',
 		'columns' => 4,
 		'fields' => [
+			'nav_elements' => [
+				'label' => 'Navbar Elements Available',
+				'type' => 'sort',
+				'connect' => 'nav_layout',
+				'columns' => 2
+			],
+			'nav_layout' => [
+				'label' => 'Navbar Layout',
+				'type' => 'sort',
+				'connect' => 'nav_elements',
+				'columns' => 2
+			],
 			'nav_logo' => [
 				'label' => 'Navbar Logo Image',
 				'type' => 'select',
@@ -394,25 +414,8 @@ define('_ADMIN_BASIC_WP', [
 					'container' => 'Fixed Width'
 				]
 			],
-			'nav_layout' => [
-				'label' => 'Navbar Layout',
-				'type' => 'select',
-				'values' => [
-					'nav' => 'Nav',
-					'logo,nav' => 'Logo > Nav',
-					'nav,logo' => 'Nav > Logo',
-					'search,nav' => 'Search > Nav',
-					'nav,search' => 'Nav > Search',
-					'logo,nav,search' => 'Logo > Nav > Search',
-					'logo,search,nav' => 'Logo > Search > Nav',
-					'nav,logo,search' => 'Nav > Logo > Search',
-					'nav,search,logo' => 'Nav > Search > Logo',
-					'search,logo,nav' => 'Search > Logo > Nav',
-					'search,nav,logo' => 'Search > Nav > Logo'
-				]
-			],
-			'nav_nav_align' => [
-				'label' => 'Nav Alignment',
+			'nav_links_align' => [
+				'label' => 'Links Alignment',
 				'type' => 'select',
 				'values' => [
 					'm-none' => 'None',
@@ -433,6 +436,16 @@ define('_ADMIN_BASIC_WP', [
 			],
 			'nav_search_align' => [
 				'label' => 'Search Alignment',
+				'type' => 'select',
+				'values' => [
+					'm-none' => 'None',
+					'me-auto' => 'Left',
+					'mx-auto' => 'Middle',
+					'ms-auto' => 'Right'
+				]
+			],
+			'nav_mode_align' => [
+				'label' => 'Mode Alignment',
 				'type' => 'select',
 				'values' => [
 					'm-none' => 'None',
@@ -468,7 +481,7 @@ define('_ADMIN_BASIC_WP', [
 		'columns' => 4,
 		'fields' => [
 			'page_colour' => [
-				'label' => 'Page Colour',
+				'label' => 'Page Background Colour',
 				'type' => 'colour'
 			],
 			'text_colour' => [
@@ -480,7 +493,7 @@ define('_ADMIN_BASIC_WP', [
 				'type' => 'colour'
 			],
 			'info_colour' => [
-				'label' => 'Info Area Colour',
+				'label' => 'Info Area Background Colour',
 				'type' => 'colour'
 			],
 			'info_text_colour' => [
@@ -488,15 +501,15 @@ define('_ADMIN_BASIC_WP', [
 				'type' => 'colour'
 			],
 			'nav_colour' => [
-				'label' => 'Nav Colour',
+				'label' => 'Navbar Background Colour',
 				'type' => 'colour'
 			],
 			'nav_text_colour' => [
-				'label' => 'Nav Text Colour',
+				'label' => 'Navbar Text Colour',
 				'type' => 'colour'
 			],
 			'banner_colour' => [
-				'label' => 'Banner Colour',
+				'label' => 'Banner Background Colour',
 				'type' => 'colour'
 			],
 			'banner_text_colour' => [
@@ -504,11 +517,11 @@ define('_ADMIN_BASIC_WP', [
 				'type' => 'colour'
 			],
 			'footer_top_colour' => [
-				'label' => 'Footer Top Area Colour',
+				'label' => 'Footer Top Area Background Colour',
 				'type' => 'colour'
 			],
 			'footer_colour' => [
-				'label' => 'Footer Colour',
+				'label' => 'Footer Main Background Colour',
 				'type' => 'colour'
 			],
 			'footer_text_colour' => [
@@ -532,11 +545,11 @@ define('_ADMIN_BASIC_WP', [
 				'type' => 'colour'
 			],
 			'light_colour' => [
-				'label' => 'Light Colour',
+				'label' => 'Light Contrast Colour',
 				'type' => 'colour'
 			],
 			'dark_colour' => [
-				'label' => 'Dark Colour',
+				'label' => 'Dark Contrast Colour',
 				'type' => 'colour'
 			],
 			'admin_link_colour' => [
@@ -569,6 +582,10 @@ define('_ADMIN_BASIC_WP', [
 				'label' => 'Monospace Font',
 				'type' => 'font'
 			],
+			'google_api' => [
+				'label' => 'Google Font API Key',
+				'type' => 'input'
+			],
 			'headings_upper' => [
 				'label' => 'Uppercase Headings',
 				'type' => 'check'
@@ -576,10 +593,6 @@ define('_ADMIN_BASIC_WP', [
 			'nav_upper' => [
 				'label' => 'Uppercase Navigation',
 				'type' => 'check'
-			],
-			'google_api' => [
-				'label' => 'Google Font API Key',
-				'type' => 'input'
 			],
 			'font_awesome' => [
 				'label' => 'Use Font Awesome',
@@ -805,7 +818,26 @@ class _themeMenu {
 		wp_enqueue_media();
 		$this->enqueue_assets();
 
+		echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/html5sortable/0.13.3/html5sortable.min.js"></script>';
+
 		$opts = '<option value="">None</option>';
+
+		$wsf = [
+			'Arial|sans-serif',
+			'Verdana|sans-serif',
+			'Tahoma|sans-serif',
+			'Trebuchet MS|sans-serif',
+			'Times New Roman|serif',
+			'Georgia|serif',
+			'Garamond|serif',
+			'Courier New|monospace',
+			'Brush Script MT|cursive'
+		];
+
+		foreach ($wsf as $font) {
+			$font_array = explode('|', $font);
+			$opts .= '<option value="' . $font_array[0] . '">' . $font_array[0] . ' (' . $font_array[1] . ')</option>';
+		}
 
 		if (_B['google_api'] != '') {
 			$fonts = json_decode(
@@ -864,7 +896,8 @@ class _themeMenu {
 				foreach ($form as $tid => $tab) {
 					echo '<div id="' . $name . '-' . $tid . '" class="' . $name . '-tab">';
 					foreach ($tab['fields'] as $fid => $field) {
-						echo '<div class="form-block col-' . $tab['columns'] . '">';
+						$columns = (isset($field['columns'])) ? $field['columns'] : $tab['columns'];
+						echo '<div class="form-block col-' . $columns . '">';
 						switch ($field['type']) {
 							case 'input': {
 								echo '<label for="' . $fid . '">';
@@ -944,6 +977,15 @@ class _themeMenu {
 								echo '</div>';
 								break;
 							}
+							case 'sort': {
+								echo '<label for="' . $fid . '">';
+									echo $field['label'] . ':';
+								echo '</label>';
+								$connect = (isset($field['connect'])) ? $field['connect'] : '';
+								echo '<input id="' . $fid . '" class="sort" data-connect="' . $connect . '" type="hidden" name="' . $fid . '">';
+								echo '<ul id="' . $fid . '-sort" class="sortable"></ul>';
+								break;
+							}
 						}
 						echo '</div>';
 					}
@@ -957,9 +999,29 @@ class _themeMenu {
 			echo '</form>';
 		echo '</div>';
 		echo '<script>';
+			echo 'Array.prototype.rd=function(){return this.filter(function(item,index,self){return self.indexOf(item)==index;});};';
 			echo 'function b_go() {
 				jQuery(".gfs").each(function(i, o) {
 					gfp(jQuery(this));
+				});
+				jQuery(".sort").each(function(i, o) {
+					var id = "#" + jQuery(o).attr("id");
+					var sid = id + "-sort";
+					var conn = jQuery(o).data("connect");
+					var p = (conn != "") ? {connectWith: "#" + conn + "-sort," + sid} : {};
+					p.update = function(e, ui) {
+						var t = jQuery(sid + " li").map(function() {
+							return jQuery(this).text();
+						}).get().join(",");
+						jQuery(sid.split("-")[0]).val(t);
+					};
+					jQuery(o).val().split(",").rd().forEach(function(v, i) {
+						if (v != "") {
+							jQuery(sid).append("<li class=\"si\">" + v + "</li>");
+						}
+					});
+					jQuery(sid).sortable(p);
+					jQuery(sid).disableSelection();
 				});
 			}';
 		echo '</script>';
@@ -1061,7 +1123,7 @@ class B {
 				echo '<div class="' . B::align('logo') . '">' . $logo . '</div>';
 				break;
 			}
-			case 'nav': {
+			case 'links': {
 				$toggle = '<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".target"><span class="navbar-toggler-icon"></span></button>';
 				echo (_B['nav_mobile'] == 'left') ? $toggle : '';
 				echo '<div id="navbar" class="navbar-collapse collapse target ' . B::align('nav') . '">';
@@ -1078,9 +1140,6 @@ class B {
 				break;
 			}
 			case 'search': {
-				echo '<div id="mode-switch" class="d-flex">';
-					B::nav('mode');
-				echo '</div>';
 				echo '<form class="d-flex ' . B::align('search') . '" method="get" action="' . get_site_url() . '">';
 					echo '<input class="form-control me-2" type="search" name="s" placeholder="Search">';
 					echo '<button class="btn btn-primary" type="submit">';
@@ -1106,9 +1165,11 @@ class B {
 				break;
 			}
 			case 'mode': {
-				echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-sun"></i>' : 'sun';
-				echo '<span class="toggle" id="mode"></span>';
-				echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-moon"></i>' : 'moon';
+				echo '<div id="mode-switch" class="d-flex ' . B::align('mode') . '">';
+					echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-sun"></i>' : 'sun';
+					echo '<span class="toggle" id="mode"></span>';
+					echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-moon"></i>' : 'moon';
+				echo '</div>';
 				break;
 			}
 			default: {
