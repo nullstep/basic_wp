@@ -1661,7 +1661,13 @@ function b_button_shortcode($atts = [], $content = null, $tag = '') {
 // video shortcode
 
 function b_video_shortcode($atts = [], $content = null, $tag = '') {
-	return '<div class="video"><iframe src="' . $content . '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+	$html = '<div class="video-box">';
+		$html .= '<div class="video">';
+			$html .= '<iframe src="' . $content . '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+		$html .= '</div>';
+	$html .= '</div>';
+
+	return $html;
 }
 
 // show child pages shortcode
@@ -1698,19 +1704,15 @@ function b_children_shortcode($atts = [], $content = null, $tag = '') {
 			}
 
 			foreach ($child_pages as $child_page) {
-				$page_id = $child_page->ID;
-				$page_link = get_permalink($page_id);
-				$page_title = $child_page->post_title;
-				$page_content = $child_page->post_content;
-				$page_css_class = get_post_meta($page_id, 'css_class', true);
-				$html .= '<div id="' . $child_page->post_name .  '-section" class="' . $page_css_class . '">' . do_shortcode($page_content) . '</div>';
+				$page_css_class = get_post_meta($child_page->ID, 'css_class', true);
+				$html .= '<div id="' . $child_page->post_name .  '-section" class="' . $page_css_class . '">' . do_shortcode($child_page->post_content) . '</div>';
 			}
 
 			if ($wide) {
 				$html .= '</div>';
-				$html .= '<div class="' . _B['container_class'] . '">';
+				$html .= '<div class="' . B::value('container_class', false) . '">';
 					$html .= '<div class="row">';
-						$html .= '<div class="col-xs-12">';
+						$html .= '<div class="col-12">';
 			}
 			else {
 				$html .= '</div>';
@@ -1723,7 +1725,7 @@ function b_children_shortcode($atts = [], $content = null, $tag = '') {
 
 // show page shortcode
 
-function b_page_shortcode($atts = [], $content = NULL, $tag = '') {
+function b_page_shortcode($atts = [], $content = null, $tag = '') {
     global $evil;
 
     $a = shortcode_atts([
@@ -1749,19 +1751,19 @@ function b_page_shortcode($atts = [], $content = NULL, $tag = '') {
         if ($page) {
             $evil['page_id'] = $page->ID;
 
-            $html .= '</div>';
-            $html .= '</div>';
+            		$html .= '</div>';
+            	$html .= '</div>';
             $html .= '</div>';
             $html .= '<div id="' . $page->post_name . '-section"' . $class . '>';
-            $html .= '<div class="' . (($a['wide']) ? 'container-fluid' : B::value('container_class')) . '"' . $bg . '>';
-            $html .= '<div class="row">';
-            $html .= '<div class="' . get_post_meta($page->ID, 'css_class', TRUE) . '">' . do_shortcode($page->post_content) . '</div>';
+            	$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : B::value('container_class', false)) . '"' . $bg . '>';
+            		$html .= '<div class="row">';
+            			$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . do_shortcode($page->post_content) . '</div>';
+            		$html .= '</div>';
+            	$html .= '</div>';
             $html .= '</div>';
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '<div class="' . B::value('container_class') . '">';
-            $html .= '<div class="row">';
-            $html .= '<div class="col-xs-12">';
+            $html .= '<div class="' . B::value('container_class', false) . '">';
+            	$html .= '<div class="row">';
+            		$html .= '<div class="col-12">';
         }
     }
 
