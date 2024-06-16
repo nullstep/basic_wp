@@ -1506,7 +1506,9 @@ function b_save_post_metadata($post_id) {
 // add buttons to pages list
 
 function b_add_buttons($which) {
-	if ($which == 'top') {
+	$type = $_GET['post_type'] ?? null;    
+    
+	if ($which == 'top' && $type == 'page') {
 		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
 ?>
 	<span style="display:inline-block;margin:5px 5px 0 5px">Show: </span>
@@ -1522,48 +1524,48 @@ function b_add_buttons($which) {
 
 function b_load_edit() {
 	if (is_admin()) {
-		if ($_GET['post_type'] !== 'page') {
-			return;
-		}
+		$type = $_GET['post_type'] ?? null;
 
-		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
+		if ($type == 'page') {
 
-		switch ($current) {
-			case 'pages': {
-				add_action('pre_get_posts', function($query) {
-					$query->set('meta_query', [
-						'relation' => 'OR',
-						[
-							'key' => 'is_element',
-							'value' => 'blah',
-							'compare' => 'NOT EXISTS'
-						],
-						[
-							'key' => 'is_element',
-							'value' => 'yes',
-							'compare' => '!='
-						]
-					]);
-				});
+			$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
 
-				break;
+			switch ($current) {
+				case 'pages': {
+					add_action('pre_get_posts', function($query) {
+						$query->set('meta_query', [
+							'relation' => 'OR',
+							[
+								'key' => 'is_element',
+								'value' => 'blah',
+								'compare' => 'NOT EXISTS'
+							],
+							[
+								'key' => 'is_element',
+								'value' => 'yes',
+								'compare' => '!='
+							]
+						]);
+					});
+
+					break;
+				}
+				case 'elements': {
+					add_action('pre_get_posts', function($query) {
+						$query->set('meta_query', [
+							'relation' => 'OR',
+							[
+								'key' => 'is_element',
+								'value' => 'yes',
+								'compare' => '=='
+							]
+						]);
+					});
+
+					break;
+				}
 			}
-			case 'elements': {
-				add_action('pre_get_posts', function($query) {
-					$query->set('meta_query', [
-						'relation' => 'OR',
-						[
-							'key' => 'is_element',
-							'value' => 'yes',
-							'compare' => '=='
-						]
-					]);
-				});
-
-				break;
-			}
 		}
-
 	}
 }
 
@@ -1726,50 +1728,50 @@ function b_children_shortcode($atts = [], $content = null, $tag = '') {
 // show page shortcode
 
 function b_page_shortcode($atts = [], $content = null, $tag = '') {
-    global $evil;
+	global $evil;
 
-    $a = shortcode_atts([
-        'wide' => '',
-        'bg' => '',
-        'class' => ''
-    ], $atts);
+	$a = shortcode_atts([
+		'wide' => '',
+		'bg' => '',
+		'class' => ''
+	], $atts);
 
-    $html = '';
-    $bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : '';
-    $class = ($a['class']) ? ' class="' . $a['class'] . '"' : '';
+	$html = '';
+	$bg = ($a['bg']) ? ' style="background:' . $a['bg'] . '"' : '';
+	$class = ($a['class']) ? ' class="' . $a['class'] . '"' : '';
 
-    if ($content) {
-        $page = get_posts([
-            'name' => $content,
-            'post_type' => 'page'
-        ]);
+	if ($content) {
+		$page = get_posts([
+			'name' => $content,
+			'post_type' => 'page'
+		]);
 
-        if (is_array($page)) {
-            $page = $page[0];
-        }
+		if (is_array($page)) {
+			$page = $page[0];
+		}
 
-        if ($page) {
-            $evil['page_id'] = $page->ID;
+		if ($page) {
+			$evil['page_id'] = $page->ID;
 
-            		$html .= '</div>';
-            	$html .= '</div>';
-            $html .= '</div>';
-            $html .= '<div id="' . $page->post_name . '-section"' . $class . '>';
-            	$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : B::value('container_class', false)) . '"' . $bg . '>';
-            		$html .= '<div class="row">';
-            			$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . do_shortcode($page->post_content) . '</div>';
-            		$html .= '</div>';
-            	$html .= '</div>';
-            $html .= '</div>';
-            $html .= '<div class="' . B::value('container_class', false) . '">';
-            	$html .= '<div class="row">';
-            		$html .= '<div class="col-12">';
-        }
-    }
+					$html .= '</div>';
+				$html .= '</div>';
+			$html .= '</div>';
+			$html .= '<div id="' . $page->post_name . '-section"' . $class . '>';
+				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : B::value('container_class', false)) . '"' . $bg . '>';
+					$html .= '<div class="row">';
+						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . do_shortcode($page->post_content) . '</div>';
+					$html .= '</div>';
+				$html .= '</div>';
+			$html .= '</div>';
+			$html .= '<div class="' . B::value('container_class', false) . '">';
+				$html .= '<div class="row">';
+					$html .= '<div class="col-12">';
+		}
+	}
 
-    unset($evil['page_id']);
+	unset($evil['page_id']);
 
-    return $html;
+	return $html;
 } 
 
 // latest posts shortcode
@@ -2088,7 +2090,7 @@ function generate_css() {
 		$css .= '--' . str_replace('_', '-', $c) . '-contrast:' . B::contrast($s[$c . '_colour']) . ';';
 	}		
 
-	$css .= '}body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)} #body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)} #body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)!important} #body .navbar .nav-link{color:var(--nav-text-colour)!important} #body .navbar .active{color:var(--primary-colour)!important} #body pre,code{font-family:var(--mono-font)} #info-area{background:var(--info-colour);color:var(--info-text-colour)} #banner-area{background:var(--banner-colour);color:var(--banner-text-colour)} #footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)} #footer-area{background:var(--footer-colour);color:var(--footer-text-colour)} a{color:var(--primary-colour)} h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none!important;color:var(--heading-colour)!important} hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto} #body .dropdown-menu[data-bs-popper]{left:unset} #body .navbar-collapse{flex-grow:unset} .ml-none{margin-left:0;margin-right:0.5rem} .mr-none{margin-left:0.5rem;margin-right:0} .mb-none{margin-left:0.5rem;margin-right:0.5rem} #body .btn-primary{background-color:var(--primary-colour);border:none} #body .btn-primary:hover{box-shadow:0 0 100px 100px rgba(255,255,255,.1) inset;color:var(--text-colour)} .feed a{text-decoration:none;color:var(--text-colour)}.size-full img{max-width:100%;}#mode-switch{color:var(--nav-text-colour);}.toggle{margin:0 0.25rem;display:block;height:1rem;width:2rem;border-radius:0.5rem;background:#777879;position:relative;transition:0.25s;}.toggle:after{transition:0.25s !important;content:"";display:block;position:absolute;top:0;bottom:0;margin:auto;width:0.75rem;height:0.75rem;background:#ffffff;border-radius:50%;margin-left:0.125rem;}body.dark .toggle:after{left:1rem;}body.light .toggle:after{left:0;}';
+	$css .= '}body{background:var(--page-colour);font-family:var(--body-font);color:var(--text-colour)}#body h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);color:var(--heading-colour)}#body .navbar{font-family:var(--nav-font);background-color:var(--nav-colour)}#body .navbar .nav-link{color:var(--nav-text-colour)}#body .navbar .active{color:var(--primary-colour)}pre,code{font-family:var(--mono-font)}#info-area{background:var(--info-colour);color:var(--info-text-colour)}#banner-area{background:var(--banner-colour);color:var(--banner-text-colour)}#footer-top-area{background:var(--footer-top-colour);color:var(--footer-text-colour)}#footer-area{background:var(--footer-colour);color:var(--footer-text-colour)}a{color:var(--primary-colour)}h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{text-decoration:none;color:var(--heading-colour)}hr{height:5px!important;background:var(--primary-colour);width:75%;margin:1em auto}#body .dropdown-menu[data-bs-popper]{left:unset}#body .navbar-collapse{flex-grow:unset}.ml-none{margin-left:0;margin-right:.5rem}.mr-none{margin-left:.5rem;margin-right:0}.mb-none{margin-left:.5rem;margin-right:.5rem}#body .btn-primary{background-color:var(--primary-colour);border:none}#body .btn-primary:hover{box-shadow:0 0 100px 100px rgb(255 255 255 / .1) inset;color:var(--text-colour)}.feed a{text-decoration:none;color:var(--text-colour)}.size-full img{max-width:100%}#mode-switch{color:var(--nav-text-colour)}.toggle{margin:0 .25rem;display:block;height:1rem;width:2rem;border-radius:.5rem;background:#777879;position:relative;transition:0.25s}.toggle:after{transition:0.25s;content:"";display:block;position:absolute;top:0;bottom:0;margin:auto;width:.75rem;height:.75rem;background:#fff;border-radius:50%;margin-left:.125rem}body.dark .toggle:after{left:1rem}body.light .toggle:after{left:0}';
 
 	if ($s['headings_upper'] == 'yes') {
 		$css .= 'h1,h2,h3,h4,h5,h6{text-transform:uppercase}';
