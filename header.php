@@ -4,15 +4,15 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-<?php if (is_singular()): ?>
+<?php if (is_singular()) { ?>
 	<meta name="description" content="<?php B::excerpt(); ?>">
-<?php else: ?>
+<?php } else { ?>
 	<meta name="description" content="<?php bloginfo('description'); ?>">
-<?php endif; ?>
+<?php } ?>
 	<title><?php echo wp_title('&#8211;', false, 'right') . get_option('blogname'); ?></title>
-<?php if (B::value('font_awesome', 0) == 'yes'): ?>
+<?php if (B::value('font_awesome', 0) == 'yes') { ?>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<?php endif; ?>
+<?php } ?>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
 <?php wp_head(); ?>
 	<link rel="canonical" href="<?php echo get_site_url(); ?>/">

@@ -17,6 +17,7 @@ jQuery(function($) {
 		'woo_columns',
 		'editor_width',
 		'ld_mode',
+		'parallax',
 		'stt_icon',
 		'favicon_image',
 		'logo_image_normal',

@@ -16,6 +16,14 @@ define('_LOGO', 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnN
 
 define('_CSS_BASIC_WP', '#info-area {}' . EOL . '#nav-area {}' . EOL . '#banner-area {}' . EOL . '#content-area {}' . EOL . '#footer-top-area {}' . EOL . '#footer-area {}' . EOL . '@media (max-width: 576px) {}' . EOL . '@media (max-width: 768px) {}' . EOL . '@media (max-width: 992px) {}' . EOL . '@media (max-width: 1200px) {}' . EOL . '@media (max-width: 1400px) {}');
 
+// parallax css
+
+define('_CSS_PARALLAX', '.parallax{position:relative;z-index:0;display:grid;grid-template-areas:"stack"}.parallax > *{grid-area:stack;animation:parallax linear;animation-timeline:scroll()}@keyframes parallax{to{transform:translateY(calc(var(--parallax-speed) * 200px))}}');
+
+// dark/light mode js
+
+define('_JS_MODE', 'function sc(e,t){var n=new Date;n.setTime(n.getTime()+2592e6),document.cookie=e+"="+t+";expires="+n.toUTCString()+";path=/"}function gc(e){e+="=";for(var t=decodeURIComponent(document.cookie).split(";"),n=0;n<t.length;n++){for(var o=t[n];" "==o.charAt(0);)o=o.substring(1);if(0==o.indexOf(e))return o.substring(e.length,o.length)}return""}function sm(){var e=$("#body");e.hasClass("light")?(e.removeClass("light").addClass("dark"),sc("mode","dark")):(e.removeClass("dark").addClass("light"),sc("mode","light"))}$((function(){"dark"==(gc("mode")||"light")&&sm(),$("#mode").on("click",(function(){sm()}))}));');
+
 // basic_wp data
 
 define('_ARGS_BASIC_WP', [
@@ -231,6 +239,10 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
+	'parallax' => [
+		'type' => 'string',
+		'default' => 'no'
+	],
 	'woo_support' => [
 		'type' => 'string',
 		'default' => ''
@@ -352,6 +364,10 @@ define('_ADMIN_BASIC_WP', [
 			'ld_mode' => [
 				'label' => 'Light/Dark Mode Active',
 				'type' => 'check'
+			],
+			'parallax' => [
+				'label' => 'Parallax CSS/JS Active',
+				'type' => 'check'
 			]
 		]
 	],
@@ -376,7 +392,7 @@ define('_ADMIN_BASIC_WP', [
 				'type' => 'file'
 			],
 			'latest_images' => [
-				'label' => 'Show Images in Latest Posts',
+				'label' => 'Show Images in Latest Posts Shortcode',
 				'type' => 'check'
 			]
 		]
@@ -1039,11 +1055,13 @@ class _themeMenu {
 
 class B {
 	public static function css() {
-		echo _B['auto_css'] . _B['theme_css_minified'];
+		$parallax = (B::value('parallax', 0) == 'yes') ? _CSS_PARALLAX : '';
+		echo $parallax . _B['auto_css'] . _B['theme_css_minified'];
 	}
 
 	public static function js() {
-		echo 'function sc(e,t){var n=new Date;n.setTime(n.getTime()+2592e6),document.cookie=e+"="+t+";expires="+n.toUTCString()+";path=/"}function gc(e){e+="=";for(var t=decodeURIComponent(document.cookie).split(";"),n=0;n<t.length;n++){for(var o=t[n];" "==o.charAt(0);)o=o.substring(1);if(0==o.indexOf(e))return o.substring(e.length,o.length)}return""}function sm(){var e=$("#body");e.hasClass("light")?(e.removeClass("light").addClass("dark"),sc("mode","dark")):(e.removeClass("dark").addClass("light"),sc("mode","light"))}$((function(){"dark"==(gc("mode")||"light")&&sm(),$("#mode").on("click",(function(){sm()}))}));' . _B['theme_js_minified'];
+		$mode = (B::value('ld_mode', 0) == 'yes') ? _JS_MODE : '';
+		echo $mode . _B['theme_js_minified'];
 	}
 
 	public static function favicon() {
@@ -1070,12 +1088,12 @@ class B {
 					break;				
 				}
 				case 'width': {
-					list($width, $height) = getimagesize($_SERVER['DOCUMENT_ROOT'] . '/wp-content/uploads/' . end($image));
+					list($width, $height) = getimagesize(wp_upload_dir()['url'] . end($image));
 					$return = $width;
 					break;
 				}
 				case 'height': {
-					list($width, $height) = getimagesize($_SERVER['DOCUMENT_ROOT'] . '/wp-content/uploads/' . end($image));
+					list($width, $height) = getimagesize(wp_upload_dir()['url'] . end($image));
 					$return = $height;
 					break;
 				}
@@ -1126,7 +1144,7 @@ class B {
 			case 'links': {
 				$toggle = '<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".target"><span class="navbar-toggler-icon"></span></button>';
 				echo (_B['nav_mobile'] == 'left') ? $toggle : '';
-				echo '<div id="navbar" class="navbar-collapse collapse target ' . B::align('nav') . '">';
+				echo '<div id="navbar" class="navbar-collapse collapse target ' . B::align('links') . '">';
 				wp_nav_menu([
 					'theme_location' => 'primary',
 					'depth' => 0,
@@ -1165,11 +1183,13 @@ class B {
 				break;
 			}
 			case 'mode': {
-				echo '<div id="mode-switch" class="d-flex ' . B::align('mode') . '">';
-					echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-sun"></i>' : 'sun';
-					echo '<span class="toggle" id="mode"></span>';
-					echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-moon"></i>' : 'moon';
-				echo '</div>';
+				if ((B::value('ld_mode', 0) == 'yes')) {
+					echo '<div id="mode-switch" class="d-flex ' . B::align('mode') . '">';
+						echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-sun"></i>' : 'sun';
+						echo '<span class="toggle" id="mode"></span>';
+						echo (_B['font_awesome'] == 'yes') ? '<i class="fa-solid fa-moon"></i>' : 'moon';
+					echo '</div>';					
+				}
 				break;
 			}
 			default: {
@@ -1185,6 +1205,8 @@ class B {
 	// return values
 
 	public static function value($key, $echo = true) {
+		global $evil;
+
 		$value = _B[$key];
 
 		// special case for container_class
@@ -1747,7 +1769,7 @@ function b_page_shortcode($atts = [], $content = null, $tag = '') {
 		]);
 
 		if (is_array($page)) {
-			$page = $page[0];
+			$page = empty($page) ? null : $page[0];
 		}
 
 		if ($page) {
