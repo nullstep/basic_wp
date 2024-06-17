@@ -1398,7 +1398,7 @@ function b_set_wp_options() {
 		// init updater
 
 		if (get_option('auth_key') !== '') {
-			$updater = new WPU(__FILE__);
+			$updater = new WPTU(__FILE__);
 			$updater->set_versions('6.4', '6.4.3');
 			$updater->set_username('nullstep');
 			$updater->set_repository('basic_wp');
@@ -2190,10 +2190,10 @@ function curl($url) {
 //  ███    ███    ███         ███   ▄███    ███    ███      ███        ███    ███  
 //  ████████▀    ▄████▀       ████████▀     ███    █▀      ▄████▀      ██████████
 
-if (!class_exists('WPU')) {
-	class WPU {
+if (!class_exists('WPTU')) {
+	class WPTU {
 		private $file;
-		private $plugin;
+		private $theme;
 		private $basename;
 		private $active;
 		private $username;
@@ -2206,15 +2206,15 @@ if (!class_exists('WPU')) {
 
 		public function __construct($file) {
 			$this->file = $file;
-			add_action('admin_init', [$this, 'set_plugin_properties']);
+			add_action('admin_init', [$this, 'set_theme_properties']);
 
 			return $this;
 		}
 
-		public function set_plugin_properties() {
-			$this->plugin = get_plugin_data($this->file);
-			$this->basename = plugin_basename($this->file);
-			$this->active = is_plugin_active($this->basename);
+		public function set_theme_properties() {
+			$this->theme = wp_get_theme($this->file);
+			$this->basename = basename(dirname($this->file));
+			$this->active = ($this->theme->name == _THEME);
 		}
 
 		public function set_versions($requires, $tested) {
@@ -2270,8 +2270,8 @@ if (!class_exists('WPU')) {
 		}
 
 		public function initialize() {
-			add_filter('pre_set_site_transient_update_plugins', [$this, 'modify_transient'], 10, 1);
-			add_filter('plugins_api', [$this, 'plugin_popup'], 10, 3);
+			add_filter('pre_set_site_transient_update_themes', [$this, 'modify_transient'], 10, 1);
+			add_filter('themes_api', [$this, 'theme_popup'], 10, 3);
 			add_filter('upgrader_post_install', [$this, 'after_install'], 10, 3);
 		}
 
@@ -2286,14 +2286,14 @@ if (!class_exists('WPU')) {
 						$new_files = $this->github_response['zipball_url'];
 						$slug = current(explode('/', $this->basename));
 
-						$plugin = [
-							'url' => $this->plugin['PluginURI'],
+						$theme = [
+							'url' => $this->theme['ThemeURI'],
 							'slug' => $slug,
 							'package' => $new_files,
 							'new_version' => $this->github_response['tag_name']
 						];
 
-						$transient->response[$this->basename] = (object) $plugin;
+						$transient->response[$this->basename] = (object) $theme;
 					}
 				}
 			}
@@ -2301,8 +2301,8 @@ if (!class_exists('WPU')) {
 			return $transient;
 		}
 
-		public function plugin_popup($result, $action, $args) {
-			if ($action !== 'plugin_information') {
+		public function theme_popup($result, $action, $args) {
+			if ($action !== 'theme_information') {
 				return false;
 			}
 
@@ -2310,25 +2310,25 @@ if (!class_exists('WPU')) {
 				if ($args->slug == current(explode('/' , $this->basename))) {
 					$this->get_repository_info();
 
-					$plugin = [
-						'name' => $this->plugin['Name'],
+					$theme = [
+						'name' => $this->theme['Name'],
 						'slug' => $this->basename,
 						'requires' => $this->$requires ?? '6.3',
 						'tested' => $this->$tested ?? '6.4.3',
 						'version' => $this->github_response['tag_name'],
-						'author' => $this->plugin['AuthorName'],
-						'author_profile' => $this->plugin['AuthorURI'],
+						'author' => $this->theme['Author'],
+						'author_profile' => $this->theme['AuthorURI'],
 						'last_updated' => $this->github_response['published_at'],
-						'homepage' => $this->plugin['PluginURI'],
-						'short_description' => $this->plugin['Description'],
+						'homepage' => $this->theme['ThemeURI'],
+						'short_description' => $this->theme['Description'],
 						'sections' => [
-							'Description' => $this->plugin['Description'],
+							'Description' => $this->theme['Description'],
 							'Updates' => $this->github_response['body'],
 						],
 						'download_link' => $this->github_response['zipball_url']
 					];
 
-					return (object) $plugin;
+					return (object) $theme;
 				}
 			}
 
@@ -2344,7 +2344,7 @@ if (!class_exists('WPU')) {
 			$result['destination'] = $install_directory;
 
 			if ($this->active) {
-				activate_plugin($this->basename);
+				//
 			}
 
 			return $result;
