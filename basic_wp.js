@@ -18,6 +18,7 @@ jQuery(function($) {
 		'editor_width',
 		'ld_mode',
 		'parallax',
+		'dev_mode',
 		'stt_icon',
 		'favicon_image',
 		'logo_image_normal',
@@ -66,7 +67,8 @@ jQuery(function($) {
 		'theme_css',
 		'light_css',
 		'dark_css',
-		'theme_js'
+		'theme_js',
+		'notes'
 	];
 	// code editors
 	const editors = [

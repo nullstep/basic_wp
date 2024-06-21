@@ -170,7 +170,7 @@
 	background: var(--admin-highlight);
 	color: var(--admin-contrast);
 	border-radius: 99px;
-	cursor: pointer;
+	cursor: move;
 }
 
 #basic_wp-form .sortable li.si:empty {

@@ -243,6 +243,10 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => 'no'
 	],
+	'dev_mode' => [
+		'type' => 'string',
+		'default' => 'no'
+	],
 	'woo_support' => [
 		'type' => 'string',
 		'default' => ''
@@ -260,6 +264,10 @@ define('_ARGS_BASIC_WP', [
 		'default' => ''
 	],
 	'editor_width' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'notes' => [
 		'type' => 'string',
 		'default' => ''
 	],
@@ -367,6 +375,10 @@ define('_ADMIN_BASIC_WP', [
 			],
 			'parallax' => [
 				'label' => 'Parallax CSS/JS Active',
+				'type' => 'check'
+			],
+			'dev_mode' => [
+				'label' => 'Developer Mode Active',
 				'type' => 'check'
 			]
 		]
@@ -641,6 +653,16 @@ define('_ADMIN_BASIC_WP', [
 			'theme_js' => [
 				'label' => 'Theme Scripts',
 				'type' => 'code'
+			]
+		]
+	],
+	'misc' => [
+		'label' => 'Miscellaneous',
+		'columns' => 1,
+		'fields' => [
+			'notes' => [
+				'label' => 'Notes',
+				'type' => 'text'
 			]
 		]
 	]
@@ -1044,6 +1066,41 @@ class _themeMenu {
 	}
 }
 
+//   ▄█     █▄    ▄█   ████████▄      ▄██████▄      ▄████████      ███      
+//  ███     ███  ███   ███   ▀███    ███    ███    ███    ███  ▀█████████▄  
+//  ███     ███  ███▌  ███    ███    ███    █▀     ███    █▀      ▀███▀▀██  
+//  ███     ███  ███▌  ███    ███   ▄███          ▄███▄▄▄          ███   ▀  
+//  ███     ███  ███▌  ███    ███  ▀▀███ ████▄   ▀▀███▀▀▀          ███      
+//  ███     ███  ███   ███    ███    ███    ███    ███    █▄       ███      
+//  ███ ▄█▄ ███  ███   ███   ▄███    ███    ███    ███    ███      ███      
+//   ▀███▀███▀   █▀    ████████▀     ████████▀     ██████████     ▄████▀
+
+class _themeWidget {
+	public $name;
+	public $html;
+
+	public function __construct($title) {
+		$this->name = $title;
+		$this->init();
+	}
+	
+	public function init() {
+		add_action('wp_dashboard_setup', [$this, 'widget']);
+	}
+	
+	public function widget() {
+		wp_add_dashboard_widget('b_' . $this->name . '_widget', ucwords(str_replace('-', ' ', $this->name)), [$this, 'render']);
+	}
+
+	public function button($title, $link) {
+		return '<a class="button button-primary" style="text-decoration:none" target="_blank" href="https://' . $link . '/">' . $title . '</a> ';
+	}
+	
+	public function render() {
+		echo $this->html;
+	}
+}
+
 //  ▀█████████▄   
 //    ███    ███  
 //    ███    ███  
@@ -1054,6 +1111,8 @@ class _themeMenu {
 //  ▄█████████▀
 
 class B {
+	public static $widgets = [];
+
 	public static function css() {
 		$parallax = (B::value('parallax', 0) == 'yes') ? _CSS_PARALLAX : '';
 		echo $parallax . _B['auto_css'] . _B['theme_css_minified'];
@@ -1388,7 +1447,6 @@ function b_set_wp_options() {
 		add_action('pre_get_posts', 'b_filter_access');
 	}
 
-
 	if (_B['paginate_same_author'] == 'yes') {
 		add_filter('get_next_post_where', 'b_keep_same_author', 10, 3);
 		add_filter('get_previous_post_where', 'b_keep_same_author', 10, 3);
@@ -1399,11 +1457,22 @@ function b_set_wp_options() {
 
 		if (get_option('auth_key') !== '') {
 			$updater = new WPTU(__FILE__);
-			$updater->set_versions('6.4', '6.4.3');
+			$updater->set_versions('6.5', '6.5.4');
 			$updater->set_username('nullstep');
 			$updater->set_repository('basic_wp');
 			$updater->authorize(get_option('auth_key'));
 			$updater->initialize();
+		}
+
+		if (_B['dev_mode'] == 'yes') {
+			$tools = new _themeWidget('tools');
+			$tools->html = '<p>' .
+				$tools->button('caniuse.com', 'caniuse.com') .
+				$tools->button('svg path editor', 'yqnn.github.io/svg-path-editor') .
+				$tools->button('css-generators.com', 'css-generators.com') .
+
+			'</p>';
+			B::$widgets[] = ['tools' => $tools];
 		}
 	}
 }
