@@ -1093,7 +1093,7 @@ class _themeWidget {
 	}
 
 	public function button($title, $link) {
-		return '<a class="button button-primary" style="text-decoration:none" target="_blank" href="https://' . $link . '/">' . $title . '</a> ';
+		return '<a class="button button-primary" style="text-decoration:none;margin:0.25rem" target="_blank" href="https://' . $link . '/">' . $title . '</a>';
 	}
 	
 	public function render() {
@@ -1470,7 +1470,7 @@ function b_set_wp_options() {
 				$tools->button('caniuse.com', 'caniuse.com') .
 				$tools->button('svg path editor', 'yqnn.github.io/svg-path-editor') .
 				$tools->button('css-generators.com', 'css-generators.com') .
-
+				$tools->button('fontawesome search', 'fontawesome.com/search') .
 			'</p>';
 			B::$widgets[] = ['tools' => $tools];
 		}
@@ -1688,6 +1688,55 @@ function b_filter_access($wp_query) {
 			}
 		}
 	}
+}
+
+// nav menu fields
+
+function b_add_menu_fields($item_id, $item) {
+	$is_megamenu = get_post_meta($item_id, '_is-megamenu', true);
+	$show_item_icon = get_post_meta($item_id, '_show-item-icon', true);
+	$item_icon = get_post_meta($item_id, '_item-icon', true);
+?>
+<p class="description description-wide">
+	<label for="b-is-megamenu-<?php echo $item_id; ?>" >
+		<input type="checkbox" id="b-is-megamenu-<?php echo $item_id; ?>" name="b-is-megamenu[<?php echo $item_id; ?>]" <?php checked($is_megamenu, true); ?>>
+		Is Megamenu?
+	</label>
+</p>
+<p class="description description-wide">
+	<label for="b-show-item-icon-<?php echo $item_id; ?>">Show Item Icon</label>
+	<br>
+	<select id="b-show-item-icon" name="b-show-item-icon-<?php echo $item_id; ?>">
+		<option value="none" <?php selected($show_item_icon, 'none'); ?>>None</option>
+		<option value="fa" <?php selected($show_item_icon, 'fa'); ?>>FontAwesome</option>
+		<option value="svg" <?php selected($show_item_icon, 'svg'); ?>>SVG</option>
+		<option value="url" <?php selected($show_item_icon, 'url'); ?>>URL</option>
+	</select>
+</p>
+<p class="description description-wide">
+	<label for="b-item-icon-<?php echo $item_id; ?>">Item Icon</label>
+	<br>
+	<input type="text" class="widefat" name="b-item-icon-<?php echo $item_id; ?>" value="<?php echo $item_icon; ?>">
+</p>
+<?php
+}
+
+function b_save_menu_fields($menu_id, $menu_item_id) {
+	$is_megamenu = (isset($_POST['b-is-megamenu'][$menu_item_id]) && $_POST['b-is-megamenu'][$menu_item_id] == 'on') ? true : false;
+	update_post_meta($menu_item_id, '_is-megamenu', $is_megamenu);
+	update_post_meta($menu_item_id, '_show-item-icon', $_POST['b-show-item-icon-' . $menu_item_id]);
+	update_post_meta($menu_item_id, '_item-icon', $_POST['b-item-icon-' . $menu_item_id]);
+}
+
+function b_add_menu_classes($classes, $menu_item) {
+	$show_item_icon = get_post_meta($menu_item->ID, '_show-item-icon', true);
+	$item_icon = get_post_meta($menu_item->ID, '_item-icon', true);
+
+	if ($show_item_icon != 'none') {
+		$classes[] = $item_icon;
+	}
+
+	return $classes;
 }
 
 
@@ -2027,7 +2076,7 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 	private $current_item;
 
 	function start_lvl(&$output, $depth = 0, $args = null) {
-		$is_megamenu = get_post_meta($args->walker->current_item->ID, '_mega-menu', true);
+		$is_megamenu = get_post_meta($args->walker->current_item->ID, '_is-megamenu', true);
 		$submenu = ($depth > 0) ? ' sub-menu' : '';
 		$megamenu = ($is_megamenu) ? ' is-megamenu' : '';
 		$output .= '<ul class="dropdown-menu' . $submenu . $megamenu . '">';
@@ -2057,7 +2106,6 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 		$id = strlen($id) ? ' id="' . esc_attr($id) . '"' : '';
 
 		$output .= $indent . '<li' . $id . $value . $class_names . $li_attributes . '>';
-		//$output .= "\n" . '<!-- ' . var_export($item->classes, true) . ' -->' . "\n";
 
 		$attributes = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
 		$attributes .= !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
@@ -2068,8 +2116,28 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 		$nav_link_class = ($depth > 0) ? 'dropdown-item ' : 'nav-link ';
 		$attributes .= ($args->walker->has_children) ? ' class="'. $nav_link_class . $active_class . ' dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' : ' class="'. $nav_link_class . $active_class . '"';
 
+		$show_item_icon = get_post_meta($item->ID, '_show-item-icon', true);
+		$item_icon = get_post_meta($item->ID, '_item-icon', true);
+		$icon = '';
+
+		switch ($show_item_icon) {
+			case 'fa': {
+				$icon = '<i class="item-icon fa-solid ' . $item_icon . '"></i>';
+				break;
+			}
+			case 'svg': {
+				$icon = '<svg class="item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">' . $item_icon . '</svg>';
+				break;
+			}
+			case 'url': {
+				$icon = '<img class="item-icon" src="/uploads/' . $item_icon . '">';
+				break;
+			}
+		}
+
 		$item_output = $args->before;
 		$item_output .= '<a' . $attributes . '>';
+		$item_output .= $icon;
 		$item_output .= $args->link_before . apply_filters('the_title', $item->title, $item->ID) . $args->link_after;
 		$item_output .= '</a>';
 		$item_output .= $args->after;
@@ -2452,10 +2520,13 @@ add_action('add_meta_boxes', 'b_add_post_metadata');
 add_action('save_post', 'b_save_post_metadata');
 add_action('load-edit.php', 'b_load_edit');
 add_action('manage_posts_extra_tablenav', 'b_add_buttons', 10, 1);
+add_action('wp_nav_menu_item_custom_fields', 'b_add_menu_fields', 10, 2);
+add_action('wp_update_nav_menu_item', 'b_save_menu_fields', 10, 2);
 
 // filters
 
 add_filter('excerpt_length', 'b_set_excerpt_length', 999);
+add_filter('nav_menu_css_class', 'b_add_menu_classes', 10, 2);
 
 // shortcodes
 
