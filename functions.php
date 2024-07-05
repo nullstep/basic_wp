@@ -1847,7 +1847,8 @@ function b_children_shortcode($atts = [], $content = null, $tag = '') {
 
 			foreach ($child_pages as $child_page) {
 				$page_css_class = get_post_meta($child_page->ID, 'css_class', true);
-				$html .= '<div id="' . $child_page->post_name .  '-section" class="' . $page_css_class . '">' . do_shortcode($child_page->post_content) . '</div>';
+				$class = 'section' . (($page_css_class) ? ' ' . $page_css_class : '');
+				$html .= '<div id="' . $child_page->post_name .  '-section" class="' . $class . '">' . do_shortcode($child_page->post_content) . '</div>';
 			}
 
 			if ($wide) {
@@ -1899,7 +1900,7 @@ function b_page_shortcode($atts = [], $content = null, $tag = '') {
 			$html .= '<div id="' . $page->post_name . '-section"' . $class . '>';
 				$html .= '<div class="' . (($a['wide']) ? 'container-fluid' : B::value('container_class', false)) . '"' . $bg . '>';
 					$html .= '<div class="row">';
-						$html .= '<div class="' . get_post_meta($page->ID, 'css_class', true) . '">' . do_shortcode($page->post_content) . '</div>';
+						$html .= '<div class="' . (get_post_meta($page->ID, 'css_class', true) ?: 'section') . '">' . do_shortcode($page->post_content) . '</div>';
 					$html .= '</div>';
 				$html .= '</div>';
 			$html .= '</div>';
@@ -1994,35 +1995,64 @@ function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 //  ███    ███  ███    ███      ███        ███         ███    ███      ███      
 //   ▀██████▀   ████████▀      ▄████▀     ▄████▀       ████████▀      ▄████▀
 
+// NEEDS BENCHMARKING
+
 function b_filter_output($html) {
-	$html = preg_replace('/\swp-container-core-columns-is-layout-\w+/', '', $html);
-	$html = preg_replace('/\swp-block-columns-is-layout-\w+/', '', $html);
-	$html = preg_replace('/\swp-block-column-is-layout-\w+/', '', $html);
-	$html = preg_replace('/\sis-layout-\w+/', '', $html);
+	$regexes = [
+		'/\swp-container-core-columns-is-layout-\w+/',
+		'/\swp-block-columns-is-layout-\w+/',
+		'/\swp-block-column-is-layout-\w+/',
+		'/\sis-layout-\w+/'
+	];
 
-	$html = str_replace([
-		'has-text-align-left',
-		'has-text-align-right',
-		'has-text-align-center',
-		'alignleft',
-		'alignright',
-		'aligncenter',
-		'wp-block-columns',
-		'wp-block-column'
-	], [
-		'text-start',
-		'text-end',
-		'text-center',
-		'float-start',
-		'float-end',
-		'text-center',
-		'row',
-		'col'
-	],
+	foreach ($regexes as $regex) {
+		$html = preg_replace($regex, '', $html);
+	}
+
+	$replace = [
+		'alignwide' => 'container',
+		'alignfull' => 'container-fluid',
+		'wp-block-group__inner-container' => 'col',
+		'wp-block-group' => 'row',
+		'wp-block-button__link' => 'btn btn-primary',
+		'wp-block-button' => 'btn-wrapper',
+		'wp-block-cover__inner-container' => 'd-flex align-items-center justify-content-center',
+		'wp-block-cover' => 'position-relative',
+		'wp-block-image__figure' => 'img-fluid',
+		'wp-block-image' => 'figure',
+		'wp-block-gallery-item' => 'col',
+		'wp-block-gallery' => 'row',
+		'wp-block-quote' => 'blockquote',
+		'wp-block-pullquote' => 'blockquote',
+		'wp-block-table__table-wrapper' => 'table-responsive',
+		'wp-block-table' => 'table',
+		'wp-block-media-text' => 'd-flex align-items-center',
+		'wp-block-columns' => 'row',
+		'wp-block-column' => 'col',
+		'wp-block-spacer' => 'my-3',
+		'wp-block-separator' => 'border-top',
+		'wp-block-list__item' => 'list-group-item',
+		'wp-block-list' => 'list-unstyled',
+		'has-text-align-left' => 'text-start',
+		'has-text-align-right' => 'text-end',
+		'has-text-align-center' => 'text-center',
+		'alignleft' => 'float-start',
+		'alignright' => 'float-end',
+		'aligncenter' => 'text-center'
+	];
+
+	foreach ($replace as $wp => $bs) {
+        $html = str_replace($wp, $bs, $html);
+    }
+
+    $html = str_replace('<div class="container"><div class="row"><div class="col-12"></div></div>', '', $html);
+	$html = preg_replace(
+		'#<div class="row"><div class="section"><div class="row">(.*?)</div></div></div>#s',
+		'<div class="row">$1</div>',
 		$html
-	);
+	);    
 
-	return $html;
+    return $html;
 }
 
 //    ▄▄▄▄███▄▄▄▄     ▄█      ▄████████   ▄████████  
