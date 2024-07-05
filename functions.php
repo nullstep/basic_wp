@@ -1473,24 +1473,7 @@ function b_set_wp_options() {
 				$tools->button('fontawesome search', 'fontawesome.com/search') .
 			'</p>';
 			B::$widgets[] = ['tools' => $tools];
-
-			add_action('admin_notices', 'b_admin_notice_error');
 		}
-	}
-}
-
-// admin notice - php error
-
-function b_admin_notice_error() {
-	$e = error_get_last();
-
-	if ($e) {
-		echo '<div class="notice notice-error is-dismissible">';
-			echo '<pre>';
-				print_r($e);
-			echo '</pre>';
-		echo '</div>';
-		echo '<style>.php-error #adminmenuback,.php-error #adminmenuwrap{margin-top:0;}</style>';
 	}
 }
 
