@@ -19,6 +19,7 @@ jQuery(function($) {
 		'ld_mode',
 		'parallax',
 		'dev_mode',
+		'reorder_menu',
 		'stt_icon',
 		'favicon_image',
 		'logo_image_normal',
