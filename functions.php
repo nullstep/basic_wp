@@ -51,6 +51,10 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
+	'wp_footer' => [
+		'type' => 'string',
+		'default' => 'no'
+	],
 	'latest_images' => [
 		'type' => 'string',
 		'default' => 'no'
@@ -387,6 +391,10 @@ define('_ADMIN_BASIC_WP', [
 			],
 			'reorder_menu' => [
 				'label' => 'Re-order Admin Menu',
+				'type' => 'check'
+			],
+			'wp_footer' => [
+				'label' => 'Add wp_footer()',
 				'type' => 'check'
 			]
 		]
@@ -1131,6 +1139,23 @@ class B {
 		echo $mode . _B['theme_js_minified'];
 	}
 
+	public static function concat($type) {
+		$upload_dir = wp_upload_dir();
+
+		switch ($type) {
+			case 'js': {
+				$file = $upload_dir['basedir'] . '/scripts.js';
+				echo (file_exists($file)) ? '<script src="' . $upload_dir['url'] . '/' . basename($file) . '"></script>' : '';
+				break;
+			}
+			case 'css': {
+				$file = $upload_dir['basedir'] . '/styles.css';
+				echo (file_exists($file)) ? '<link rel="stylesheet" href="' . $upload_dir['url'] . '/' . basename($file) . '">' : '';
+				break;
+			}
+		}
+	}
+
 	public static function favicon() {
 		$setting = _B['favicon_image'];
 		$favicon = ($setting != '') ? '/uploads/' . $setting : '/img/favicon.png';
@@ -1367,7 +1392,18 @@ class B {
 //   ▀███▀███▀    ▀██████▀    ▀██████▀ 
 
 function b_woo_setup() {
-	add_theme_support('woocommerce');
+	add_theme_support('woocommerce', [
+		'single_image_width'    => 416,
+		'thumbnail_image_width' => 324,
+		'product_grid' => [
+			'default_columns' => 3,
+			'default_rows' => 4,
+			'min_columns' => 1,
+			'max_columns' => 6,
+			'min_rows' => 1
+		]
+	]);
+
 	add_theme_support('wc-product-gallery-zoom');
 	add_theme_support('wc-product-gallery-lightbox');
 	add_theme_support('wc-product-gallery-slider');
@@ -1418,13 +1454,14 @@ function b_woo_related_products_args($args) {
 //  ███    ███  ███    ███  ███   ▄███    ███    ███  
 //  ████████▀    ▀██████▀   ████████▀     ██████████
 
-// wp options
+// theme setup
 
-function b_set_wp_options() {
+function b_do_setup() {
 	define('_B', _themeSettings::get_settings());
 
 	if (_B['woo_support'] == 'yes') {
-		add_action('after_setup_theme', 'b_woo_setup');
+		b_woo_setup();
+
 		add_action('woocommerce_before_main_content', 'b_woo_wrapper_before');
 		add_action('woocommerce_shop_loop_item_title', 'b_woo_change_products_title', 10);
 		add_action('woocommerce_after_main_content', 'b_woo_wrapper_after');
@@ -1443,6 +1480,17 @@ function b_set_wp_options() {
 		remove_action('woocommerce_before_main_content', 'woocommerce_breadcrumb', 20, 0);
 	}
 
+	if (_OPTIONS_BASIC_WP['thumbnails']) {
+		add_theme_support('post-thumbnails');
+		set_post_thumbnail_size(192, 108);
+	}
+
+	register_nav_menus(_MENUS_BASIC_WP);
+}
+
+// wp options
+
+function b_set_wp_options() {
 	if (_B['editor_width'] != '') {
 		add_filter('block_editor_settings_all', 'b_editor_settings', 10, 2);
 	}
@@ -1613,7 +1661,7 @@ function b_save_post_metadata($post_id) {
 
 function b_add_buttons($which) {
 	$type = $_GET['post_type'] ?? null;    
-    
+	
 	if ($which == 'top' && $type == 'page') {
 		$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
 ?>
@@ -2001,6 +2049,7 @@ function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 	return $html . '</div>';
 }
 
+
 //   ▄██████▄   ███    █▄       ███         ▄███████▄  ███    █▄       ███      
 //  ███    ███  ███    ███  ▀█████████▄    ███    ███  ███    ███  ▀█████████▄  
 //  ███    ███  ███    ███     ▀███▀▀██    ███    ███  ███    ███     ▀███▀▀██  
@@ -2010,65 +2059,79 @@ function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 //  ███    ███  ███    ███      ███        ███         ███    ███      ███      
 //   ▀██████▀   ████████▀      ▄████▀     ▄████▀       ████████▀      ▄████▀
 
-// NEEDS BENCHMARKING
+function s9_shutdown() {
+	if (did_action('get_header')) {
+		$final = '';
+		$levels = ob_get_level();
 
-function b_filter_output($html) {
-	$regexes = [
-		'/\swp-container-core-columns-is-layout-\w+/',
-		'/\swp-block-columns-is-layout-\w+/',
-		'/\swp-block-column-is-layout-\w+/',
-		'/\sis-layout-\w+/'
-	];
+		for ($i = 0; $i < $levels; $i++) {
+			$final .= ob_get_clean();
+		}
 
-	foreach ($regexes as $regex) {
-		$html = preg_replace($regex, '', $html);
+		echo apply_filters('s9_final_output', $final);
 	}
-
-	$replace = [
-		'alignwide' => 'container',
-		'alignfull' => 'container-fluid',
-		'wp-block-group__inner-container' => 'col',
-		'wp-block-group' => 'row',
-		'wp-block-button__link' => 'btn btn-primary',
-		'wp-block-button' => 'btn-wrapper',
-		'wp-block-cover__inner-container' => 'd-flex align-items-center justify-content-center',
-		'wp-block-cover' => 'position-relative',
-		'wp-block-image__figure' => 'img-fluid',
-		'wp-block-image' => 'figure',
-		'wp-block-gallery-item' => 'col',
-		'wp-block-gallery' => 'row',
-		'wp-block-quote' => 'blockquote',
-		'wp-block-pullquote' => 'blockquote',
-		'wp-block-table__table-wrapper' => 'table-responsive',
-		'wp-block-table' => 'table',
-		'wp-block-media-text' => 'd-flex align-items-center',
-		'wp-block-columns' => 'row',
-		'wp-block-column' => 'col',
-		'wp-block-spacer' => 'my-3',
-		'wp-block-separator' => 'border-top',
-		'wp-block-list__item' => 'list-group-item',
-		'wp-block-list' => 'list-unstyled',
-		'has-text-align-left' => 'text-start',
-		'has-text-align-right' => 'text-end',
-		'has-text-align-center' => 'text-center',
-		'alignleft' => 'float-start',
-		'alignright' => 'float-end',
-		'aligncenter' => 'text-center'
-	];
-
-	foreach ($replace as $wp => $bs) {
-        $html = str_replace($wp, $bs, $html);
-    }
-
-    $html = str_replace('<div class="container"><div class="row"><div class="col-12"></div></div>', '', $html);
-	$html = preg_replace(
-		'#<div class="row"><div class="section"><div class="row">(.*?)</div></div></div>#s',
-		'<div class="row">$1</div>',
-		$html
-	);    
-
-    return $html;
 }
+
+function s9_filter_output($html) {
+	if (did_action('get_header')) {
+		$regexes = [
+			'/\swp-container-core-columns-is-layout-\w+/',
+			'/\swp-block-columns-is-layout-\w+/',
+			'/\swp-block-column-is-layout-\w+/',
+			'/\sis-layout-\w+/'
+		];
+
+		foreach ($regexes as $regex) {
+			$html = preg_replace($regex, '', $html);
+		}
+
+		$replace = [
+			'alignwide' => 'container',
+			'alignfull' => 'container-fluid',
+			'wp-block-group__inner-container' => 'row',
+			'wp-block-group' => 'col',
+			'wp-block-button__link' => 'btn btn-primary',
+			'wp-block-button' => 'btn-wrapper',
+			'wp-block-cover__inner-container' => 'd-flex align-items-center justify-content-center',
+			'wp-block-cover' => 'position-relative',
+			'wp-block-image__figure' => 'img-fluid',
+			'wp-block-image' => 'figure',
+			'wp-block-gallery-item' => 'row',
+			'wp-block-gallery' => 'col',
+			'wp-block-quote' => 'blockquote',
+			'wp-block-pullquote' => 'blockquote',
+			'wp-block-table__table-wrapper' => 'table-responsive',
+			'wp-block-table' => 'table',
+			'wp-block-media-text' => 'd-flex align-items-center',
+			'wp-block-columns' => 'row',
+			'wp-block-column' => 'col',
+			'wp-block-spacer' => 'my-3',
+			'wp-block-separator' => 'border-top',
+			'wp-block-list__item' => 'list-group-item',
+			'wp-block-list' => 'list-unstyled',
+			'has-text-align-left' => 'text-start',
+			'has-text-align-right' => 'text-end',
+			'has-text-align-center' => 'text-center',
+			'alignleft' => 'float-start',
+			'alignright' => 'float-end',
+			'aligncenter' => 'text-center'
+		];
+
+		foreach ($replace as $wp => $bs) {
+			$html = str_replace($wp, $bs, $html);
+		}
+
+		$html = str_replace('<div class="container"><div class="row"><div class="col-12"></div></div>', '', $html);
+		$html = preg_replace(
+			'#<div class="row"><div class="section"><div class="row">(.*?)</div></div></div>#s',
+			'<div class="row">$1</div>',
+			$html
+		);    
+
+		return $html;
+	}
+}
+
 
 //    ▄▄▄▄███▄▄▄▄     ▄█      ▄████████   ▄████████  
 //  ▄██▀▀▀███▀▀▀██▄  ███     ███    ███  ███    ███  
@@ -2078,17 +2141,6 @@ function b_filter_output($html) {
 //  ███   ███   ███  ███            ███  ███    █▄   
 //  ███   ███   ███  ███      ▄█    ███  ███    ███  
 //   ▀█   ███   █▀   █▀     ▄████████▀   ████████▀
-
-// theme setup
-
-function b_do_setup() {
-	if (_OPTIONS_BASIC_WP['thumbnails']) {
-		add_theme_support('post-thumbnails');
-		set_post_thumbnail_size(192, 108);
-	}
-
-	register_nav_menus(_MENUS_BASIC_WP);
-}
 
 // admin styling
 
@@ -2108,19 +2160,19 @@ function b_admin_styling() {
 // re-order admin menu items
 
 function b_reorder_admin_menu($__return_true) {
-    return [
-         'index.php', // dashboard
-         'edit.php?post_type=page', // pages
-         'edit.php', // posts
-         'upload.php', // media
-         'edit-comments.php', // comments
-         'users.php', // users
-         'separator1', 
-         'themes.php', // appearance
-         'plugins.php', // plugins
-         'tools.php', // tools
-         'options-general.php', // settings
-         'separator2'        
+	return [
+		 'index.php', // dashboard
+		 'edit.php?post_type=page', // pages
+		 'edit.php', // posts
+		 'upload.php', // media
+		 'edit-comments.php', // comments
+		 'users.php', // users
+		 'separator1', 
+		 'themes.php', // appearance
+		 'plugins.php', // plugins
+		 'tools.php', // tools
+		 'options-general.php', // settings
+		 'separator2'        
    ];
 }
 
@@ -2383,6 +2435,106 @@ function curl($url) {
 	return $response;
 }
 
+function b_css_concatenator() {
+	global $wp_styles;
+
+	$upload_dir = wp_upload_dir();
+	$concat_file_path = $upload_dir['basedir'] . '/styles.css';
+
+	$concatenated_content = '';
+	$concat_styles = [];
+	$processed_styles = [];
+
+	function process_style($handle, &$concatenated_content, &$concat_styles, &$processed_styles) {
+		global $wp_styles;
+
+		if (in_array($handle, $processed_styles)) {
+			return;
+		}
+
+		$style = $wp_styles->registered[$handle];
+
+		if (!empty($style->deps)) {
+			foreach ($style->deps as $dep) {
+				process_style($dep, $concatenated_content, $concat_styles, $processed_styles);
+			}
+		}
+
+		$style_path = ABSPATH . str_replace(site_url('/'), '', $style->src);
+
+		if (file_exists($style_path)) {
+			$content = file_get_contents($style_path);
+			$concatenated_content .= $content . "\n";
+			$concat_styles[] = $handle;
+			$processed_styles[] = $handle;
+		}
+	}
+
+	if (!file_exists($concat_file_path)) {
+		foreach ($wp_styles->queue as $handle) {
+			process_style($handle, $concatenated_content, $concat_styles, $processed_styles);
+		}
+
+		file_put_contents($concat_file_path, $concatenated_content);
+	}
+
+	//wp_enqueue_style('styles', $upload_dir['baseurl'] . '/styles.css', [], null, 'all');
+
+	foreach ($wp_styles->queue as $handle) {
+		wp_dequeue_style($handle);
+	}
+}
+
+function b_js_concatenator() {
+	global $wp_scripts;
+
+	$upload_dir = wp_upload_dir();
+	$concat_file_path = $upload_dir['basedir'] . '/scripts.js';
+
+	$concatenated_content = '';
+	$concat_scripts = [];
+	$processed_scripts = [];
+
+	function process_script($handle, &$concatenated_content, &$concat_scripts, &$processed_scripts) {
+		global $wp_scripts;
+
+		if (in_array($handle, $processed_scripts)) {
+			return;
+		}
+
+		$script = $wp_scripts->registered[$handle];
+
+		if (!empty($script->deps)) {
+			foreach ($script->deps as $dep) {
+				process_script($dep, $concatenated_content, $concat_scripts, $processed_scripts);
+			}
+		}
+
+		$script_path = ABSPATH . str_replace(site_url('/'), '', $script->src);
+
+		if (file_exists($script_path)) {
+			$content = file_get_contents($script_path);
+			$concatenated_content .= $content . "\n";
+			$concat_scripts[] = $handle;
+			$processed_scripts[] = $handle;
+		}
+	}
+
+	if (!file_exists($concat_file_path)) {
+		foreach ($wp_scripts->queue as $handle) {
+			process_script($handle, $concatenated_content, $concat_scripts, $processed_scripts);
+		}
+		
+		file_put_contents($concat_file_path, $concatenated_content);
+	}
+
+	//wp_enqueue_script('scripts', $upload_dir['baseurl'] . '/scripts.js', [], null, true);
+
+	foreach ($wp_scripts->queue as $handle) {
+		wp_dequeue_script($handle);
+	}
+}
+
 
 //   ▄█   ███▄▄▄▄▄     ▄█       ███      
 //  ███   ███▀▀▀▀██▄  ███   ▀█████████▄  
@@ -2397,12 +2549,12 @@ function curl($url) {
 
 global $evil;
 
-// output buffer on if not admin
+// output buffer on if front-end
 
-if (!is_admin()) {
-	ob_start();
+if (!wp_doing_ajax() && !is_admin()) {
+	//ob_start();
 
-	add_filter('final_output', 'b_filter_output');
+	//add_filter('s9_final_output', 's9_filter_output');
 }
 
 // actions
@@ -2417,6 +2569,9 @@ add_action('load-edit.php', 'b_load_edit');
 add_action('manage_posts_extra_tablenav', 'b_add_buttons', 10, 1);
 add_action('wp_nav_menu_item_custom_fields', 'b_add_menu_fields', 10, 2);
 add_action('wp_update_nav_menu_item', 'b_save_menu_fields', 10, 2);
+
+//add_action('wp_enqueue_scripts', 'b_js_concatenator', 999);
+//add_action('wp_enqueue_scripts', 'b_css_concatenator', 999);
 
 // filters
 
@@ -2436,22 +2591,11 @@ add_shortcode('button', 'b_button_shortcode');
 
 // we don't want these
 
-remove_action('shutdown', 'wp_ob_end_flush_all', 1);
+//remove_action('shutdown', 'wp_ob_end_flush_all', 1);
 
 // run our output filter
 
-add_action('shutdown', function() {
-	if (!is_admin()) {
-		$final = '';
-		$levels = ob_get_level();
-
-		for ($i = 0; $i < $levels; $i++) {
-			$final .= ob_get_clean();
-		}
-
-		echo apply_filters('final_output', $final);
-	}
-}, 999);
+//add_action('shutdown', 's9_shutdown', 999);
 
 // boot theme
 

@@ -17,12 +17,14 @@
 <?php wp_head(); ?>
 	<link rel="canonical" href="<?php echo get_site_url(); ?>/">
 	<link rel="shortcut icon" type="image/x-icon" href="<?php B::favicon(); ?>">
+	<?php //B::concat('css'); ?>
+
 	<style>
 		<?php B::css(); ?>
 
 	</style>
 </head>
-<body id="body" class="<?php echo get_post_field('post_name'); ?> light">
+<body id="body" <?php echo body_class();?>>
 <?php B::sections(); ?>
 	<main id="content-area">
 		<div class="<?php B::value('container_class'); ?>">

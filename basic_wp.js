@@ -16,6 +16,7 @@ jQuery(function($) {
 		'woo_per_page',
 		'woo_columns',
 		'editor_width',
+		'wp_footer',
 		'ld_mode',
 		'parallax',
 		'dev_mode',
