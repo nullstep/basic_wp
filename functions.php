@@ -1392,18 +1392,7 @@ class B {
 //   ▀███▀███▀    ▀██████▀    ▀██████▀ 
 
 function b_woo_setup() {
-	add_theme_support('woocommerce', [
-		'single_image_width'    => 416,
-		'thumbnail_image_width' => 324,
-		'product_grid' => [
-			'default_columns' => 3,
-			'default_rows' => 4,
-			'min_columns' => 1,
-			'max_columns' => 6,
-			'min_rows' => 1
-		]
-	]);
-
+	add_theme_support('woocommerce');
 	add_theme_support('wc-product-gallery-zoom');
 	add_theme_support('wc-product-gallery-lightbox');
 	add_theme_support('wc-product-gallery-slider');
@@ -2552,9 +2541,9 @@ global $evil;
 // output buffer on if front-end
 
 if (!wp_doing_ajax() && !is_admin()) {
-	//ob_start();
+	ob_start();
 
-	//add_filter('s9_final_output', 's9_filter_output');
+	add_filter('s9_final_output', 's9_filter_output');
 }
 
 // actions
@@ -2591,11 +2580,11 @@ add_shortcode('button', 'b_button_shortcode');
 
 // we don't want these
 
-//remove_action('shutdown', 'wp_ob_end_flush_all', 1);
+remove_action('shutdown', 'wp_ob_end_flush_all', 1);
 
 // run our output filter
 
-//add_action('shutdown', 's9_shutdown', 999);
+add_action('shutdown', 's9_shutdown', 999);
 
 // boot theme
 
