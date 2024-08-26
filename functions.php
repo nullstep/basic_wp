@@ -716,6 +716,7 @@ define('_MENUS_BASIC_WP', [
 	'secondary' => 'Secondary Menu'
 ]);
 
+
 //     ▄████████  ████████▄     ▄▄▄▄███▄▄▄▄     ▄█   ███▄▄▄▄▄    
 //    ███    ███  ███   ▀███  ▄██▀▀▀███▀▀▀██▄  ███   ███▀▀▀▀██▄  
 //    ███    ███  ███    ███  ███   ███   ███  ███▌  ███    ███  
@@ -1082,6 +1083,7 @@ class _themeMenu {
 	}
 }
 
+
 //   ▄█     █▄    ▄█   ████████▄      ▄██████▄      ▄████████      ███      
 //  ███     ███  ███   ███   ▀███    ███    ███    ███    ███  ▀█████████▄  
 //  ███     ███  ███▌  ███    ███    ███    █▀     ███    █▀      ▀███▀▀██  
@@ -1116,6 +1118,7 @@ class _themeWidget {
 		echo $this->html;
 	}
 }
+
 
 //  ▀█████████▄   
 //    ███    ███  
@@ -1382,6 +1385,7 @@ class B {
 	}
 }
 
+
 //   ▄█     █▄    ▄██████▄    ▄██████▄   
 //  ███     ███  ███    ███  ███    ███  
 //  ███     ███  ███    ███  ███    ███  
@@ -1433,6 +1437,7 @@ function b_woo_related_products_args($args) {
 	$args = wp_parse_args($defaults, $args);
 	return $args;
 }
+
 
 //   ▄████████   ▄██████▄   ████████▄      ▄████████  
 //  ███    ███  ███    ███  ███   ▀███    ███    ███  
@@ -1554,11 +1559,38 @@ function b_editor_settings($settings, $context) {
 function b_add_scripts($hook) {
 	$screen = get_current_screen();
 
-	if (null === $screen || $screen->base !== 'toplevel_page_' . _THEME . '-theme-menu') {
-		return;
+	if (null !== $screen && $screen->base == 'toplevel_page_' . _THEME . '-theme-menu') {
+		wp_enqueue_code_editor(['type' => 'application/x-httpd-php']);
 	}
 
-	wp_enqueue_code_editor(['type' => 'application/x-httpd-php']);
+	if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'category') {
+		wp_enqueue_media();
+		wp_enqueue_script('jquery');
+		wp_add_inline_script('jquery', '
+			jQuery(document).ready(function($) {
+				$("#category_image_upload").click(function(e) {
+					e.preventDefault();
+					var imageFrame;
+					if (imageFrame) {
+						imageFrame.open();
+						return;
+					}
+					imageFrame = wp.media({
+						title: "Select Category Image",
+						button: {
+							text: "Use this image",
+						},
+						multiple: false
+					});
+					imageFrame.on("select", function() {
+						var attachment = imageFrame.state().get("selection").first().toJSON();
+						$("#category_image").val(attachment.url);
+					});
+					imageFrame.open();
+				});
+			});
+		');
+	}
 }
 
 // excerpts
@@ -1742,6 +1774,45 @@ function b_filter_access($wp_query) {
 	}
 }
 
+// post category meta
+
+function b_add_category_image() {
+?>
+	<div class="form-field">
+		<label for="category_image">Category Image</label>
+		<input type="text" name="category_image" id="category_image" value="">
+		<br><br>
+		<button class="button" id="category_image_upload">Select Image</button>
+	</div>
+<?php
+}
+
+function b_edit_category_image($term) {
+	$image = get_term_meta($term->term_id, 'category_image', true);
+?>
+	<tr class="form-field">
+		<th scope="row" valign="top">
+			<label for="category_image">Category Image</label>
+		</th>
+		<td>
+			<input type="text" name="category_image" id="category_image" value="<?php echo esc_attr($image); ?>">
+			<br><br>
+			<button class="button" id="category_image_upload">Select Image</button>
+		</td>
+	</tr>
+<?php
+}
+
+function b_save_category_image($term_id) {
+	if (isset($_POST['category_image']) && '' !== $_POST['category_image']) {
+		$image = esc_url_raw($_POST['category_image']);
+		update_term_meta($term_id, 'category_image', $image);
+	}
+	else {
+		delete_term_meta($term_id, 'category_image');
+	}
+}
+
 // nav menu fields
 
 function b_add_menu_fields($item_id, $item) {
@@ -1784,8 +1855,8 @@ function b_add_menu_classes($classes, $menu_item) {
 	$show_item_icon = get_post_meta($menu_item->ID, '_show-item-icon', true);
 	$item_icon = get_post_meta($menu_item->ID, '_item-icon', true);
 
-	if ($show_item_icon != 'none') {
-		$classes[] = $item_icon;
+	if ($show_item_icon != 'none' && $item_icon != '') {
+		$classes[] = 'has-icon';
 	}
 
 	return $classes;
@@ -2178,7 +2249,6 @@ function b_reorder_admin_menu($__return_true) {
 // bootstrap 5 nav walker
 
 class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
-
 	private $current_item;
 
 	function start_lvl(&$output, $depth = 0, $args = null) {
@@ -2191,27 +2261,24 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 	function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
 		$this->current_item = $item;
 
-		$indent = ($depth) ? str_repeat("\t", $depth) : '';
+		$li_attributes = $class_names = $value = '';
 
-		$li_attributes = '';
-		$class_names = $value = '';
-
-		$classes = empty($item->classes) ? array() : (array) $item->classes;
+		$classes = empty($item->classes) ? [] : (array) $item->classes;
 
 		$classes[] = ($args->walker->has_children) ? 'dropdown' : '';
 		$classes[] = 'nav-item';
-		$classes[] = 'nav-item-' . $item->ID;
+
 		if ($depth && $args->walker->has_children) {
 			$classes[] = 'dropdown-menu dropdown-menu-end';
 		}
 
-		$class_names =  join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
+		$class_names = join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
 		$class_names = ' class="' . esc_attr($class_names) . '"';
 
 		$id = apply_filters('nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args);
 		$id = strlen($id) ? ' id="' . esc_attr($id) . '"' : '';
 
-		$output .= $indent . '<li' . $id . $value . $class_names . $li_attributes . '>';
+		$output .= '<li' . $id . $value . $class_names . $li_attributes . '>';
 
 		$attributes = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
 		$attributes .= !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
@@ -2220,7 +2287,7 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 
 		$active_class = ($item->current || $item->current_item_ancestor) ? 'active' : '';
 		$nav_link_class = ($depth > 0) ? 'dropdown-item ' : 'nav-link ';
-		$attributes .= ($args->walker->has_children) ? ' class="'. $nav_link_class . $active_class . ' dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' : ' class="'. $nav_link_class . $active_class . '"';
+		$attributes .= ($args->walker->has_children) ? ' class="'. $nav_link_class . $active_class . 'dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' : ' class="'. $nav_link_class . $active_class . '"';
 
 		$show_item_icon = get_post_meta($item->ID, '_show-item-icon', true);
 		$item_icon = get_post_meta($item->ID, '_item-icon', true);
@@ -2241,12 +2308,7 @@ class WP_Bootstrap_Navwalker extends Walker_Nav_menu {
 			}
 		}
 
-		$item_output = $args->before;
-		$item_output .= '<a' . $attributes . '>';
-		$item_output .= $icon;
-		$item_output .= $args->link_before . apply_filters('the_title', $item->title, $item->ID) . $args->link_after;
-		$item_output .= '</a>';
-		$item_output .= $args->after;
+		$item_output = $args->before . '<a' . $attributes . '>' . $icon . $args->link_before . apply_filters('the_title', $item->title, $item->ID) . $args->link_after . '</a>' . $args->after;
 
 		$output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
 		$output = str_replace("\n", '', $output);
@@ -2558,6 +2620,10 @@ add_action('load-edit.php', 'b_load_edit');
 add_action('manage_posts_extra_tablenav', 'b_add_buttons', 10, 1);
 add_action('wp_nav_menu_item_custom_fields', 'b_add_menu_fields', 10, 2);
 add_action('wp_update_nav_menu_item', 'b_save_menu_fields', 10, 2);
+add_action('category_add_form_fields', 'b_add_category_image', 10, 2);
+add_action('category_edit_form_fields', 'b_edit_category_image', 10, 2);
+add_action('created_category', 'b_save_category_image', 10, 2);
+add_action('edited_category', 'b_save_category_image', 10, 2);
 
 //add_action('wp_enqueue_scripts', 'b_js_concatenator', 999);
 //add_action('wp_enqueue_scripts', 'b_css_concatenator', 999);
