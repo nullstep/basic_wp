@@ -24,6 +24,10 @@ define('_CSS_PARALLAX', '.parallax{position:relative;z-index:0;display:grid;grid
 
 define('_JS_MODE', 'function sc(e,t){var n=new Date;n.setTime(n.getTime()+2592e6),document.cookie=e+"="+t+";expires="+n.toUTCString()+";path=/"}function gc(e){e+="=";for(var t=decodeURIComponent(document.cookie).split(";"),n=0;n<t.length;n++){for(var o=t[n];" "==o.charAt(0);)o=o.substring(1);if(0==o.indexOf(e))return o.substring(e.length,o.length)}return""}function sm(){var e=$("#body");e.hasClass("light")?(e.removeClass("light").addClass("dark"),sc("mode","dark")):(e.removeClass("dark").addClass("light"),sc("mode","light"))}$((function(){"dark"==(gc("mode")||"light")&&sm(),$("#mode").on("click",(function(){sm()}))}));');
 
+// cookie acceptance js
+
+define('JS_COOKIE', '');
+
 // basic_wp data
 
 define('_ARGS_BASIC_WP', [
@@ -163,6 +167,10 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => '#444444'
 	],
+	'footer_top_text_colour' => [
+		'type' => 'string',
+		'default' => '#eeeeee'
+	],
 	'footer_colour' => [
 		'type' => 'string',
 		'default' => '#333333'
@@ -271,6 +279,14 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
+	'woo_styles' => [
+		'type' => 'string',
+		'default' => ''
+	],
+	'woo_title' => [
+		'type' => 'string',
+		'default' => ''
+	],
 	'editor_width' => [
 		'type' => 'string',
 		'default' => ''
@@ -333,6 +349,8 @@ define('_ADMIN_BASIC_WP', [
 					'nav,info' => 'Nav > Info',
 					'banner,nav' => 'Banner > Nav',
 					'nav,banner' => 'Nav > Banner',
+					'banner,info' => 'Banner > Info',
+					'info,banner' => 'Info > Banner',
 					'info,nav,banner' => 'Info > Nav > Banner',
 					'info,banner,nav' => 'Info > Banner > Nav',
 					'nav,info,banner' => 'Nav > Info > Banner',
@@ -356,22 +374,6 @@ define('_ADMIN_BASIC_WP', [
 			'excerpt_length' => [
 				'label' => 'Excerpt Word Limit',
 				'type' => 'input'
-			],
-			'woo_support' => [
-				'label' => 'Add Woocommerce Support',
-				'type' => 'check'
-			],
-			'woo_columns' => [
-				'label' => 'Woocommerce Thumbnail Columns',
-				'type' => 'input'
-			],
-			'woo_per_page' => [
-				'label' => 'Woocommerce Items Per Page',
-				'type' => 'input'
-			],
-			'woo_cleanup' => [
-				'label' => 'Clean up Woocommerce Pages',
-				'type' => 'check'
 			],
 			'editor_width' => [
 				'label' => 'Set Width of Gutenberg Editor',
@@ -669,6 +671,36 @@ define('_ADMIN_BASIC_WP', [
 			'theme_js' => [
 				'label' => 'Theme Scripts',
 				'type' => 'code'
+			]
+		]
+	],
+	'woo' => [
+		'label' => 'Woo',
+		'columns' => 4,
+		'fields' => [
+			'woo_support' => [
+				'label' => 'Add Woocommerce Support',
+				'type' => 'check'
+			],
+			'woo_columns' => [
+				'label' => 'Woocommerce Thumbnail Columns',
+				'type' => 'input'
+			],
+			'woo_per_page' => [
+				'label' => 'Woocommerce Items Per Page',
+				'type' => 'input'
+			],
+			'woo_cleanup' => [
+				'label' => 'Clean up Woocommerce Pages',
+				'type' => 'check'
+			],
+			'woo_styles' => [
+				'label' => 'Load Woocommerce Styles',
+				'type' => 'check'
+			],
+			'woo_title' => [
+				'label' => 'Rename Woocommerce',
+				'type' => 'input'
 			]
 		]
 	],
@@ -1288,11 +1320,13 @@ class B {
 				break;
 			}
 			default: {
-				$items = explode(',', _B['nav_layout']);
-				foreach ($items as $item) {
-					B::nav($item);
+				if (_B['nav_layout'] != '') {
+					$items = explode(',', _B['nav_layout']);
+					foreach ($items as $item) {
+						B::nav($item);
+					}
+					echo "\n";
 				}
-				echo "\n";
 			}
 		}
 	}
@@ -1383,6 +1417,98 @@ class B {
 			return _B['light_colour'];
 		}
 	}
+
+	// rgb to hsl
+
+	public static function rgb_hsl($r, $g, $b) {
+		$r /= 255;
+		$g /= 255;
+		$b /= 255;
+
+		$max = max($r, $g, $b);
+		$min = min($r, $g, $b);
+
+		$h;
+		$s;
+		$l = ( $max + $min ) / 2;
+		$d = $max - $min;
+
+		if ($d == 0) {
+			$h = $s = 0;
+		}
+		else {
+			$s = $d / (1 - abs(2 * $l - 1));
+
+			switch ($max) {
+				case $r: {
+					$h = 60 * fmod((($g - $b) / $d), 6); 
+					if ($b > $g) {
+						$h += 360;
+					}
+					break;
+				}
+				case $g: { 
+					$h = 60 * (($b - $r) / $d + 2); 
+					break;
+				}
+				case $b: { 
+					$h = 60 * (($r - $g) / $d + 4); 
+					break;
+				}
+			}			        	        
+		}
+
+		return [round($h, 3), round($s, 3), round($l, 3)];
+	}
+
+	// hsl to rgb
+
+	public static function hsl_rgb($h, $s, $l) {
+		$r; 
+		$g; 
+		$b;
+
+		$c = (1 - abs(2 * $l - 1)) * $s;
+		$x = $c * (1 - abs(fmod(($h / 60), 2) - 1));
+		$m = $l - ($c / 2);
+
+		if ($h < 60) {
+			$r = $c;
+			$g = $x;
+			$b = 0;
+		}
+		else if ($h < 120) {
+			$r = $x;
+			$g = $c;
+			$b = 0;			
+		}
+		else if ($h < 180) {
+			$r = 0;
+			$g = $c;
+			$b = $x;					
+		}
+		else if ($h < 240) {
+			$r = 0;
+			$g = $x;
+			$b = $c;
+		}
+		else if ($h < 300) {
+			$r = $x;
+			$g = 0;
+			$b = $c;
+		}
+		else {
+			$r = $c;
+			$g = 0;
+			$b = $x;
+		}
+
+		$r = ($r + $m) * 255;
+		$g = ($g + $m) * 255;
+		$b = ($b + $m) * 255;
+
+		return [round($r), round($g), round($b)];
+	}
 }
 
 
@@ -1436,6 +1562,16 @@ function b_woo_related_products_args($args) {
 	];
 	$args = wp_parse_args($defaults, $args);
 	return $args;
+}
+
+function b_dequeue_styles($styles) {
+	if (_B['woo_styles'] != 'yes') {
+		unset($styles['woocommerce-general']);
+		unset($styles['woocommerce-layout']);
+		unset($styles['woocommerce-smallscreen']);
+	}
+
+	return $styles;
 }
 
 
@@ -2632,6 +2768,7 @@ add_action('edited_category', 'b_save_category_image', 10, 2);
 
 add_filter('excerpt_length', 'b_set_excerpt_length', 999);
 add_filter('nav_menu_css_class', 'b_add_menu_classes', 10, 2);
+add_filter('woocommerce_enqueue_styles', 'b_dequeue_styles');
 
 // shortcodes
 
