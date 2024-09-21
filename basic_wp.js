@@ -6,6 +6,7 @@ jQuery(function($) {
 	var theme = basic_wp;
 	const fields = [
 		'container_class',
+		'max_width',
 		'custom_content',
 		'header_order',
 		'excerpt_length',
@@ -42,6 +43,7 @@ jQuery(function($) {
 		'info_text_colour',
 		'nav_colour',
 		'nav_text_colour',
+		'nav_active_colour',
 		'banner_colour',
 		'banner_text_colour',
 		'footer_top_colour',
