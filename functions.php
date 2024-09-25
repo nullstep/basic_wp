@@ -2278,77 +2278,86 @@ function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 //  ███    ███  ███    ███      ███        ███         ███    ███      ███      
 //   ▀██████▀   ████████▀      ▄████▀     ▄████▀       ████████▀      ▄████▀
 
-function s9_shutdown() {
-	if (did_action('get_header')) {
-		$final = '';
-		$levels = ob_get_level();
+function b_shutdown() {
+	$final = '';
+	$levels = ob_get_level();
+	$ini_ob = ini_get('output_buffering');
 
-		for ($i = 0; $i < $levels; $i++) {
+	if ('0' === $ini_ob || '' === $ini_ob) {
+		$mu_plugin_i_value = $levels - 1;
+	}
+	else {
+		$mu_plugin_i_value = $levels - 2;
+	}
+
+	for ($i = 0; $i < $levels; $i++) {
+		if ($i !== $mu_plugin_i_value) {
+			ob_end_flush();
+		}
+		else {
 			$final .= ob_get_clean();
 		}
-
-		echo apply_filters('s9_final_output', $final);
 	}
+
+	echo apply_filters('b_final_output', $final);
 }
 
-function s9_filter_output($html) {
-	if (did_action('get_header')) {
-		$regexes = [
-			'/\swp-container-core-columns-is-layout-\w+/',
-			'/\swp-block-columns-is-layout-\w+/',
-			'/\swp-block-column-is-layout-\w+/',
-			'/\sis-layout-\w+/'
-		];
+function b_filter_output($html) {
+	$regexes = [
+		'/\swp-container-core-columns-is-layout-\w+/',
+		'/\swp-block-columns-is-layout-\w+/',
+		'/\swp-block-column-is-layout-\w+/',
+		'/\sis-layout-\w+/'
+	];
 
-		foreach ($regexes as $regex) {
-			$html = preg_replace($regex, '', $html);
-		}
-
-		$replace = [
-			'alignwide' => 'container',
-			'alignfull' => 'container-fluid',
-			'wp-block-group__inner-container' => 'row',
-			'wp-block-group' => 'col',
-			'wp-block-button__link' => 'btn btn-primary',
-			'wp-block-button' => 'btn-wrapper',
-			'wp-block-cover__inner-container' => 'd-flex align-items-center justify-content-center',
-			'wp-block-cover' => 'position-relative',
-			'wp-block-image__figure' => 'img-fluid',
-			'wp-block-image' => 'figure',
-			'wp-block-gallery-item' => 'row',
-			'wp-block-gallery' => 'col',
-			'wp-block-quote' => 'blockquote',
-			'wp-block-pullquote' => 'blockquote',
-			'wp-block-table__table-wrapper' => 'table-responsive',
-			'wp-block-table' => 'table',
-			'wp-block-media-text' => 'd-flex align-items-center',
-			'wp-block-columns' => 'row',
-			'wp-block-column' => 'col',
-			'wp-block-spacer' => 'my-3',
-			'wp-block-separator' => 'border-top',
-			'wp-block-list__item' => 'list-group-item',
-			'wp-block-list' => 'list-unstyled',
-			'has-text-align-left' => 'text-start',
-			'has-text-align-right' => 'text-end',
-			'has-text-align-center' => 'text-center',
-			'alignleft' => 'float-start',
-			'alignright' => 'float-end',
-			'aligncenter' => 'text-center'
-		];
-
-		foreach ($replace as $wp => $bs) {
-			$html = str_replace($wp, $bs, $html);
-		}
-
-		$html = str_replace('<div class="container"><div class="row"><div class="col-12"></div></div>', '', $html);
-		$html = preg_replace(
-			'#<div class="row"><div class="section"><div class="row">(.*?)</div></div></div>#s',
-			'<div class="row">$1</div>',
-			$html
-		);    
-
-		return $html;
+	foreach ($regexes as $regex) {
+		$html = preg_replace($regex, '', $html);
 	}
+
+	$replace = [
+		'alignwide' => 'container',
+		'alignfull' => 'container-fluid',
+		'wp-block-group__inner-container' => 'row',
+		'wp-block-group' => 'col',
+		'wp-block-button__link' => 'btn btn-primary',
+		'wp-block-button' => 'btn-wrapper',
+		'wp-block-cover__inner-container' => 'd-flex align-items-center justify-content-center',
+		'wp-block-cover' => 'position-relative',
+		'wp-block-image__figure' => 'img-fluid',
+		'wp-block-image' => 'figure',
+		'wp-block-gallery-item' => 'row',
+		'wp-block-gallery' => 'col',
+		'wp-block-quote' => 'blockquote',
+		'wp-block-pullquote' => 'blockquote',
+		'wp-block-table__table-wrapper' => 'table-responsive',
+		'wp-block-table' => 'table',
+		'wp-block-media-text' => 'd-flex align-items-center',
+		'wp-block-columns' => 'row',
+		'wp-block-column' => 'col',
+		'wp-block-spacer' => 'my-3',
+		'wp-block-separator' => 'border-top',
+		'wp-block-list__item' => 'list-group-item',
+		'wp-block-list' => 'list-unstyled',
+		'has-text-align-left' => 'text-start',
+		'has-text-align-right' => 'text-end',
+		'has-text-align-center' => 'text-center',
+		'alignleft' => 'float-start',
+		'alignright' => 'float-end',
+		'aligncenter' => 'text-center'
+	];
+
+	foreach ($replace as $wp => $bs) {
+		$html = str_replace($wp, $bs, $html);
+	}
+
+	$html = str_replace('<div class="container"><div class="row"><div class="col-12"></div></div>', '', $html);
+	$html = preg_replace(
+		'#<div class="row"><div class="section"><div class="row">(.*?)</div></div></div>#s',
+		'<div class="row">$1</div>',
+		$html
+	);
+
+	return $html;
 }
 
 
@@ -2765,7 +2774,7 @@ global $evil;
 if (!wp_doing_ajax() && !is_admin()) {
 	ob_start();
 
-	add_filter('s9_final_output', 's9_filter_output');
+	add_action('shutdown', 'b_shutdown', 0);
 }
 
 // actions
@@ -2808,10 +2817,6 @@ add_shortcode('button', 'b_button_shortcode');
 // we don't want these
 
 remove_action('shutdown', 'wp_ob_end_flush_all', 1);
-
-// run our output filter
-
-add_action('shutdown', 's9_shutdown', 999);
 
 // boot theme
 
