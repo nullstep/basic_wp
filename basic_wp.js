@@ -33,7 +33,7 @@ jQuery(function($) {
 		'nav_search_align',
 		'nav_mode_align',
 		'nav_shadow',
-		'nav_dark',
+		'nav_expand',
 		'sticky_nav',
 		'nav_mobile',
 		'page_colour',

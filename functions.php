@@ -115,9 +115,9 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => 'yes'
 	],
-	'nav_dark' => [
+	'nav_expand' => [
 		'type' => 'string',
-		'default' => 'yes'
+		'default' => 'xl'
 	],
 	'sticky_nav' => [
 		'type' => 'string',
@@ -524,9 +524,16 @@ define('_ADMIN_BASIC_WP', [
 				'label' => 'Navbar Shadow',
 				'type' => 'check'
 			],
-			'nav_dark' => [
-				'label' => 'Navbar Dark',
-				'type' => 'check'
+			'nav_expand' => [
+				'label' => 'Navbar Collapse Class',
+				'type' => 'select',
+				'values' => [
+					'none' => 'None',
+					'xl' => 'xl',
+					'lg' => 'lg',
+					'md' => 'md',
+					'sm' => 'sm'
+				]				
 			],
 			'sticky_nav' => [
 				'label' => 'Sticky Navbar',
@@ -1318,11 +1325,11 @@ class B {
 				break;
 			}
 			case 'shadow': {
-				echo (_B['nav_shadow'] == 'yes') ? 'shadow' : '';
+				echo (_B['nav_shadow'] == 'yes') ? ' shadow' : '';
 				break;
 			}
-			case 'dark': {
-				echo (_B['nav_dark'] == 'yes') ? 'dark ' : 'light ';
+			case 'expand': {
+				echo (_B['nav_expand'] == 'none') ? '' : ' navbar-expand-' . _B['nav_expand'];
 				break;
 			}
 			case 'mode': {
