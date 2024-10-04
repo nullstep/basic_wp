@@ -2775,6 +2775,7 @@ if (!wp_doing_ajax() && !is_admin()) {
 	ob_start();
 
 	add_action('shutdown', 'b_shutdown', 0);
+	add_filter('b_final_output', 'b_filter_output');
 }
 
 // actions
