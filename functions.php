@@ -1287,7 +1287,7 @@ class B {
 	public static function nav($value = null) {
 		switch ($value) {
 			case 'logo': {
-				$logo = '<a href="/" class="navbar-brand">' . ((_B['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _B['logo_image_' . _B['nav_logo']] . '">' : get_bloginfo('name')) . '</a>';
+				$logo = '<a href="/" class="navbar-brand">' . ((_B['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _B['logo_image_' . _B['nav_logo']] . '" alt="Site Logo">' : get_bloginfo('name')) . '</a>';
 				echo '<div class="' . B::align('logo') . '">' . $logo . '</div>';
 				break;
 			}
@@ -1299,7 +1299,7 @@ class B {
 					'theme_location' => 'primary',
 					'depth' => 0,
 					'container' => false,
-					'menu_class' => 'navbar-nav mr-auto', //'navbar-nav position-relative',
+					'menu_class' => 'navbar-nav position-relative', //'navbar-nav mr-auto',
 					'fallback_cb' => '__return_false',
 					'walker' => new WP_Bootstrap_Navwalker()
 				]);
@@ -1413,8 +1413,8 @@ class B {
 	// get post excerpt
 
 	public static function excerpt() {
-		$content = preg_replace('%\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))%s', '', get_the_content_feed());
-		echo implode(' ', array_slice(explode(' ', trim(preg_replace('/<[^>]*>/', ' ', $content))), 0, _B['excerpt_length'])) . '&hellip;';
+		//$content = preg_replace('%\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))%s', '', get_the_content_feed());
+		//echo implode(' ', array_slice(explode(' ', trim(preg_replace('/<[^>]*>/', ' ', $content))), 0, _B['excerpt_length'])) . '&hellip;';
 	}
 
 	// get contrasting colour
@@ -2278,31 +2278,21 @@ function b_latest_shortcode($atts = [], $content = null, $tag = '') {
 //  ███    ███  ███    ███      ███        ███         ███    ███      ███      
 //   ▀██████▀   ████████▀      ▄████▀     ▄████▀       ████████▀      ▄████▀
 
-function b_shutdown() {
-	$final = '';
-	$levels = ob_get_level();
-	$ini_ob = ini_get('output_buffering');
-
-	if ('0' === $ini_ob || '' === $ini_ob) {
-		$mu_plugin_i_value = $levels - 1;
+function b_buffer_output() {
+	if (!wp_doing_ajax() && !is_admin()) {
+		ob_start('b_return_buffer');
 	}
-	else {
-		$mu_plugin_i_value = $levels - 2;
-	}
-
-	for ($i = 0; $i < $levels; $i++) {
-		if ($i !== $mu_plugin_i_value) {
-			ob_end_flush();
-		}
-		else {
-			$final .= ob_get_clean();
-		}
-	}
-
-	echo apply_filters('b_final_output', $final);
 }
 
-function b_filter_output($html) {
+function b_return_buffer($html) {
+	if (!$html) {
+		return $html;
+	}
+
+	return apply_filters('b_buffer_output', $html);
+}
+
+function b_parse_output($html) {
 	$regexes = [
 		'/\swp-container-core-columns-is-layout-\w+/',
 		'/\swp-block-columns-is-layout-\w+/',
@@ -2769,15 +2759,6 @@ function b_js_concatenator() {
 
 global $evil;
 
-// output buffer on if front-end
-
-if (!wp_doing_ajax() && !is_admin()) {
-	ob_start();
-
-	add_action('shutdown', 'b_shutdown', 0);
-	add_filter('b_final_output', 'b_filter_output');
-}
-
 // actions
 
 add_action('init', 'b_set_wp_options');
@@ -2794,6 +2775,9 @@ add_action('category_add_form_fields', 'b_add_category_image', 10, 2);
 add_action('category_edit_form_fields', 'b_edit_category_image', 10, 2);
 add_action('created_category', 'b_save_category_image', 10, 2);
 add_action('edited_category', 'b_save_category_image', 10, 2);
+
+add_action('template_redirect', 'b_buffer_output', 3);
+add_filter('b_buffer_output', 'b_parse_output');
 
 //add_action('wp_enqueue_scripts', 'b_js_concatenator', 999);
 //add_action('wp_enqueue_scripts', 'b_css_concatenator', 999);
@@ -2814,10 +2798,6 @@ add_shortcode('latest', 'b_latest_shortcode');
 add_shortcode('page', 'b_page_shortcode');
 add_shortcode('video', 'b_video_shortcode');
 add_shortcode('button', 'b_button_shortcode');
-
-// we don't want these
-
-remove_action('shutdown', 'wp_ob_end_flush_all', 1);
 
 // boot theme
 
