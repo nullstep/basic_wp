@@ -5,11 +5,12 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <?php if (is_singular()) { ?>
-	<meta name="description" content="<?php B::excerpt(); ?>">
+	<meta name="description" content="<?php B::description(); ?>">
+	<meta name="keywords" content="<?php B::keywords(); ?>">
 <?php } else { ?>
 	<meta name="description" content="<?php bloginfo('description'); ?>">
 <?php } ?>
-	<title><?php echo wp_title('&#8211;', false, 'right') . get_option('blogname'); ?></title>
+	<title><?php B::title(); ?></title>
 <?php if (B::value('font_awesome', 0) == 'yes') { ?>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <?php } ?>

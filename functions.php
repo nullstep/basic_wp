@@ -16,6 +16,11 @@ define('_LOGO', 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnN
 
 define('_CSS_BASIC_WP', '#info-area {}' . EOL . '#nav-area {}' . EOL . '#banner-area {}' . EOL . '#content-area {}' . EOL . '#footer-top-area {}' . EOL . '#footer-area {}' . EOL . '@media (max-width: 576px) {}' . EOL . '@media (max-width: 768px) {}' . EOL . '@media (max-width: 992px) {}' . EOL . '@media (max-width: 1200px) {}' . EOL . '@media (max-width: 1400px) {}');
 
+// nav hover css
+
+define('_CSS_NAV_HOVER', '.hover .dropdown-menu{flex-direction:column}.nav-item{flex-direction:column}.dropdown-menu{
+width:100%}@media(min-width:992px){.hover{& .dropdown-menu{display:none !important;margin-top:0 !important}& .navbar-nav > li > .dropdown-menu{top:100% !important}& .nav-item:hover > .dropdown-menu{display:flex !important}& .nav-item .nav-item .dropdown-menu{left:100%;top:0}& .dropdown-menu:hover{display:flex !important}}');
+
 // parallax css
 
 define('_CSS_PARALLAX', '.parallax{position:relative;z-index:0;display:grid;grid-template-areas:"stack"}.parallax > *{grid-area:stack;animation:parallax linear;animation-timeline:scroll()}@keyframes parallax{to{transform:translateY(calc(var(--parallax-speed) * 200px))}}');
@@ -114,6 +119,10 @@ define('_ARGS_BASIC_WP', [
 	'nav_shadow' => [
 		'type' => 'string',
 		'default' => 'yes'
+	],
+	'nav_hover' => [
+		'type' => 'string',
+		'default' => 'no'
 	],
 	'nav_expand' => [
 		'type' => 'string',
@@ -520,6 +529,10 @@ define('_ADMIN_BASIC_WP', [
 					'right' => 'Right'
 				]
 			],
+			'nav_hover' => [
+				'label' => 'Show Submenus On Hover',
+				'type' => 'check'
+			],
 			'nav_shadow' => [
 				'label' => 'Navbar Shadow',
 				'type' => 'check'
@@ -893,9 +906,7 @@ class _themeMenu {
 			'manage_options',
 			$this->slug,
 			[$this, 'render_admin'],
-			'data:image/svg+xml;base64,' . base64_encode(
-				'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="500px" height="500px" viewbox="0 0 500 500"><path fill="#a7aaad" d="M250.2,17.4L49,133.5v232.3L250.2,482l201.2-116.2V133.5L250.2,17.4z M371.8,347H128.4v-48.7h194.7v-48.7H128.4v-97.4h48.7 v48.7h194.7V347z"/></svg>'
-			),
+			'data:image/svg+xml;base64,' . base64_encode('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewbox="0 0 500 500"><path fill="#a7aaad" d="M250.2,17.4L49,133.5v232.3L250.2,482l201.2-116.2V133.5L250.2,17.4z M371.8,347H128.4v-48.7h194.7v-48.7H128.4v-97.4h48.7 v48.7h194.7V347z"/></svg>'),
 			2
 		);
 	}
@@ -1187,13 +1198,44 @@ class _themeWidget {
 class B {
 	public static $widgets = [];
 
+	public static function title($echo = true) {
+		$title = get_post_meta(get_queried_object()->ID, '_title', true) ?? get_the_title(get_queried_object()->ID);
+		if ($echo) {
+			echo $title;
+		}
+		else {
+			return $title;
+		}
+	}
+
+	public static function description($echo = true) {
+		$description = get_post_meta(get_queried_object()->ID, '_description', true) ?? '';
+		if ($echo) {
+			echo $description;
+		}
+		else {
+			return $description;
+		}
+	}
+
+	public static function keywords($echo = true) {
+		$keywords = get_post_meta(get_queried_object()->ID, '_keywords', true) ?? '';
+		if ($echo) {
+			echo $keywords;
+		}
+		else {
+			return $keywords;
+		}
+	}
+
 	public static function css() {
-		$parallax = (B::value('parallax', 0) == 'yes') ? _CSS_PARALLAX : '';
-		echo $parallax . _B['auto_css'] . _B['theme_css_minified'];
+		$hover = (_B['nav_hover'] == 'yes') ? _CSS_NAV_HOVER : '';
+		$parallax = (_B['parallax'] == 'yes') ? _CSS_PARALLAX : '';
+		echo $parallax . _B['auto_css'] . $hover . _B['theme_css_minified'];
 	}
 
 	public static function js() {
-		$mode = (B::value('ld_mode', 0) == 'yes') ? _JS_MODE : '';
+		$mode = (_B['ld_mode'] == 'yes') ? _JS_MODE : '';
 		echo $mode . _B['theme_js_minified'];
 	}
 
@@ -1287,7 +1329,7 @@ class B {
 	public static function nav($value = null) {
 		switch ($value) {
 			case 'logo': {
-				$logo = '<a href="/" class="navbar-brand">' . ((_B['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _B['logo_image_' . _B['nav_logo']] . '" alt="Site Logo">' : get_bloginfo('name')) . '</a>';
+				$logo = '<a href="/" class="navbar-brand">' . ((_B['nav_logo'] != 'none') ? '<img id="nav-logo" src="/uploads/' . _B['logo_image_' . _B['nav_logo']] . '">' : get_bloginfo('name')) . '</a>';
 				echo '<div class="' . B::align('logo') . '">' . $logo . '</div>';
 				break;
 			}
@@ -1299,7 +1341,7 @@ class B {
 					'theme_location' => 'primary',
 					'depth' => 0,
 					'container' => false,
-					'menu_class' => 'navbar-nav position-relative', //'navbar-nav mr-auto',
+					'menu_class' => 'navbar-nav mr-auto',
 					'fallback_cb' => '__return_false',
 					'walker' => new WP_Bootstrap_Navwalker()
 				]);
@@ -1330,6 +1372,10 @@ class B {
 			}
 			case 'expand': {
 				echo (_B['nav_expand'] == 'none') ? '' : ' navbar-expand-' . _B['nav_expand'];
+				break;
+			}
+			case 'hover': {
+				echo (_S9['nav_hover'] == 'yes') ? ' hover' : '';
 				break;
 			}
 			case 'mode': {
@@ -1412,9 +1458,15 @@ class B {
 
 	// get post excerpt
 
-	public static function excerpt() {
-		//$content = preg_replace('%\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))%s', '', get_the_content_feed());
-		//echo implode(' ', array_slice(explode(' ', trim(preg_replace('/<[^>]*>/', ' ', $content))), 0, _B['excerpt_length'])) . '&hellip;';
+	public static function excerpt($echo = false) {
+		$content = preg_replace('%\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))%s', '', get_the_content_feed());
+		$excerpt = implode(' ', array_slice(explode(' ', trim(preg_replace('/<[^>]*>/', ' ', $content))), 0, _B['excerpt_length'])) . '&hellip;';
+		if ($echo) {
+			echo $excerpt;
+		}
+		else {
+			return $excerpt;
+		}
 	}
 
 	// get contrasting colour
@@ -1832,6 +1884,9 @@ function b_save_post_metadata($post_id) {
 
 			$page_width = sanitize_text_field($_POST['page_width']);
 			update_post_meta($post_id, 'page_width', $page_width);
+
+			$test_meta = sanitize_text_field($_POST['test_meta']);
+			update_post_meta($post_id, 'test_meta', $test_meta);
 		}
 
 	}
@@ -2394,6 +2449,141 @@ function b_reorder_admin_menu($__return_true) {
    ];
 }
 
+// seo metadata fields
+
+function b_post_sidebar_fields() {
+	$types = ['page', 'post'];
+	$fields = ['title', 'description', 'keywords'];
+
+	$data = [
+		'show_in_rest' => true,
+		'type' => 'string',
+		'single' => true,
+		'sanitize_callback' => 'sanitize_text_field',
+		'auth_callback' => function() {
+			return current_user_can('edit_posts');
+		}
+	];
+
+	foreach ($types as $type) {
+		foreach ($fields as $field) {
+			register_post_meta($type, '_' . $field, $data);
+		}
+	}	
+}
+
+function b_post_sidebar() {
+	wp_register_script('b-sidebar-js', '', ['wp-plugins', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data']);
+
+	$js = <<<JS
+(function() {
+	const { registerPlugin } = wp.plugins;
+	const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editor;
+	const { PanelBody, TextareaControl, TextControl } = wp.components;
+	const { createElement, useEffect, useState } = wp.element;
+	const { select, dispatch, subscribe, withSelect, withDispatch } = wp.data;
+
+	const b_icon = ({ fillColour }) => createElement(
+		'svg', {
+			version: '1.1',
+			xmlns: 'http://www.w3.org/2000/svg',
+			width: '20',
+			height: '20',
+			viewBox: '0 0 500 500'
+		},
+		createElement('path', {
+			fill: fillColour,
+			d: 'M250.2,17.4L49,133.5v232.3L250.2,482l201.2-116.2V133.5L250.2,17.4z M371.8,347H128.4v-48.7h194.7v-48.7H128.4v-97.4h48.7 v48.7h194.7V347z'
+		})
+	);
+	const b_sidebar = () => {
+		const meta = select('core/editor').getEditedPostAttribute('meta') || {};
+		const [titleField, setTitleField] = useState(meta._title || '');
+		const [descriptionField, setDescriptionField] = useState(meta._description || '');
+		const [keywordsField, setKeywordsField] = useState(meta._keywords || '');
+
+		const updateTitle = (value) => {
+			setTitleField(value);
+			dispatch('core/editor').editPost({
+				meta: { _title: value }
+			});
+		};
+		const updateDescription = (value) => {
+			setDescriptionField(value);
+			dispatch('core/editor').editPost({
+				meta: { _description: value }
+			});
+		};
+		const updateKeywords = (value) => {
+			setKeywordsField(value);
+			dispatch('core/editor').editPost({
+				meta: { _keywords: value }
+			});
+		};
+
+		return createElement(
+			PluginSidebar, {
+				name: 'b-sidebar',
+				title: 'SEO Metadata',
+				icon: b_icon
+			},
+			createElement(
+				PanelBody, {
+					title: 'Settings'
+				},
+				createElement(
+					TextControl, {
+						label: 'Title',
+						value: titleField,
+						onChange: updateTitle
+					}
+				),
+				createElement(
+					TextareaControl, {
+						label: 'Description',
+						value: descriptionField,
+						onChange: updateDescription
+					}
+				),
+				createElement(
+					TextareaControl, {
+						label: 'Keywords',
+						value: keywordsField,
+						onChange: updateKeywords
+					}
+				)
+			)
+		);
+	};
+
+	registerPlugin('b-sidebar', {
+		render: () => {
+			const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+			useEffect(() => {
+				const unsubscribe = subscribe(() => {
+					const isOpen = select('core/edit-post').isPluginSidebarOpened('b-sidebar');
+					setIsSidebarOpen(isOpen);
+				});
+				return () => unsubscribe();
+			}, []);
+
+			return [
+				createElement(PluginSidebarMoreMenuItem, {
+					target: 'b-sidebar',
+					icon: createElement(b_icon, { fillColor: isSidebarOpen ? '#ffffff' : '#000000' })
+				}, 'SEO Metadata'),
+				createElement(b_sidebar)
+			];
+		}
+	});
+})();
+JS;
+
+	wp_add_inline_script('b-sidebar-js', $js);
+	wp_enqueue_script('b-sidebar-js');
+}
+
 
 //     ▄█    █▄        ▄████████   ▄█           ▄███████▄  
 //    ███    ███      ███    ███  ███          ███    ███  
@@ -2775,9 +2965,8 @@ add_action('category_add_form_fields', 'b_add_category_image', 10, 2);
 add_action('category_edit_form_fields', 'b_edit_category_image', 10, 2);
 add_action('created_category', 'b_save_category_image', 10, 2);
 add_action('edited_category', 'b_save_category_image', 10, 2);
-
-add_action('template_redirect', 'b_buffer_output', 3);
-add_filter('b_buffer_output', 'b_parse_output');
+add_action('enqueue_block_editor_assets', 'b_post_sidebar');
+add_action('init', 'b_post_sidebar_fields');
 
 //add_action('wp_enqueue_scripts', 'b_js_concatenator', 999);
 //add_action('wp_enqueue_scripts', 'b_css_concatenator', 999);
@@ -2798,6 +2987,29 @@ add_shortcode('latest', 'b_latest_shortcode');
 add_shortcode('page', 'b_page_shortcode');
 add_shortcode('video', 'b_video_shortcode');
 add_shortcode('button', 'b_button_shortcode');
+
+// fix lazy-loading/auto issue
+
+add_filter('wp_content_img_tag', function($image) {
+	return str_replace(' sizes="auto, ', ' sizes="', $image);
+});
+
+add_filter('wp_get_attachment_image_attributes', function($attr) {
+	if (isset($attr['sizes'])) {
+		$attr['sizes'] = preg_replace('/^auto, /', '', $attr['sizes']);
+	}
+
+	return $attr;
+});
+
+// parse final output
+
+add_action('template_redirect', 'b_buffer_output', 3);
+add_filter('b_buffer_output', 'b_parse_output');
+
+// we don't want these
+
+remove_action('shutdown', 'wp_ob_end_flush_all', 1);
 
 // boot theme
 

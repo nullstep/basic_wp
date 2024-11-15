@@ -34,6 +34,7 @@ jQuery(function($) {
 		'nav_mode_align',
 		'nav_shadow',
 		'nav_expand',
+		'nav_hover',
 		'sticky_nav',
 		'nav_mobile',
 		'page_colour',
