@@ -1897,19 +1897,15 @@ function b_save_post_metadata($post_id) {
 				return;
 			}
 
-			$css_class = sanitize_text_field($_POST['css_class']);
+			$css_class = isset($_POST['css_class']) ? sanitize_text_field($_POST['css_class']) : '';
 			update_post_meta($post_id, 'css_class', $css_class);
 
-			$is_element = sanitize_text_field($_POST['is_element']);
+			$is_element = isset($_POST['is_element']) ? sanitize_text_field($_POST['is_element']) : '';
 			update_post_meta($post_id, 'is_element', $is_element);
 
-			$page_width = sanitize_text_field($_POST['page_width']);
+			$page_width = isset($_POST['page_width']) ? sanitize_text_field($_POST['page_width']) : '';
 			update_post_meta($post_id, 'page_width', $page_width);
-
-			$test_meta = sanitize_text_field($_POST['test_meta']);
-			update_post_meta($post_id, 'test_meta', $test_meta);
 		}
-
 	}
 }
 
