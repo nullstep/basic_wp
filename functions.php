@@ -1275,7 +1275,16 @@ class B {
 	}
 
 	public static function featured($type = '', $echo = true) {
-		$image = explode('/', wp_get_attachment_url(get_post_thumbnail_id(get_queried_object()->ID)));
+		global $wp_query;
+
+		if (function_exists('is_product_category') && is_product_category()) {
+			$cat = $wp_query->get_queried_object();
+			$thumbnail_id = get_term_meta($cat->term_id, 'thumbnail_id', true);
+			$image = explode('/', wp_get_attachment_url($thumbnail_id));
+		}
+		else {
+			$image = explode('/', wp_get_attachment_url(get_post_thumbnail_id(get_queried_object()->ID)));
+		}
 
 		if (end($image)) {
 			switch ($type) {
