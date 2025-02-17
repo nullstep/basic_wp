@@ -1199,32 +1199,44 @@ class B {
 	public static $widgets = [];
 
 	public static function title($echo = true) {
-		$title = get_post_meta(get_queried_object()->ID, '_title', true) ?? get_the_title(get_queried_object()->ID);
-		if ($echo) {
-			echo $title;
-		}
-		else {
-			return $title;
+		$post = get_queried_object();
+
+		if ($post) {
+			$title = get_post_meta($post->ID, '_title', true) ?? get_the_title($post->ID);
+			if ($echo) {
+				echo $title;
+			}
+			else {
+				return $title;
+			}
 		}
 	}
 
 	public static function description($echo = true) {
-		$description = get_post_meta(get_queried_object()->ID, '_description', true) ?? '';
-		if ($echo) {
-			echo $description;
-		}
-		else {
-			return $description;
+		$post = get_queried_object();
+
+		if ($post) {
+			$description = get_post_meta($post->ID, '_description', true) ?? '';
+			if ($echo) {
+				echo $description;
+			}
+			else {
+				return $description;
+			}
 		}
 	}
 
 	public static function keywords($echo = true) {
-		$keywords = get_post_meta(get_queried_object()->ID, '_keywords', true) ?? '';
-		if ($echo) {
-			echo $keywords;
-		}
-		else {
-			return $keywords;
+		$post = get_queried_object();
+
+		if ($post) {
+			$keywords = get_post_meta($post->ID, '_keywords', true) ?? '';
+			if ($echo) {
+				echo $keywords;
+			}
+			else {
+				return $keywords;
+			}
 		}
 	}
 

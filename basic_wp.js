@@ -219,7 +219,7 @@ jQuery(function($) {
 			}, multiple: false
 		});
 		wp.media.frame.on('open', function() {
-			if (wp.media.frame.content.get() !== null) {          
+			if (wp.media.frame.content.get() !== null) {
 				wp.media.frame.content.get().collection._requery(true);
 				wp.media.frame.content.get().options.selection.reset();
 			}
