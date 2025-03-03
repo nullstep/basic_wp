@@ -73,17 +73,23 @@ jQuery(function($) {
 		'woo_cleanup',
 		'woo_styles',
 		'woo_title',
-		'theme_css',
-		'light_css',
-		'dark_css',
+		'theme_xs_css',
+		'theme_sm_css',
+		'theme_md_css',
+		'theme_lg_css',
+		'theme_xl_css',
+		'theme_xxl_css',
 		'theme_js',
 		'notes'
 	];
 	// code editors
 	const editors = [
-		'theme_css',
-		'light_css',
-		'dark_css',
+		'theme_xs_css',
+		'theme_sm_css',
+		'theme_md_css',
+		'theme_lg_css',
+		'theme_xl_css',
+		'theme_xxl_css',
 		'theme_js'
 	];
 	// content editors

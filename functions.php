@@ -14,7 +14,7 @@ define('_LOGO', 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnN
 
 // basic_wp default css
 
-define('_CSS_BASIC_WP', '#info-area {}' . EOL . '#nav-area {}' . EOL . '#banner-area {}' . EOL . '#content-area {}' . EOL . '#footer-top-area {}' . EOL . '#footer-area {}' . EOL . '@media (max-width: 576px) {}' . EOL . '@media (max-width: 768px) {}' . EOL . '@media (max-width: 992px) {}' . EOL . '@media (max-width: 1200px) {}' . EOL . '@media (max-width: 1400px) {}');
+define('_CSS_BASIC_WP', '#info-area {}' . EOL . '#nav-area {}' . EOL . '#banner-area {}' . EOL . '#content-area {}' . EOL . '#footer-top-area {}' . EOL . '#footer-area {}');
 
 // nav hover css
 
@@ -312,19 +312,31 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => ''
 	],
-	'theme_css' => [
+	'theme_xs_css' => [
+		'type' => 'string',
+		'default' => _CSS_BASIC_WP
+	],
+	'theme_sm_css' => [
+		'type' => 'string',
+		'default' => _CSS_BASIC_WP
+	],
+	'theme_md_css' => [
+		'type' => 'string',
+		'default' => _CSS_BASIC_WP
+	],
+	'theme_lg_css' => [
+		'type' => 'string',
+		'default' => _CSS_BASIC_WP
+	],
+	'theme_xl_css' => [
+		'type' => 'string',
+		'default' => _CSS_BASIC_WP
+	],
+	'theme_xxl_css' => [
 		'type' => 'string',
 		'default' => _CSS_BASIC_WP
 	],
 	'theme_css_minified' => [
-		'type' => 'string',
-		'default' => ''
-	],
-	'light_css' => [
-		'type' => 'string',
-		'default' => ''
-	],
-	'dark_css' => [
 		'type' => 'string',
 		'default' => ''
 	],
@@ -684,18 +696,30 @@ define('_ADMIN_BASIC_WP', [
 	],
 	'css' => [
 		'label' => 'CSS',
-		'columns' => 3,
+		'columns' => 2,
 		'fields' => [
-			'theme_css' => [
-				'label' => 'Theme Styles',
+			'theme_xs_css' => [
+				'label' => 'Theme Styles (xs, 0px width and up)',
 				'type' => 'code'
 			],
-			'light_css' => [
-				'label' => 'Light Mode Styles',
+			'theme_sm_css' => [
+				'label' => 'Theme Styles (sm, 576px width and up)',
 				'type' => 'code'
 			],
-			'dark_css' => [
-				'label' => 'Dark Mode Styles',
+			'theme_md_css' => [
+				'label' => 'Theme Styles (md, 768px width and up)',
+				'type' => 'code'
+			],
+			'theme_lg_css' => [
+				'label' => 'Theme Styles (lg, 992px width and up)',
+				'type' => 'code'
+			],
+			'theme_xl_css' => [
+				'label' => 'Theme Styles (xl, 1200px width and up)',
+				'type' => 'code'
+			],
+			'theme_xxl_css' => [
+				'label' => 'Theme Styles (xxl, 1400px width and up)',
 				'type' => 'code'
 			]
 		]
@@ -868,20 +892,12 @@ class _themeSettings {
 			if (!array_key_exists($i, $defaults)) {
 				unset($settings[$i]);
 			}
-			if ($i == 'theme_css') {
-				if ($setting == '?') {
-					$settings[$i] = _CSS_BASIC_WP;
-				}
-
-				$settings['theme_css_minified'] = minify_css($setting);
-			}
 			if ($i == 'theme_js') {
 				$settings['theme_js_minified'] = minify_js($setting);
 			}
 		}
 
 		// auto generate stored css
-		// based on configs
 
 		update_option(self::$option_key, $settings);
 		$settings['auto_css'] = generate_css();
@@ -1243,7 +1259,7 @@ class B {
 	public static function css() {
 		$hover = (_B['nav_hover'] == 'yes') ? _CSS_NAV_HOVER : '';
 		$parallax = (_B['parallax'] == 'yes') ? _CSS_PARALLAX : '';
-		echo $parallax . _B['auto_css'] . $hover . _B['theme_css_minified'];
+		echo $parallax . $hover . _B['auto_css'];
 	}
 
 	public static function js() {
@@ -2832,7 +2848,22 @@ function generate_css() {
 		$fonts .= ':root{' . $root . '}';
 	}
 
-	return $fonts . $css . minify_css($s['light_css']) . minify_css($s['dark_css']);
+	$breakpoints = [
+		'xs' => '@media(min-width:0){',
+		'sm' => '@media(min-width:576px){',
+		'md' => '@media(min-width:768){',
+		'lg' => '@media(min-width:992px){',
+		'xl' => '@media(min-width:1200px){',
+		'xxl' => '@media(min-width:1400px){',
+	];
+
+	$theme_css = '';
+
+	foreach ($breakpoints as $bp => $mq) {
+		$theme_css .= $mq . minify_css($s['theme_' . $bp . '_css']) . '}';
+	}
+
+	return $fonts . $css . $theme_css;
 }
 
 // curl
