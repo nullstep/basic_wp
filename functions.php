@@ -1378,7 +1378,7 @@ class B {
 					'theme_location' => 'primary',
 					'depth' => 0,
 					'container' => false,
-					'menu_class' => 'navbar-nav mr-auto',
+					'menu_class' => 'navbar-nav ' . B::align('links'),
 					'fallback_cb' => '__return_false',
 					'walker' => new WP_Bootstrap_Navwalker()
 				]);
@@ -2823,7 +2823,7 @@ function generate_css() {
 	$root = '';
 	$fonts = '';
 
-	$template = '@import url(\'https://fonts.googleapis.com/css2?family=[F]&display=swap\');';
+	$template = '@import url(\'https://fonts.googleapis.com/css2?family=[F]:wght@200..800&display=swap\');';
 
 	$types = [
 		'heading',
