@@ -40,6 +40,33 @@
 	outline: none;
 }
 
+#basic_wp-form .form-tab-buttons {
+	margin: 15px 0;
+}
+
+#basic_wp-form .form-tab-button {
+	display: inline-block;
+	border: 1px solid #1d2327;
+	padding: 4px 10px;
+	margin-right: 10px;
+	user-select: none;
+	background: #dcdcde;
+	cursor: pointer;
+}
+
+#basic_wp-form .form-tab-button.active {
+	background: #f3f4f5;
+}
+
+#basic_wp-form .form-tab-block {
+	display: none;
+}
+
+#basic_wp-form .form-tab-block.active {
+	display: block;
+}
+
+
 #basic_wp-form input[type=text] {
 	margin-top: 4px;
 	width: 75%;

@@ -697,6 +697,7 @@ define('_ADMIN_BASIC_WP', [
 	'css' => [
 		'label' => 'CSS',
 		'columns' => 2,
+		'tabs' => true,
 		'fields' => [
 			'theme_xs_css' => [
 				'label' => 'Theme Styles (xs, 0px width and up)',
@@ -1032,9 +1033,23 @@ class _themeMenu {
 				echo '<div class="tab-content">';
 				foreach ($form as $tid => $tab) {
 					echo '<div id="' . $name . '-' . $tid . '" class="' . $name . '-tab">';
+					if (isset($tab['tabs']) && $tab['tabs']) {
+						echo '<div class="form-tab-buttons">';
+						foreach ($tab['fields'] as $fid => $field) {
+							echo '<div class="form-tab-button" data-id="' . $fid . '">';
+								echo $field['label'];
+							echo '</div>';
+						}
+						echo '</div>';
+					}
 					foreach ($tab['fields'] as $fid => $field) {
-						$columns = (isset($field['columns'])) ? $field['columns'] : $tab['columns'];
-						echo '<div class="form-block col-' . $columns . '">';
+						if (isset($tab['tabs']) && $tab['tabs']) {
+							echo '<div class="form-tab-block" data-id="' . $fid . '">';
+						}
+						else {
+							$columns = (isset($field['columns'])) ? $field['columns'] : $tab['columns'];
+							echo '<div class="form-block col-' . $columns . '">';
+						}
 						switch ($field['type']) {
 							case 'input': {
 								echo '<label for="' . $fid . '">';
@@ -1162,6 +1177,40 @@ class _themeMenu {
 				});
 			}';
 		echo '</script>';
+	}
+}
+
+
+//    ▄▄▄▄███▄▄▄▄       ▄████████  ████████▄    ▄█      ▄████████  
+//  ▄██▀▀▀███▀▀▀██▄    ███    ███  ███   ▀███  ███     ███    ███  
+//  ███   ███   ███    ███    █▀   ███    ███  ███▌    ███    ███  
+//  ███   ███   ███   ▄███▄▄▄      ███    ███  ███▌    ███    ███  
+//  ███   ███   ███  ▀▀███▀▀▀      ███    ███  ███▌  ▀███████████  
+//  ███   ███   ███    ███    █▄   ███    ███  ███     ███    ███  
+//  ███   ███   ███    ███    ███  ███   ▄███  ███     ███    ███  
+//   ▀█   ███   █▀     ██████████  ████████▀   █▀      ███    █▀
+
+class _themeMedia {
+	public function register_assets() {
+		$boo = md5(microtime(true));
+		wp_register_script($this->slug, $this->assets_url . '/' . _THEME . '.js?' . $boo, ['jquery']);
+		wp_register_style($this->slug, $this->assets_url . '/' . _THEME . '.css?' . $boo);
+		wp_localize_script($this->slug, _THEME, [
+			'api' => [
+				'url' => esc_url_raw(rest_url(_THEME . '-api/folders')),
+				'nonce' => wp_create_nonce('media_rest')
+			],
+			'folders' => [
+				[
+					'term_id' => -1,
+					'term_name' => 'All Folders'
+				],
+				[
+					'term_id' => 0,
+					'term_name' => 'Uncategorized'
+				]
+			]
+		]);
 	}
 }
 
@@ -1810,35 +1859,139 @@ function b_add_scripts($hook) {
 	if (null !== $screen && $screen->base == 'toplevel_page_' . _THEME . '-theme-menu') {
 		wp_enqueue_code_editor(['type' => 'application/x-httpd-php']);
 	}
+/*
+	wp_register_script('js-footer', '', ['jquery', 'media-editor'], '', true);
+	wp_enqueue_script('js-footer');
+
+	// add in our folder panel to the media modal
+
+	$js = <<<JS
+	jQuery(document).ready(function($) {
+		Window.bwpf = function() {
+			var f = $('#folder-column');
+			var h = $('<h1>Folders</h1>').css({
+				'display': 'inline-block',
+				'margin-right': '5px',
+				'font-size': '23px',
+				'font-weight': 400,
+				'padding': '9px 0 4px'
+			});
+			f.append(h);
+			var t = $('<div class="media-toolbar wp-filter"></div>').css({
+				'margin-top': '3px',
+				'height': '54px'
+			});
+			f.append(t);
+		};
+
+		if (typeof wp !== 'undefined' && wp.media) {
+			wp.media.view.Modal.prototype.on('open', function() {
+				setTimeout(function() {
+					var f = $('.media-modal-content');
+					if (!f.find('#folder-column').length && !f.find('.edit-attachment-frame').length) {
+						var c = $('<div id="folder-column"></div>').css({
+							'width': '160px',
+							'background': '#f1f1f1',
+							'padding-inline': '10px',
+							'position': 'absolute',
+							'top': 0,
+							'bottom': 0,
+							'left': 0,
+							'z-index': 1000,
+							'overflow-y': 'auto',
+							'border-right': '1px solid #dcdcde'
+						});
+
+						f.append(c);
+						$('.media-frame').css({
+							'margin-left': '180px',
+							'width': 'calc(100% - 180px)'
+						});
+
+						Window.bwpf();
+					}					
+				}, 100);
+			});
+		}
+	});
+JS;
+	wp_add_inline_script('js-footer', $js);
+*/
+	// add script for taxonomy/category image
 
 	if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'category') {
 		wp_enqueue_media();
 		wp_enqueue_script('jquery');
-		wp_add_inline_script('jquery', '
-			jQuery(document).ready(function($) {
-				$("#category_image_upload").click(function(e) {
-					e.preventDefault();
-					var imageFrame;
-					if (imageFrame) {
-						imageFrame.open();
-						return;
-					}
-					imageFrame = wp.media({
-						title: "Select Category Image",
-						button: {
-							text: "Use this image",
-						},
-						multiple: false
-					});
-					imageFrame.on("select", function() {
-						var attachment = imageFrame.state().get("selection").first().toJSON();
-						$("#category_image").val(attachment.url);
-					});
+
+		$js = <<<JS
+		jQuery(document).ready(function($) {
+			$("#category_image_upload").click(function(e) {
+				e.preventDefault();
+				var imageFrame;
+				if (imageFrame) {
 					imageFrame.open();
+					return;
+				}
+				imageFrame = wp.media({
+					title: "Select Category Image",
+					button: {
+						text: "Use this image",
+					},
+					multiple: false
 				});
+				imageFrame.on("select", function() {
+					var attachment = imageFrame.state().get("selection").first().toJSON();
+					$("#category_image").val(attachment.url);
+				});
+				imageFrame.open();
 			});
-		');
+		});
+JS;
+
+		wp_add_inline_script('ci', $js);
 	}
+
+	// add in folder panel for upload paage
+/*
+	if ($screen->base == 'upload') {
+		$js = <<<JS
+		jQuery(document).ready(function($) {
+			var gl = setInterval(function() {
+				var gw = $('.wp-filter');
+
+				if (gw.length && !$('#wpcontent').hasClass('has-folder-column')) {
+					$('#wpcontent').addClass('has-folder-column');
+					$('#wpcontent').css('position', 'relative');
+
+					var c = $('<div id="folder-column"></div>').css({
+						'width': '160px',
+						'background': '#f1f1f1',
+						'padding-inline': '10px',
+						'position': 'absolute',
+						'top': 0,
+						'bottom': 0,
+						'left': 0,
+						'z-index': 10,
+						'overflow-y': 'auto'
+					});
+
+					$('#wpcontent').prepend(c);
+
+					$('#wpbody-content').css({
+						'margin-left': '180px',
+						'width': 'calc(100% - 180px)'
+					});
+
+					clearInterval(gl);
+					Window.bwpf();
+				}
+			}, 200);
+		});
+JS;
+
+		wp_add_inline_script('js-footer', $js);
+	}
+*/
 }
 
 // excerpts
@@ -1998,27 +2151,59 @@ function b_keep_same_author($where, $in_same_cat, $excluded_cats) {
 	return $where .= " AND p.post_author='" . $post->post_author . "'";
 }
 
-// filter post list by admin/user
+// filter post list and media list
 
-function b_filter_access($wp_query) {
+function b_filter_access($query) {
 	if (is_user_logged_in()) {
 		global $current_user;
 
+		if (!is_admin() || !$query->is_main_query()) {
+			return;
+		}
+
 		if (_B['filter_post_list'] == 'yes') {
-			if (isset($wp_query->query['post_type']) && (is_admin() && in_array($wp_query->query['post_type'], ['attachment', 'page', 'post']))) {
+			if (isset($query->query['post_type']) && (is_admin() && in_array($query->query['post_type'], ['attachment', 'page', 'post']))) {
 				if (_B['admin_sees_all_posts'] == 'yes') {
 					if (!current_user_can('manage_options')) {
 						if (in_array('editor', $current_user->roles)) {
-							$wp_query->set('author', $current_user->ID);
+							$query->set('author', $current_user->ID);
 						}
 					}
 				}
 				else {
-					$wp_query->set('author', $current_user->ID);
+					$query->set('author', $current_user->ID);
 				}
 			}
 		}
+
+		$screen = get_current_screen();
+
+		if ($screen && $screen->base === 'upload') {
+			if (!empty($_GET['folder'])) {
+				$folder = sanitize_text_field($_GET['folder']);
+
+				$query->set('meta_query', [
+					[
+						'key' => 'folder',
+						'value' => $folder,
+						'compare' => '='
+					]
+				]);
+			}
+		}
 	}
+}
+
+function b_filter_media($args) {
+	if (!empty($_POST['query']['folder'])) {
+        $args['meta_query'][] = [
+            'key' => 'folder',
+            'value' => $_POST['query']['folder'],
+            'compare' => '='
+        ];
+    }
+
+    return $args;
 }
 
 // post category meta
@@ -3024,6 +3209,7 @@ add_action('init', 'b_post_sidebar_fields');
 add_filter('excerpt_length', 'b_set_excerpt_length', 999);
 add_filter('nav_menu_css_class', 'b_add_menu_classes', 10, 2);
 add_filter('woocommerce_enqueue_styles', 'b_dequeue_styles');
+add_filter('ajax_query_attachments_args', 'b_filter_media');
 
 // shortcodes
 

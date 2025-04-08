@@ -111,6 +111,23 @@ jQuery(function($) {
 			});
 		}
 	});
+	var btns = $('#' + id + '-form .form-tab-button');
+	var blocks = $('#' + id + '-form .form-tab-block');
+	blocks.eq(0).show();
+	btns.eq(0).addClass('active');
+	btns.on('click', function(e) {
+		blocks.hide();
+		btns.removeClass('active');
+		$(this).addClass('active');
+		var tab = $(this).data('id');
+		var block = $('.form-tab-block[data-id="' + tab + '"]');
+		block.show();
+		if (block.find('.code').length) {
+			cm.forEach(function(item, index, arr) {
+				item.codemirror.refresh();
+			});
+		}
+	});
 	$.ajax({
 		method: 'GET',
 		url: theme.api.url,
