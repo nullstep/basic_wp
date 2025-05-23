@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 
 			<div class="row">
-				<div class="col-12">
+				<div class="col">
 <?php if (have_posts()): while (have_posts()) : the_post(); ?>
 					<h2 class="post-title"><?php the_title(); ?></h2>
 					<p><span class="post-date"><?php the_time(get_option('date_format')); ?></span> - <span class="post-time"><?php the_time(); ?></span></p>

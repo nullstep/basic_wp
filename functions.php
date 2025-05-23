@@ -40,6 +40,10 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => 'container'
 	],
+	'mobile_first' => [
+		'type' => 'string',
+		'default' => 'no'
+	],
 	'max_width' => [
 		'type' => 'string',
 		'default' => '1200px'
@@ -55,6 +59,10 @@ define('_ARGS_BASIC_WP', [
 	'filter_post_list' => [
 		'type' => 'string',
 		'default' => ''
+	],
+	'media_folders' => [
+		'type' => 'string',
+		'default' => 'no'
 	],
 	'admin_sees_all_posts' => [
 		'type' => 'string',
@@ -360,337 +368,370 @@ define('_ADMIN_BASIC_WP', [
 	'general' => [
 		'label' => 'General',
 		'columns' => 4,
-		'fields' => [
-			'container_class' => [
-				'label' => 'Site Width',
-				'type' => 'select',
-				'values' => [
-					'container-fluid' => 'Full Width',
-					'container' => 'Fixed Width'
+		'sections' => [
+			'section_1' => [
+				'label' => '',
+				'fields' => [
+					'container_class' => [
+						'label' => 'Site Width',
+						'type' => 'select',
+						'values' => [
+							'container-fluid' => 'Full Width',
+							'container' => 'Fixed Width'
+						]
+					],
+					'mobile_first' => [
+						'label' => 'Mobile First CSS',
+						'type' => 'check'
+					],
+					'max_width' => [
+						'label' => 'Custom max-width of .boxed Elements',
+						'type' => 'input'
+					],
+					'header_order' => [
+						'label' => 'Header Order/Layout',
+						'type' => 'select',
+						'values' => [
+							'nav' => 'Nav',
+							'info,nav' => 'Info > Nav',
+							'nav,info' => 'Nav > Info',
+							'banner,nav' => 'Banner > Nav',
+							'nav,banner' => 'Nav > Banner',
+							'banner,info' => 'Banner > Info',
+							'info,banner' => 'Info > Banner',
+							'info,nav,banner' => 'Info > Nav > Banner',
+							'info,banner,nav' => 'Info > Banner > Nav',
+							'nav,info,banner' => 'Nav > Info > Banner',
+							'nav,banner,info' => 'Nav > Banner > Info',
+							'banner,info,nav' => 'Banner > Info > Nav',
+							'banner,nav,info' => 'Banner > Nav > Info'
+						]
+					],
+					'filter_post_list' => [
+						'label' => 'Filter Post List By Current User',
+						'type' => 'check'
+					],
+					'media_folders' => [
+						'label' => 'Use Media Folders',
+						'type' => 'check'
+					],
+					'admin_sees_all_posts' => [
+						'label' => 'Admin Sees All Posts',
+						'type' => 'check'
+					],
+					'paginate_same_author' => [
+						'label' => 'Blog Pagination To Same Author Posts',
+						'type' => 'check'
+					],
+					'excerpt_length' => [
+						'label' => 'Excerpt Word Limit',
+						'type' => 'input'
+					],
+					'editor_width' => [
+						'label' => 'Set Width of Gutenberg Editor',
+						'type' => 'input'
+					],
+					'ld_mode' => [
+						'label' => 'Light/Dark Mode Active',
+						'type' => 'check'
+					],
+					'parallax' => [
+						'label' => 'Parallax CSS/JS Active',
+						'type' => 'check'
+					],
+					'dev_mode' => [
+						'label' => 'Developer Mode Active',
+						'type' => 'check'
+					],
+					'reorder_menu' => [
+						'label' => 'Re-order Admin Menu',
+						'type' => 'check'
+					],
+					'wp_footer' => [
+						'label' => 'Add wp_footer()',
+						'type' => 'check'
+					]
 				]
-			],
-			'max_width' => [
-				'label' => 'Custom max-width of .boxed Elements',
-				'type' => 'input'
-			],
-			'header_order' => [
-				'label' => 'Header Order/Layout',
-				'type' => 'select',
-				'values' => [
-					'nav' => 'Nav',
-					'info,nav' => 'Info > Nav',
-					'nav,info' => 'Nav > Info',
-					'banner,nav' => 'Banner > Nav',
-					'nav,banner' => 'Nav > Banner',
-					'banner,info' => 'Banner > Info',
-					'info,banner' => 'Info > Banner',
-					'info,nav,banner' => 'Info > Nav > Banner',
-					'info,banner,nav' => 'Info > Banner > Nav',
-					'nav,info,banner' => 'Nav > Info > Banner',
-					'nav,banner,info' => 'Nav > Banner > Info',
-					'banner,info,nav' => 'Banner > Info > Nav',
-					'banner,nav,info' => 'Banner > Nav > Info'
-				]
-			],
-			'filter_post_list' => [
-				'label' => 'Filter Post List By Current User',
-				'type' => 'check'
-			],
-			'admin_sees_all_posts' => [
-				'label' => 'Admin Sees All Posts',
-				'type' => 'check'
-			],
-			'paginate_same_author' => [
-				'label' => 'Blog Pagination To Same Author Posts',
-				'type' => 'check'
-			],
-			'excerpt_length' => [
-				'label' => 'Excerpt Word Limit',
-				'type' => 'input'
-			],
-			'editor_width' => [
-				'label' => 'Set Width of Gutenberg Editor',
-				'type' => 'input'
-			],
-			'ld_mode' => [
-				'label' => 'Light/Dark Mode Active',
-				'type' => 'check'
-			],
-			'parallax' => [
-				'label' => 'Parallax CSS/JS Active',
-				'type' => 'check'
-			],
-			'dev_mode' => [
-				'label' => 'Developer Mode Active',
-				'type' => 'check'
-			],
-			'reorder_menu' => [
-				'label' => 'Re-order Admin Menu',
-				'type' => 'check'
-			],
-			'wp_footer' => [
-				'label' => 'Add wp_footer()',
-				'type' => 'check'
 			]
 		]
 	],
 	'images' => [
 		'label' => 'Images',
 		'columns' => 3,
-		'fields' => [
-			'favicon_image' => [
-				'label' => 'Site Favicon',
-				'type' => 'file'
-			],
-			'logo_image_normal' => [
-				'label' => 'Logo Image (normal)',
-				'type' => 'file'
-			],
-			'logo_image_contrast' => [
-				'label' => 'Logo Image (contrast)',
-				'type' => 'file'
-			],
-			'stt_icon' => [
-				'label' => 'Scroll To Top Icon',
-				'type' => 'file'
-			],
-			'latest_images' => [
-				'label' => 'Show Images in Latest Posts Shortcode',
-				'type' => 'check'
+		'sections' => [
+			'section_1' => [
+				'label' => '',
+				'fields' => [
+					'favicon_image' => [
+						'label' => 'Site Favicon',
+						'type' => 'file'
+					],
+					'logo_image_normal' => [
+						'label' => 'Logo Image (normal)',
+						'type' => 'file'
+					],
+					'logo_image_contrast' => [
+						'label' => 'Logo Image (contrast)',
+						'type' => 'file'
+					],
+					'stt_icon' => [
+						'label' => 'Scroll To Top Icon',
+						'type' => 'file'
+					],
+					'latest_images' => [
+						'label' => 'Show Images in Latest Posts Shortcode',
+						'type' => 'check'
+					]
+				]
 			]
 		]
 	],
 	'navbar' => [
 		'label' => 'Navbar',
 		'columns' => 4,
-		'fields' => [
-			'nav_elements' => [
-				'label' => 'Navbar Elements Available',
-				'type' => 'sort',
-				'connect' => 'nav_layout',
-				'columns' => 2
-			],
-			'nav_layout' => [
-				'label' => 'Navbar Layout',
-				'type' => 'sort',
-				'connect' => 'nav_elements',
-				'columns' => 2
-			],
-			'nav_logo' => [
-				'label' => 'Navbar Logo Image',
-				'type' => 'select',
-				'values' => [
-					'none' => 'None',
-					'normal' => 'Normal',
-					'contrast' => 'Contrast'
+		'sections' => [
+			'section_1' => [
+				'label' => '',
+				'fields' => [
+					'nav_elements' => [
+						'label' => 'Navbar Elements Available',
+						'type' => 'sort',
+						'connect' => 'nav_layout',
+						'columns' => 2
+					],
+					'nav_layout' => [
+						'label' => 'Navbar Layout',
+						'type' => 'sort',
+						'connect' => 'nav_elements',
+						'columns' => 2
+					],
+					'nav_logo' => [
+						'label' => 'Navbar Logo Image',
+						'type' => 'select',
+						'values' => [
+							'none' => 'None',
+							'normal' => 'Normal',
+							'contrast' => 'Contrast'
+						]
+					],
+					'nav_width' => [
+						'label' => 'Navbar Width',
+						'type' => 'select',
+						'values' => [
+							'container-fluid' => 'Full Width',
+							'container' => 'Fixed Width'
+						]
+					],
+					'nav_links_align' => [
+						'label' => 'Links Alignment',
+						'type' => 'select',
+						'values' => [
+							'm-none' => 'None',
+							'me-auto' => 'Left',
+							'mx-auto' => 'Middle',
+							'ms-auto' => 'Right'
+						]
+					],
+					'nav_logo_align' => [
+						'label' => 'Logo Alignment',
+						'type' => 'select',
+						'values' => [
+							'm-none' => 'None',
+							'me-auto' => 'Left',
+							'mx-auto' => 'Middle',
+							'ms-auto' => 'Right'
+						]
+					],
+					'nav_search_align' => [
+						'label' => 'Search Alignment',
+						'type' => 'select',
+						'values' => [
+							'm-none' => 'None',
+							'me-auto' => 'Left',
+							'mx-auto' => 'Middle',
+							'ms-auto' => 'Right'
+						]
+					],
+					'nav_mode_align' => [
+						'label' => 'Mode Alignment',
+						'type' => 'select',
+						'values' => [
+							'm-none' => 'None',
+							'me-auto' => 'Left',
+							'mx-auto' => 'Middle',
+							'ms-auto' => 'Right'
+						]
+					],
+					'nav_mobile' => [
+						'label' => 'Mobile Nav Position',
+						'type' => 'select',
+						'values' => [
+							'left' => 'Left',
+							'right' => 'Right'
+						]
+					],
+					'nav_hover' => [
+						'label' => 'Show Submenus On Hover',
+						'type' => 'check'
+					],
+					'nav_shadow' => [
+						'label' => 'Navbar Shadow',
+						'type' => 'check'
+					],
+					'nav_expand' => [
+						'label' => 'Navbar Collapse Class',
+						'type' => 'select',
+						'values' => [
+							'none' => 'None',
+							'xl' => 'xl',
+							'lg' => 'lg',
+							'md' => 'md',
+							'sm' => 'sm'
+						]				
+					],
+					'sticky_nav' => [
+						'label' => 'Sticky Navbar',
+						'type' => 'check'
+					]
 				]
-			],
-			'nav_width' => [
-				'label' => 'Navbar Width',
-				'type' => 'select',
-				'values' => [
-					'container-fluid' => 'Full Width',
-					'container' => 'Fixed Width'
-				]
-			],
-			'nav_links_align' => [
-				'label' => 'Links Alignment',
-				'type' => 'select',
-				'values' => [
-					'm-none' => 'None',
-					'me-auto' => 'Left',
-					'mx-auto' => 'Middle',
-					'ms-auto' => 'Right'
-				]
-			],
-			'nav_logo_align' => [
-				'label' => 'Logo Alignment',
-				'type' => 'select',
-				'values' => [
-					'm-none' => 'None',
-					'me-auto' => 'Left',
-					'mx-auto' => 'Middle',
-					'ms-auto' => 'Right'
-				]
-			],
-			'nav_search_align' => [
-				'label' => 'Search Alignment',
-				'type' => 'select',
-				'values' => [
-					'm-none' => 'None',
-					'me-auto' => 'Left',
-					'mx-auto' => 'Middle',
-					'ms-auto' => 'Right'
-				]
-			],
-			'nav_mode_align' => [
-				'label' => 'Mode Alignment',
-				'type' => 'select',
-				'values' => [
-					'm-none' => 'None',
-					'me-auto' => 'Left',
-					'mx-auto' => 'Middle',
-					'ms-auto' => 'Right'
-				]
-			],
-			'nav_mobile' => [
-				'label' => 'Mobile Nav Position',
-				'type' => 'select',
-				'values' => [
-					'left' => 'Left',
-					'right' => 'Right'
-				]
-			],
-			'nav_hover' => [
-				'label' => 'Show Submenus On Hover',
-				'type' => 'check'
-			],
-			'nav_shadow' => [
-				'label' => 'Navbar Shadow',
-				'type' => 'check'
-			],
-			'nav_expand' => [
-				'label' => 'Navbar Collapse Class',
-				'type' => 'select',
-				'values' => [
-					'none' => 'None',
-					'xl' => 'xl',
-					'lg' => 'lg',
-					'md' => 'md',
-					'sm' => 'sm'
-				]				
-			],
-			'sticky_nav' => [
-				'label' => 'Sticky Navbar',
-				'type' => 'check'
 			]
 		]
 	],
 	'colours' => [
 		'label' => 'Colours',
 		'columns' => 4,
-		'fields' => [
-			'page_colour' => [
-				'label' => 'Page Background Colour',
-				'type' => 'colour'
-			],
-			'text_colour' => [
-				'label' => 'Text Colour',
-				'type' => 'colour'
-			],
-			'heading_colour' => [
-				'label' => 'Headings Colour',
-				'type' => 'colour'
-			],
-			'info_colour' => [
-				'label' => 'Info Area Background Colour',
-				'type' => 'colour'
-			],
-			'info_text_colour' => [
-				'label' => 'Info Area Text Colour',
-				'type' => 'colour'
-			],
-			'nav_colour' => [
-				'label' => 'Navbar Background Colour',
-				'type' => 'colour'
-			],
-			'nav_text_colour' => [
-				'label' => 'Navbar Text Colour',
-				'type' => 'colour'
-			],
-			'nav_active_colour' => [
-				'label' => 'Navbar Active Colour',
-				'type' => 'colour'
-			],
-			'banner_colour' => [
-				'label' => 'Banner Background Colour',
-				'type' => 'colour'
-			],
-			'banner_text_colour' => [
-				'label' => 'Banner Text Colour',
-				'type' => 'colour'
-			],
-			'footer_top_colour' => [
-				'label' => 'Footer Top Area Background Colour',
-				'type' => 'colour'
-			],
-			'footer_colour' => [
-				'label' => 'Footer Main Background Colour',
-				'type' => 'colour'
-			],
-			'footer_text_colour' => [
-				'label' => 'Footer Text Colour',
-				'type' => 'colour'
-			],
-			'primary_colour' => [
-				'label' => 'Primary Colour',
-				'type' => 'colour'
-			],
-			'secondary_colour' => [
-				'label' => 'Secondary Colour',
-				'type' => 'colour'
-			],
-			'tertiary_colour' => [
-				'label' => 'Tertiary Colour',
-				'type' => 'colour'
-			],
-			'quaternary_colour' => [
-				'label' => 'Quaternary Colour',
-				'type' => 'colour'
-			],
-			'light_colour' => [
-				'label' => 'Light Contrast Colour',
-				'type' => 'colour'
-			],
-			'dark_colour' => [
-				'label' => 'Dark Contrast Colour',
-				'type' => 'colour'
-			],
-			'admin_link_colour' => [
-				'label' => 'Admin Link Colour',
-				'type' => 'colour'
-			],
-			'admin_highlight_colour' => [
-				'label' => 'Admin Highlight Colour',
-				'type' => 'colour'
+		'sections' => [
+			'section_1' => [
+				'label' => '',
+				'fields' => [
+					'page_colour' => [
+						'label' => 'Page Background Colour',
+						'type' => 'colour'
+					],
+					'text_colour' => [
+						'label' => 'Text Colour',
+						'type' => 'colour'
+					],
+					'heading_colour' => [
+						'label' => 'Headings Colour',
+						'type' => 'colour'
+					],
+					'info_colour' => [
+						'label' => 'Info Area Background Colour',
+						'type' => 'colour'
+					],
+					'info_text_colour' => [
+						'label' => 'Info Area Text Colour',
+						'type' => 'colour'
+					],
+					'nav_colour' => [
+						'label' => 'Navbar Background Colour',
+						'type' => 'colour'
+					],
+					'nav_text_colour' => [
+						'label' => 'Navbar Text Colour',
+						'type' => 'colour'
+					],
+					'nav_active_colour' => [
+						'label' => 'Navbar Active Colour',
+						'type' => 'colour'
+					],
+					'banner_colour' => [
+						'label' => 'Banner Background Colour',
+						'type' => 'colour'
+					],
+					'banner_text_colour' => [
+						'label' => 'Banner Text Colour',
+						'type' => 'colour'
+					],
+					'footer_top_colour' => [
+						'label' => 'Footer Top Area Background Colour',
+						'type' => 'colour'
+					],
+					'footer_colour' => [
+						'label' => 'Footer Main Background Colour',
+						'type' => 'colour'
+					],
+					'footer_text_colour' => [
+						'label' => 'Footer Text Colour',
+						'type' => 'colour'
+					],
+					'primary_colour' => [
+						'label' => 'Primary Colour',
+						'type' => 'colour'
+					],
+					'secondary_colour' => [
+						'label' => 'Secondary Colour',
+						'type' => 'colour'
+					],
+					'tertiary_colour' => [
+						'label' => 'Tertiary Colour',
+						'type' => 'colour'
+					],
+					'quaternary_colour' => [
+						'label' => 'Quaternary Colour',
+						'type' => 'colour'
+					],
+					'light_colour' => [
+						'label' => 'Light Contrast Colour',
+						'type' => 'colour'
+					],
+					'dark_colour' => [
+						'label' => 'Dark Contrast Colour',
+						'type' => 'colour'
+					],
+					'admin_link_colour' => [
+						'label' => 'Admin Link Colour',
+						'type' => 'colour'
+					],
+					'admin_highlight_colour' => [
+						'label' => 'Admin Highlight Colour',
+						'type' => 'colour'
+					]
+				]
 			]
 		]
 	],
 	'fonts' => [
 		'label' => 'Fonts',
 		'columns' => 4,
-		'fields' => [
-			'heading_font' => [
-				'label' => 'Headings Font',
-				'type' => 'font'
-			],
-			'nav_font' => [
-				'label' => 'Navigation Font',
-				'type' => 'font'
-			],
-			'body_font' => [
-				'label' => 'Body Text Font',
-				'type' => 'font'
-			],
-			'mono_font' => [
-				'label' => 'Monospace Font',
-				'type' => 'font'
-			],
-			'google_api' => [
-				'label' => 'Google Font API Key',
-				'type' => 'input'
-			],
-			'headings_upper' => [
-				'label' => 'Uppercase Headings',
-				'type' => 'check'
-			],
-			'nav_upper' => [
-				'label' => 'Uppercase Navigation',
-				'type' => 'check'
-			],
-			'font_awesome' => [
-				'label' => 'Use Font Awesome',
-				'type' => 'check'
+		'sections' => [
+			'section_1' => [
+				'label' => '',
+				'fields' => [
+					'heading_font' => [
+						'label' => 'Headings Font',
+						'type' => 'font'
+					],
+					'nav_font' => [
+						'label' => 'Navigation Font',
+						'type' => 'font'
+					],
+					'body_font' => [
+						'label' => 'Body Text Font',
+						'type' => 'font'
+					],
+					'mono_font' => [
+						'label' => 'Monospace Font',
+						'type' => 'font'
+					],
+					'google_api' => [
+						'label' => 'Google Font API Key',
+						'type' => 'input'
+					],
+					'headings_upper' => [
+						'label' => 'Uppercase Headings',
+						'type' => 'check'
+					],
+					'nav_upper' => [
+						'label' => 'Uppercase Navigation',
+						'type' => 'check'
+					],
+					'font_awesome' => [
+						'label' => 'Use Font Awesome',
+						'type' => 'check'
+					]
+				]
 			]
 		]
 	],
@@ -698,80 +739,100 @@ define('_ADMIN_BASIC_WP', [
 		'label' => 'CSS',
 		'columns' => 2,
 		'tabs' => true,
-		'fields' => [
-			'theme_xs_css' => [
-				'label' => 'Theme Styles (xs, 0px width and up)',
-				'type' => 'code'
-			],
-			'theme_sm_css' => [
-				'label' => 'Theme Styles (sm, 576px width and up)',
-				'type' => 'code'
-			],
-			'theme_md_css' => [
-				'label' => 'Theme Styles (md, 768px width and up)',
-				'type' => 'code'
-			],
-			'theme_lg_css' => [
-				'label' => 'Theme Styles (lg, 992px width and up)',
-				'type' => 'code'
-			],
-			'theme_xl_css' => [
-				'label' => 'Theme Styles (xl, 1200px width and up)',
-				'type' => 'code'
-			],
-			'theme_xxl_css' => [
-				'label' => 'Theme Styles (xxl, 1400px width and up)',
-				'type' => 'code'
+		'sections' => [
+			'section_1' => [
+				'label' => '',
+				'fields' => [
+					'theme_xs_css' => [
+						'label' => 'Theme Styles (xs, 0px width and up)',
+						'type' => 'code'
+					],
+					'theme_sm_css' => [
+						'label' => 'Theme Styles (sm, 576px width and up)',
+						'type' => 'code'
+					],
+					'theme_md_css' => [
+						'label' => 'Theme Styles (md, 768px width and up)',
+						'type' => 'code'
+					],
+					'theme_lg_css' => [
+						'label' => 'Theme Styles (lg, 992px width and up)',
+						'type' => 'code'
+					],
+					'theme_xl_css' => [
+						'label' => 'Theme Styles (xl, 1200px width and up)',
+						'type' => 'code'
+					],
+					'theme_xxl_css' => [
+						'label' => 'Theme Styles (xxl, 1400px width and up)',
+						'type' => 'code'
+					]
+				]
 			]
 		]
 	],
 	'js' => [
 		'label' => 'JS',
 		'columns' => 1,
-		'fields' => [
-			'theme_js' => [
-				'label' => 'Theme Scripts',
-				'type' => 'code'
+		'sections' => [
+			'section_1' => [
+				'label' => '',
+				'fields' => [
+					'theme_js' => [
+						'label' => 'Theme Scripts',
+						'type' => 'code'
+					]
+				]
 			]
 		]
 	],
 	'woo' => [
 		'label' => 'Woo',
 		'columns' => 4,
-		'fields' => [
-			'woo_support' => [
-				'label' => 'Add Woocommerce Support',
-				'type' => 'check'
-			],
-			'woo_columns' => [
-				'label' => 'Woocommerce Thumbnail Columns',
-				'type' => 'input'
-			],
-			'woo_per_page' => [
-				'label' => 'Woocommerce Items Per Page',
-				'type' => 'input'
-			],
-			'woo_cleanup' => [
-				'label' => 'Clean up Woocommerce Pages',
-				'type' => 'check'
-			],
-			'woo_styles' => [
-				'label' => 'Load Woocommerce Styles',
-				'type' => 'check'
-			],
-			'woo_title' => [
-				'label' => 'Rename Woocommerce',
-				'type' => 'input'
+		'sections' => [
+			'section_1' => [
+				'label' => '',
+				'fields' => [
+					'woo_support' => [
+						'label' => 'Add Woocommerce Support',
+						'type' => 'check'
+					],
+					'woo_columns' => [
+						'label' => 'Woocommerce Thumbnail Columns',
+						'type' => 'input'
+					],
+					'woo_per_page' => [
+						'label' => 'Woocommerce Items Per Page',
+						'type' => 'input'
+					],
+					'woo_cleanup' => [
+						'label' => 'Clean up Woocommerce Pages',
+						'type' => 'check'
+					],
+					'woo_styles' => [
+						'label' => 'Load Woocommerce Styles',
+						'type' => 'check'
+					],
+					'woo_title' => [
+						'label' => 'Rename Woocommerce',
+						'type' => 'input'
+					]
+				]
 			]
 		]
 	],
 	'misc' => [
 		'label' => 'Miscellaneous',
 		'columns' => 1,
-		'fields' => [
-			'notes' => [
-				'label' => 'Notes',
-				'type' => 'text'
+		'sections' => [
+			'section_1' => [
+				'label' => '',
+				'fields' => [
+					'notes' => [
+						'label' => 'Notes',
+						'type' => 'text'
+					]
+				]
 			]
 		]
 	]
@@ -939,7 +1000,17 @@ class _themeMenu {
 			],
 			'api' => [
 				'url' => esc_url_raw(rest_url(_THEME . '-api/settings')),
-				'nonce' => wp_create_nonce('wp_rest')
+				'nonce' => wp_create_nonce('media_rest')
+			],
+			'folders' => [
+				[
+					'term_id' => -1,
+					'term_name' => 'All Folders'
+				],
+				[
+					'term_id' => 0,
+					'term_name' => 'Uncategorized'
+				]
 			]
 		]);
 	}
@@ -997,29 +1068,36 @@ class _themeMenu {
 			'a sphinx of black quartz judges my vow'
 		];
 
+		$pangram = $pangrams[array_rand($pangrams)];
+
 		// build form
+
+		$js = <<<JS
+			function gfp(e) {
+				var f = jQuery(e).find(':selected').val();
+				var gf = f.replace(/ /g, '+');
+				var id = jQuery(e).attr('id');
+				var p = '{$pangram}';
+				var pre = jQuery('#' + id + '-preview');
+				pre.empty();
+				if (f) {
+					pre.append('<style>@import url("https://fonts.googleapis.com/css2?family=' + gf + '&display=swap");#' + id + '-preview > p {font-family:"' + f + '";font-size:20px;line-height:22px;margin:0;padding:0}</style>').append('<p>' + p + ' ' + p.toUpperCase() + ' 1234567890!?-=+</p>');
+				}
+			}
+
+			jQuery(function($) {
+				$('.gfs').on('change', function() {
+					gfp(this);					
+				});
+				$('.ceb').on('change', function() {
+					$('#col-' + $(this).attr('id')).val($(this).val());
+				});
+			});
+JS;
 
 		echo '<div id="' . $name . '-wrap" class="wrap">';
 			echo '<script>';
-				echo 'function gfp(e) {
-						var f = jQuery(e).find(":selected").val();
-						var gf = f.replace(/ /g, \'+\');
-						var id = jQuery(e).attr("id");
-						var p = "' . $pangrams[array_rand($pangrams)] . '";
-						var pre = jQuery("#" + id + "-preview");
-						pre.empty();
-						if (f) {
-							pre.append("<style>@import url(\'https://fonts.googleapis.com/css2?family=" + gf + "&display=swap\');#" + id + "-preview > p {font-family:\'" + f + "\';font-size:1.2rem;margin:0;padding:0}</style>").append("<p>" + p + " " + p.toUpperCase() + " 1234567890 \"!?-=+\'</p>");
-						}
-					}';
-				echo 'jQuery(function($) {
-					$(".gfs").on("change", function() {
-						gfp(this);					
-					});
-					$(".ceb").on("change", function() {
-						$("#col-" + $(this).attr("id")).val($(this).val());
-					});
-				});';
+				echo $js;
 			echo '</script>';
 
 			echo '<h1><img src="data:image/svg+xml;base64,' . _LOGO . '" style="height:32px"></h1>';
@@ -1033,111 +1111,116 @@ class _themeMenu {
 				echo '<div class="tab-content">';
 				foreach ($form as $tid => $tab) {
 					echo '<div id="' . $name . '-' . $tid . '" class="' . $name . '-tab">';
-					if (isset($tab['tabs']) && $tab['tabs']) {
-						echo '<div class="form-tab-buttons">';
-						foreach ($tab['fields'] as $fid => $field) {
-							echo '<div class="form-tab-button" data-id="' . $fid . '">';
-								echo $field['label'];
+					foreach ($tab['sections'] as $sid => $section) {
+						echo '<div class="form-section">';
+						echo ($section['label']) ? ('<h3>' . $section['label'] . '</h3>') : '';
+						if (isset($tab['tabs']) && $tab['tabs']) {
+							echo '<div class="form-tab-buttons">';
+							foreach ($section['fields'] as $fid => $field) {
+								echo '<div class="form-tab-button" data-id="' . $fid . '">';
+									echo $field['label'];
+								echo '</div>';
+							}
 							echo '</div>';
 						}
-						echo '</div>';
-					}
-					foreach ($tab['fields'] as $fid => $field) {
-						if (isset($tab['tabs']) && $tab['tabs']) {
-							echo '<div class="form-tab-block" data-id="' . $fid . '">';
-						}
-						else {
-							$columns = (isset($field['columns'])) ? $field['columns'] : $tab['columns'];
-							echo '<div class="form-block col-' . $columns . '">';
-						}
-						switch ($field['type']) {
-							case 'input': {
-								echo '<label for="' . $fid . '">';
-									echo $field['label'] . ':';
-								echo '</label>';
-								echo '<input id="' . $fid . '" type="text" name="' . $fid . '">';
-								break;
+						foreach ($section['fields'] as $fid => $field) {
+							if (isset($tab['tabs']) && $tab['tabs']) {
+								echo '<div class="form-tab-block" data-id="' . $fid . '">';
 							}
-							case 'select': {
-								echo '<label for="' . $fid . '">';
-									echo $field['label'] . ':';
-								echo '</label>';
-								echo '<select id="' . $fid . '" name="' . $fid . '">';
+							else {
+								$columns = (isset($field['columns'])) ? $field['columns'] : $tab['columns'];
+								echo '<div class="form-block col-' . $columns . '">';
+							}
+							switch ($field['type']) {
+								case 'input': {
+									echo '<label for="' . $fid . '">';
+										echo $field['label'] . ':';
+									echo '</label>';
+									echo '<input id="' . $fid . '" type="text" name="' . $fid . '">';
+									break;
+								}
+								case 'select': {
+									echo '<label for="' . $fid . '">';
+										echo $field['label'] . ':';
+									echo '</label>';
+									echo '<select id="' . $fid . '" name="' . $fid . '">';
 									foreach ($field['values'] as $value => $label) {
 										echo '<option value="' . $value . '">' . $label . '</option>';
 									}
-								echo '</select>';
-								break;
+									echo '</select>';
+									break;
+								}
+								case 'text': {
+									echo '<label for="' . $fid . '">';
+										echo $field['label'] . ':';
+									echo '</label>';
+									echo '<textarea id="' . $fid . '" class="tabs" name="' . $fid . '"></textarea>';
+									break;
+								}
+								case 'file': {
+									echo '<label for="' . $fid . '">';
+										echo $field['label'] . ':';
+									echo '</label>';
+									echo '<input id="' . $fid . '" type="text" name="' . $fid . '">';
+									echo '<input data-id="' . $fid . '" type="button" class="button-primary choose-file-button" value="...">';
+									break;
+								}
+								case 'colour': {
+									echo '<label for="' . $fid . '">';
+										echo $field['label'] . ' (' . '--' . str_replace('_', '-', $fid) . '):';
+									echo '</label>';
+									echo '<input id="' . $fid . '" class="colour-input" type="text" name="' . $fid . '">';
+									echo '<input id="colour-' . $fid . '" data-id="' . $fid . '" type="color" class="choose-colour-button" value="#000000">';
+									break;
+								}
+								case 'code': {
+									echo '<label for="' . $fid . '">';
+										echo $field['label'] . ':';
+									echo '</label>';
+									echo '<textarea id="' . $fid . '" class="code" name="' . $fid . '"></textarea>';
+									break;
+								}
+								case 'content': {
+									echo '<label for="' . $fid . '">';
+										echo $field['label'] . ':';
+									echo '</label>';
+									wp_editor('', $fid, [
+										'media_buttons' => true,
+										'textarea_name' => $fid
+									]);
+									break;
+								}
+								case 'check': {
+									echo '<em>' . $field['label'] . ':</em>';
+									echo '<label class="switch">';
+										echo '<input type="checkbox" id="' . $fid . '" name="' . $fid . '" value="yes">';
+										echo '<span class="slider"></span>';
+									echo '</label>';
+									break;
+								}
+								case 'font': {
+									echo '<label for="' . $fid . '">';
+										echo $field['label'] . ' (' . '--' . str_replace('_', '-', $fid) . '):';
+									echo '</label>';
+									echo '<select id="' . $fid . '" name="' . $fid . '" class="gfs">';
+										echo $opts;
+									echo '</select>';
+									echo '<div id="' . $fid . '-preview" class="gfp">';
+										echo '<p></p>';
+									echo '</div>';
+									break;
+								}
+								case 'sort': {
+									echo '<label for="' . $fid . '">';
+										echo $field['label'] . ':';
+									echo '</label>';
+									$connect = (isset($field['connect'])) ? $field['connect'] : '';
+									echo '<input id="' . $fid . '" class="sort" data-connect="' . $connect . '" type="hidden" name="' . $fid . '">';
+									echo '<ul id="' . $fid . '-sort" class="sortable"></ul>';
+									break;
+								}
 							}
-							case 'text': {
-								echo '<label for="' . $fid . '">';
-									echo $field['label'] . ':';
-								echo '</label>';
-								echo '<textarea id="' . $fid . '" class="tabs" name="' . $fid . '"></textarea>';
-								break;
-							}
-							case 'file': {
-								echo '<label for="' . $fid . '">';
-									echo $field['label'] . ':';
-								echo '</label>';
-								echo '<input id="' . $fid . '" type="text" name="' . $fid . '">';
-								echo '<input data-id="' . $fid . '" type="button" class="button-primary choose-file-button" value="...">';
-								break;
-							}
-							case 'colour': {
-								echo '<label for="' . $fid . '">';
-									echo $field['label'] . ':';
-								echo '</label>';
-								echo '<input id="' . $fid . '" class="ceb" type="text" name="' . $fid . '">';
-								echo '<input id="col-' . $fid . '" data-id="' . $fid . '" type="color" class="choose-colour-button" value="#000000">';
-								break;
-							}
-							case 'code': {
-								echo '<label for="' . $fid . '">';
-									echo $field['label'] . ':';
-								echo '</label>';
-								echo '<textarea id="' . $fid . '" class="code" name="' . $fid . '"></textarea>';
-								break;
-							}
-							case 'content': {
-								echo '<label for="' . $fid . '">';
-									echo $field['label'] . ':';
-								echo '</label>';
-								wp_editor('', $fid, [
-									'media_buttons' => true,
-									'textarea_name' => $fid
-								]);
-								break;
-							}
-							case 'check': {
-								echo '<em>' . $field['label'] . ':</em>';
-								echo '<label class="switch">';
-									echo '<input type="checkbox" id="' . $fid . '" name="' . $fid . '" value="yes">';
-									echo '<span class="slider"></span>';
-								echo '</label>';
-								break;
-							}
-							case 'font': {
-								echo '<label for="' . $fid . '">';
-									echo $field['label'] . ':';
-								echo '</label>';
-								echo '<select id="' . $fid . '" name="' . $fid . '" class="gfs">';
-									echo $opts;
-								echo '</select>';
-								echo '<div id="' . $fid . '-preview" class="gfp">';
-									echo '';
-								echo '</div>';
-								break;
-							}
-							case 'sort': {
-								echo '<label for="' . $fid . '">';
-									echo $field['label'] . ':';
-								echo '</label>';
-								$connect = (isset($field['connect'])) ? $field['connect'] : '';
-								echo '<input id="' . $fid . '" class="sort" data-connect="' . $connect . '" type="hidden" name="' . $fid . '">';
-								echo '<ul id="' . $fid . '-sort" class="sortable"></ul>';
-								break;
-							}
+							echo '</div>';
 						}
 						echo '</div>';
 					}
@@ -1150,67 +1233,42 @@ class _themeMenu {
 				echo '<div id="' . $name . '-feedback"></div>';
 			echo '</form>';
 		echo '</div>';
-		echo '<script>';
-			echo 'Array.prototype.rd=function(){return this.filter(function(item,index,self){return self.indexOf(item)==index;});};';
-			echo 'function b_go() {
-				jQuery(".gfs").each(function(i, o) {
+
+		$js = <<<JS
+			Array.prototype.rd = function() {
+				return this.filter(function(item, index, self) {
+					return self.indexOf(item) == index;
+				});
+			};
+
+			function b_go() {
+				jQuery('.gfs').each(function(i, o) {
 					gfp(jQuery(this));
 				});
-				jQuery(".sort").each(function(i, o) {
-					var id = "#" + jQuery(o).attr("id");
-					var sid = id + "-sort";
-					var conn = jQuery(o).data("connect");
-					var p = (conn != "") ? {connectWith: "#" + conn + "-sort," + sid} : {};
+				jQuery('.sort').each(function(i, o) {
+					var id = '#' + jQuery(o).attr('id');
+					var sid = id + '-sort';
+					var conn = jQuery(o).data('connect');
+					var p = (conn != '') ? {connectWith: '#' + conn + '-sort,' + sid} : {};
 					p.update = function(e, ui) {
-						var t = jQuery(sid + " li").map(function() {
+						var t = jQuery(sid + ' li').map(function() {
 							return jQuery(this).text();
-						}).get().join(",");
-						jQuery(sid.split("-")[0]).val(t);
+						}).get().join(',');
+						jQuery(sid.split('-')[0]).val(t);
 					};
-					jQuery(o).val().split(",").rd().forEach(function(v, i) {
-						if (v != "") {
-							jQuery(sid).append("<li class=\"si\">" + v + "</li>");
+					jQuery(o).val().split(',').rd().forEach(function(v, i) {
+						if (v != '') {
+							jQuery(sid).append('<li class="si">' + v + '</li>');
 						}
 					});
 					jQuery(sid).sortable(p);
 					jQuery(sid).disableSelection();
 				});
-			}';
+			}
+JS;
+		echo '<script>';
+			echo $js;
 		echo '</script>';
-	}
-}
-
-
-//    ▄▄▄▄███▄▄▄▄       ▄████████  ████████▄    ▄█      ▄████████  
-//  ▄██▀▀▀███▀▀▀██▄    ███    ███  ███   ▀███  ███     ███    ███  
-//  ███   ███   ███    ███    █▀   ███    ███  ███▌    ███    ███  
-//  ███   ███   ███   ▄███▄▄▄      ███    ███  ███▌    ███    ███  
-//  ███   ███   ███  ▀▀███▀▀▀      ███    ███  ███▌  ▀███████████  
-//  ███   ███   ███    ███    █▄   ███    ███  ███     ███    ███  
-//  ███   ███   ███    ███    ███  ███   ▄███  ███     ███    ███  
-//   ▀█   ███   █▀     ██████████  ████████▀   █▀      ███    █▀
-
-class _themeMedia {
-	public function register_assets() {
-		$boo = md5(microtime(true));
-		wp_register_script($this->slug, $this->assets_url . '/' . _THEME . '.js?' . $boo, ['jquery']);
-		wp_register_style($this->slug, $this->assets_url . '/' . _THEME . '.css?' . $boo);
-		wp_localize_script($this->slug, _THEME, [
-			'api' => [
-				'url' => esc_url_raw(rest_url(_THEME . '-api/folders')),
-				'nonce' => wp_create_nonce('media_rest')
-			],
-			'folders' => [
-				[
-					'term_id' => -1,
-					'term_name' => 'All Folders'
-				],
-				[
-					'term_id' => 0,
-					'term_name' => 'Uncategorized'
-				]
-			]
-		]);
 	}
 }
 
@@ -1859,36 +1917,78 @@ function b_add_scripts($hook) {
 	if (null !== $screen && $screen->base == 'toplevel_page_' . _THEME . '-theme-menu') {
 		wp_enqueue_code_editor(['type' => 'application/x-httpd-php']);
 	}
-/*
-	wp_register_script('js-footer', '', ['jquery', 'media-editor'], '', true);
-	wp_enqueue_script('js-footer');
 
-	// add in our folder panel to the media modal
+	if (_B['media_folders'] == 'yes') {
+		wp_register_script('js-footer', '', ['jquery', 'media-editor'], '', true);
+		wp_enqueue_script('js-footer');
 
-	$js = <<<JS
-	jQuery(document).ready(function($) {
-		Window.bwpf = function() {
-			var f = $('#folder-column');
-			var h = $('<h1>Folders</h1>').css({
-				'display': 'inline-block',
-				'margin-right': '5px',
-				'font-size': '23px',
-				'font-weight': 400,
-				'padding': '9px 0 4px'
-			});
-			f.append(h);
-			var t = $('<div class="media-toolbar wp-filter"></div>').css({
-				'margin-top': '3px',
-				'height': '54px'
-			});
-			f.append(t);
-		};
+		// add in our folder panel to the media modal
 
-		if (typeof wp !== 'undefined' && wp.media) {
-			wp.media.view.Modal.prototype.on('open', function() {
-				setTimeout(function() {
-					var f = $('.media-modal-content');
-					if (!f.find('#folder-column').length && !f.find('.edit-attachment-frame').length) {
+		$js = <<<JS
+		jQuery(document).ready(function($) {
+			Window.bwpf = function() {
+				var f = $('#folder-column');
+				var h = $('<h1>Folders</h1>').css({
+					'display': 'inline-block',
+					'margin-right': '5px',
+					'font-size': '23px',
+					'font-weight': 400,
+					'padding': '9px 0 4px'
+				});
+				f.append(h);
+				var t = $('<div class="media-toolbar wp-filter"></div>').css({
+					'margin-top': '3px',
+					'height': '54px'
+				});
+				f.append(t);
+			};
+
+			if (typeof wp !== 'undefined' && wp.media) {
+				wp.media.view.Modal.prototype.on('open', function() {
+					setTimeout(function() {
+						var f = $('.media-modal-content');
+						if (!f.find('#folder-column').length && !f.find('.edit-attachment-frame').length) {
+							var c = $('<div id="folder-column"></div>').css({
+								'width': '160px',
+								'background': '#f1f1f1',
+								'padding-inline': '10px',
+								'position': 'absolute',
+								'top': 0,
+								'bottom': 0,
+								'left': 0,
+								'z-index': 1000,
+								'overflow-y': 'auto',
+								'border-right': '1px solid #dcdcde'
+							});
+
+							f.append(c);
+							$('.media-frame').css({
+								'margin-left': '180px',
+								'width': 'calc(100% - 180px)'
+							});
+
+							Window.bwpf();
+						}					
+					}, 100);
+				});
+			}
+		});
+JS;
+
+		wp_add_inline_script('js-footer', $js);
+
+		// add in folder panel for upload page
+
+		if ($screen->base == 'upload') {
+			$js = <<<JS
+			jQuery(document).ready(function($) {
+				var gl = setInterval(function() {
+					var gw = $('.wp-filter');
+
+					if (gw.length && !$('#wpcontent').hasClass('has-folder-column')) {
+						$('#wpcontent').addClass('has-folder-column');
+						$('#wpcontent').css('position', 'relative');
+
 						var c = $('<div id="folder-column"></div>').css({
 							'width': '160px',
 							'background': '#f1f1f1',
@@ -1897,26 +1997,28 @@ function b_add_scripts($hook) {
 							'top': 0,
 							'bottom': 0,
 							'left': 0,
-							'z-index': 1000,
-							'overflow-y': 'auto',
-							'border-right': '1px solid #dcdcde'
+							'z-index': 10,
+							'overflow-y': 'auto'
 						});
 
-						f.append(c);
-						$('.media-frame').css({
+						$('#wpcontent').prepend(c);
+
+						$('#wpbody-content').css({
 							'margin-left': '180px',
 							'width': 'calc(100% - 180px)'
 						});
 
+						clearInterval(gl);
 						Window.bwpf();
-					}					
-				}, 100);
+					}
+				}, 200);
 			});
-		}
-	});
 JS;
-	wp_add_inline_script('js-footer', $js);
-*/
+
+			wp_add_inline_script('js-footer', $js);
+		}
+	}
+
 	// add script for taxonomy/category image
 
 	if (isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'category') {
@@ -1925,7 +2027,7 @@ JS;
 
 		$js = <<<JS
 		jQuery(document).ready(function($) {
-			$("#category_image_upload").click(function(e) {
+			$('#category_image_upload').click(function(e) {
 				e.preventDefault();
 				var imageFrame;
 				if (imageFrame) {
@@ -1933,15 +2035,15 @@ JS;
 					return;
 				}
 				imageFrame = wp.media({
-					title: "Select Category Image",
+					title: 'Select Category Image',
 					button: {
-						text: "Use this image",
+						text: 'Use this image',
 					},
 					multiple: false
 				});
-				imageFrame.on("select", function() {
-					var attachment = imageFrame.state().get("selection").first().toJSON();
-					$("#category_image").val(attachment.url);
+				imageFrame.on('select', function() {
+					var attachment = imageFrame.state().get('selection').first().toJSON();
+					$('#category_image').val(attachment.url);
 				});
 				imageFrame.open();
 			});
@@ -1950,48 +2052,6 @@ JS;
 
 		wp_add_inline_script('ci', $js);
 	}
-
-	// add in folder panel for upload paage
-/*
-	if ($screen->base == 'upload') {
-		$js = <<<JS
-		jQuery(document).ready(function($) {
-			var gl = setInterval(function() {
-				var gw = $('.wp-filter');
-
-				if (gw.length && !$('#wpcontent').hasClass('has-folder-column')) {
-					$('#wpcontent').addClass('has-folder-column');
-					$('#wpcontent').css('position', 'relative');
-
-					var c = $('<div id="folder-column"></div>').css({
-						'width': '160px',
-						'background': '#f1f1f1',
-						'padding-inline': '10px',
-						'position': 'absolute',
-						'top': 0,
-						'bottom': 0,
-						'left': 0,
-						'z-index': 10,
-						'overflow-y': 'auto'
-					});
-
-					$('#wpcontent').prepend(c);
-
-					$('#wpbody-content').css({
-						'margin-left': '180px',
-						'width': 'calc(100% - 180px)'
-					});
-
-					clearInterval(gl);
-					Window.bwpf();
-				}
-			}, 200);
-		});
-JS;
-
-		wp_add_inline_script('js-footer', $js);
-	}
-*/
 }
 
 // excerpts
@@ -2047,6 +2107,7 @@ function b_save_post_metadata($post_id) {
 	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
 		return;
 	}
+
 	if (isset($_POST['post_type']) && 'page' == $_POST['post_type']) {
 		if (!current_user_can('edit_page', $post_id)) {
 			return;
@@ -2057,11 +2118,13 @@ function b_save_post_metadata($post_id) {
 			return;
 		}
 	}
+
 	if (isset($_POST['post_type'])) {
 		if (in_array($_POST['post_type'], ['page', 'post'])) {
 			if (!isset($_POST['post_meta_nonce'])) {
 				return;
 			}
+
 			if (!wp_verify_nonce($_POST['post_meta_nonce'], 'post_save_data')) {
 				return;
 			}
@@ -2102,7 +2165,6 @@ function b_load_edit() {
 		$type = $_GET['post_type'] ?? null;
 
 		if ($type == 'page') {
-
 			$current = (isset($_GET['show'])) ? $_GET['show'] : 'all';
 
 			switch ($current) {
@@ -2194,16 +2256,18 @@ function b_filter_access($query) {
 	}
 }
 
+// filter media
+
 function b_filter_media($args) {
 	if (!empty($_POST['query']['folder'])) {
-        $args['meta_query'][] = [
-            'key' => 'folder',
-            'value' => $_POST['query']['folder'],
-            'compare' => '='
-        ];
-    }
+		$args['meta_query'][] = [
+			'key' => 'folder',
+			'value' => $_POST['query']['folder'],
+			'compare' => '='
+		];
+	}
 
-    return $args;
+	return $args;
 }
 
 // post category meta

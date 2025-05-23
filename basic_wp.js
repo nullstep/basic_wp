@@ -6,11 +6,13 @@ jQuery(function($) {
 	var theme = basic_wp;
 	const fields = [
 		'container_class',
+		'mobile_first',
 		'max_width',
 		'custom_content',
 		'header_order',
 		'excerpt_length',
 		'filter_post_list',
+		'media_folders',
 		'admin_sees_all_posts',
 		'paginate_same_author',
 		'editor_width',
@@ -256,6 +258,10 @@ jQuery(function($) {
 	$('.choose-colour-button').on('change', function() {
 		bid = '#' + $(this).data('id');
 		$(bid).val($(this).val());
+	});
+	$('.colour-input').on('change', function() {
+		cid = '#colour-' + $(this).attr('id');
+		$(cid).val($(this).val());
 	});
 });
 

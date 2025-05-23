@@ -3,7 +3,7 @@
 		<div id="home-banner" class="h-100 d-flex align-items-center" <?php B::featured('bg'); ?>>
 			<div class="<?php B::value('container_class'); ?>">
 				<div class="row">
-					<div class="col-12 banner-box text-center">
+					<div class="col banner-box text-center">
 						<div class="banner-content">
 							<h1><?php the_title(); ?></h1>
 						</div>
@@ -15,7 +15,7 @@
 		<div id="page-banner" class="h-100 d-flex align-items-center" <?php B::featured('bg'); ?>>
 			<div class="<?php B::value('container_class'); ?>">
 				<div class="row">
-					<div class="col-12 banner-box text-center">
+					<div class="col banner-box text-center">
 						<div class="banner-content">
 							<h1><?php the_title(); ?></h1>
 						</div>
@@ -27,7 +27,7 @@
 		<div id="search-banner" class="h-100 d-flex align-items-center">
 			<div class="<?php B::value('container_class'); ?>">
 				<div class="row">
-					<div class="col-12 banner-box text-center">
+					<div class="col banner-box text-center">
 						<div class="banner-content">
 							<h1>Search Results</h1>
 						</div>
@@ -39,7 +39,7 @@
 		<div id="blog-banner" class="h-100 d-flex align-items-center">
 			<div class="<?php B::value('container_class'); ?>">
 				<div class="row">
-					<div class="col-12 banner-box text-center">
+					<div class="col banner-box text-center">
 						<div class="banner-content">
 							<h1>Feed Page</h1>
 						</div>
@@ -51,7 +51,7 @@
 		<div id="blog-banner" class="h-100 d-flex align-items-center">
 			<div class="<?php B::value('container_class'); ?>">
 				<div class="row">
-					<div class="col-12 banner-box text-center">
+					<div class="col banner-box text-center">
 						<div class="banner-content">
 							<h1><?php single_cat_title(); ?></h1>
 							<?php the_archive_description(); ?>
