@@ -1000,7 +1000,7 @@ class _themeMenu {
 			],
 			'api' => [
 				'url' => esc_url_raw(rest_url(_THEME . '-api/settings')),
-				'nonce' => wp_create_nonce('media_rest')
+				'nonce' => wp_create_nonce('wp_rest')
 			],
 			'folders' => [
 				[
