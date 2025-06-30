@@ -12,6 +12,10 @@
 		clear: both;
 	}
 
+	.col-5 {
+		width: 20%;
+	}
+
 	.col-4 {
 		width: 25%;
 	}
@@ -39,6 +43,7 @@
 	.form-block {
 		margin-top: 15px;
 		display: inline-block;
+		vertical-align: top;
 	}
 
 	.basic_wp-tab {

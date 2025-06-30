@@ -6,7 +6,9 @@
 
 // -_-
 
-define('EOL', "\r\n");
+define('_EOL', "\r\n");
+define('_UPLOADS_PATH', wp_upload_dir()['basedir'] . '/');
+define('_UPLOADS_URL', wp_upload_dir()['baseurl'] . '/');
 
 define('_THEME', 'basic_wp');
 
@@ -14,7 +16,7 @@ define('_LOGO', 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnN
 
 // basic_wp default css
 
-define('_CSS_BASIC_WP', '#info-area {}' . EOL . '#nav-area {}' . EOL . '#banner-area {}' . EOL . '#content-area {}' . EOL . '#footer-top-area {}' . EOL . '#footer-area {}');
+define('_CSS_BASIC_WP', '#info-area {}' . _EOL . '#nav-area {}' . _EOL . '#banner-area {}' . _EOL . '#content-area {}' . _EOL . '#footer-top-area {}' . _EOL . '#footer-area {}');
 
 // nav hover css
 
@@ -236,6 +238,22 @@ define('_ARGS_BASIC_WP', [
 		'type' => 'string',
 		'default' => '#2271b1'
 	],
+	'heading_font_type' => [
+		'type' => 'string',
+		'default' => 'w'
+	],
+	'nav_font_type' => [
+		'type' => 'string',
+		'default' => 'w'
+	],
+	'body_font_type' => [
+		'type' => 'string',
+		'default' => 'w'
+	],
+	'mono_font_type' => [
+		'type' => 'string',
+		'default' => 'w'
+	],
 	'heading_font' => [
 		'type' => 'string',
 		'default' => ''
@@ -341,6 +359,10 @@ define('_ARGS_BASIC_WP', [
 		'default' => _CSS_BASIC_WP
 	],
 	'theme_xxl_css' => [
+		'type' => 'string',
+		'default' => _CSS_BASIC_WP
+	],
+	'theme_css' => [
 		'type' => 'string',
 		'default' => _CSS_BASIC_WP
 	],
@@ -602,7 +624,7 @@ define('_ADMIN_BASIC_WP', [
 		'columns' => 4,
 		'sections' => [
 			'section_1' => [
-				'label' => '',
+				'label' => 'Main Colours',
 				'fields' => [
 					'page_colour' => [
 						'label' => 'Page Background Colour',
@@ -615,7 +637,12 @@ define('_ADMIN_BASIC_WP', [
 					'heading_colour' => [
 						'label' => 'Headings Colour',
 						'type' => 'colour'
-					],
+					]
+				]
+			],
+			'section_2' => [
+				'label' => 'Info Area Colours',
+				'fields' => [
 					'info_colour' => [
 						'label' => 'Info Area Background Colour',
 						'type' => 'colour'
@@ -623,7 +650,12 @@ define('_ADMIN_BASIC_WP', [
 					'info_text_colour' => [
 						'label' => 'Info Area Text Colour',
 						'type' => 'colour'
-					],
+					]
+				]
+			],
+			'section_3' => [
+				'label' => 'Nav Area Colours',
+				'fields' => [
 					'nav_colour' => [
 						'label' => 'Navbar Background Colour',
 						'type' => 'colour'
@@ -635,7 +667,12 @@ define('_ADMIN_BASIC_WP', [
 					'nav_active_colour' => [
 						'label' => 'Navbar Active Colour',
 						'type' => 'colour'
-					],
+					]
+				]
+			],
+			'section_4' => [
+				'label' => 'Banner Area Colours',
+				'fields' => [
 					'banner_colour' => [
 						'label' => 'Banner Background Colour',
 						'type' => 'colour'
@@ -643,9 +680,18 @@ define('_ADMIN_BASIC_WP', [
 					'banner_text_colour' => [
 						'label' => 'Banner Text Colour',
 						'type' => 'colour'
-					],
+					]
+				]
+			],
+			'section_5' => [
+				'label' => 'Footer Area Colours',
+				'fields' => [
 					'footer_top_colour' => [
 						'label' => 'Footer Top Area Background Colour',
+						'type' => 'colour'
+					],
+					'footer_top_text_colour' => [
+						'label' => 'Footer Top Area Text Colour',
 						'type' => 'colour'
 					],
 					'footer_colour' => [
@@ -655,7 +701,12 @@ define('_ADMIN_BASIC_WP', [
 					'footer_text_colour' => [
 						'label' => 'Footer Text Colour',
 						'type' => 'colour'
-					],
+					]
+				]
+			],
+			'section_6' => [
+				'label' => 'Assigned Colours',
+				'fields' => [
 					'primary_colour' => [
 						'label' => 'Primary Colour',
 						'type' => 'colour'
@@ -679,7 +730,12 @@ define('_ADMIN_BASIC_WP', [
 					'dark_colour' => [
 						'label' => 'Dark Contrast Colour',
 						'type' => 'colour'
-					],
+					]
+				]
+			],
+			'section_7' => [
+				'label' => 'Admin Area Colours',
+				'fields' => [
 					'admin_link_colour' => [
 						'label' => 'Admin Link Colour',
 						'type' => 'colour'
@@ -694,30 +750,90 @@ define('_ADMIN_BASIC_WP', [
 	],
 	'fonts' => [
 		'label' => 'Fonts',
-		'columns' => 4,
+		'columns' => 5,
 		'sections' => [
 			'section_1' => [
-				'label' => '',
+				'label' => 'Heading Font',
 				'fields' => [
+					'heading_font_type' => [
+						'label' => 'Heading Font Type',
+						'type' => 'select',
+						'values' => [
+							'w' => 'Web Safe',
+							'l' => 'Locally Hosted',
+							'g' => 'Google'
+						]				
+					],
 					'heading_font' => [
-						'label' => 'Headings Font',
+						'label' => '',
 						'type' => 'font'
+					]
+				]
+			],
+			'section_2' => [
+				'label' => 'Navigation Font',
+				'fields' => [
+					'nav_font_type' => [
+						'label' => 'Navigation Font Type',
+						'type' => 'select',
+						'values' => [
+							'w' => 'Web Safe',
+							'l' => 'Locally Hosted',
+							'g' => 'Google'
+						]				
 					],
 					'nav_font' => [
-						'label' => 'Navigation Font',
+						'label' => '',
 						'type' => 'font'
+					]
+				]
+			],
+			'section_3' => [
+				'label' => 'Body Font',
+				'fields' => [
+					'body_font_type' => [
+						'label' => 'Body Font Type',
+						'type' => 'select',
+						'values' => [
+							'w' => 'Web Safe',
+							'l' => 'Locally Hosted',
+							'g' => 'Google'
+						]				
 					],
 					'body_font' => [
-						'label' => 'Body Text Font',
+						'label' => '',
 						'type' => 'font'
+					]
+				]
+			],
+			'section_4' => [
+				'label' => 'Monospace Font',
+				'fields' => [
+					'mono_font_type' => [
+						'label' => 'Monospaced Font Type',
+						'type' => 'select',
+						'values' => [
+							'w' => 'Web Safe',
+							'l' => 'Locally Hosted',
+							'g' => 'Google'
+						]				
 					],
 					'mono_font' => [
-						'label' => 'Monospace Font',
+						'label' => '',
 						'type' => 'font'
-					],
+					]
+				]
+			],
+			'section_5' => [
+				'label' => 'Font Settings',
+				'fields' => [
 					'google_api' => [
 						'label' => 'Google Font API Key',
 						'type' => 'input'
+					],
+					'refresh_gf' => [
+						'label' => 'Refresh Google Font List',
+						'type' => 'button'
 					],
 					'headings_upper' => [
 						'label' => 'Uppercase Headings',
@@ -765,6 +881,10 @@ define('_ADMIN_BASIC_WP', [
 					],
 					'theme_xxl_css' => [
 						'label' => 'Theme Styles (xxl, 1400px width and up)',
+						'type' => 'code'
+					],
+					'theme_css' => [
+						'label' => 'Other CSS',
 						'type' => 'code'
 					]
 				]
@@ -845,7 +965,7 @@ define('_API_BASIC_WP', [
 		'methods' => 'POST',
 		'path' => 'settings',
 		'callback' => 'update_settings',
-		'args' => _themeSettings::args(),
+		'args' => B_Settings::args(),
 		'permission_callback' => 'permissions'
 	],
 	[
@@ -880,7 +1000,7 @@ define('_MENUS_BASIC_WP', [
 //    ███    ███  ███   ▄███  ███   ███   ███  ███   ███    ███  
 //    ███    █▀   ████████▀    ▀█   ███   █▀   █▀     ▀█    █▀   
 
-class _themeAPI {
+class B_API {
 	public function add_routes() {
 		if (count(_API_BASIC_WP)) {
 			foreach(_API_BASIC_WP as $route) {
@@ -900,19 +1020,19 @@ class _themeAPI {
 
 	public function update_settings(WP_REST_Request $request) {
 		$settings = [];
-		foreach (_themeSettings::args() as $key => $val) {
+		foreach (B_Settings::args() as $key => $val) {
 			$settings[$key] = $request->get_param($key);
 		}
-		_themeSettings::save_settings($settings);
-		return rest_ensure_response(_themeSettings::get_settings());
+		B_Settings::save_settings($settings);
+		return rest_ensure_response(B_Settings::get_settings());
 	}
 
 	public function get_settings(WP_REST_Request $request) {
-		return rest_ensure_response(_themeSettings::get_settings());
+		return rest_ensure_response(B_Settings::get_settings());
 	}
 }
 
-class _themeSettings {
+class B_Settings {
 	protected static $option_key = _THEME . '-theme-settings';
 
 	public static function args() {
@@ -961,13 +1081,18 @@ class _themeSettings {
 
 		// auto generate stored css
 
+		$settings['auto_css'] = generate_css($settings);
 		update_option(self::$option_key, $settings);
-		$settings['auto_css'] = generate_css();
+	}
+
+	public static function update_setting($key, $value) {
+		$settings = self::get_settings();
+		$settings[$key] = $value;
 		update_option(self::$option_key, $settings);
 	}
 }
 
-class _themeMenu {
+class B_Menu {
 	protected $slug = _THEME . '-theme-menu';
 	protected $assets_url;
 
@@ -1048,10 +1173,11 @@ class _themeMenu {
 			$opts .= '<option value="' . $font_array[0] . '">' . $font_array[0] . ' (' . $font_array[1] . ')</option>';
 		}
 
+
+
 		if (_B['google_api'] != '') {
-			$fonts = json_decode(
-				curl('https://www.googleapis.com/webfonts/v1/webfonts?key=' . _B['google_api'])
-			);
+			$fonts = json_decode(B::gf_list());
+
 			foreach ($fonts->items as $item) {
 				$opts .= '<option value="' . $item->family . '">' . $item->family . ' (' . $item->category . ')</option>';
 			}
@@ -1219,6 +1345,17 @@ JS;
 									echo '<ul id="' . $fid . '-sort" class="sortable"></ul>';
 									break;
 								}
+								case 'button': {
+									echo '<label for="' . $fid . '">';
+										echo '&nbsp;';
+									echo '</label>';
+									echo '<span class="button button-primary" style="position:relative;top:3px" id="' . $fid . '">' . $field['label'] . '</span>';
+									break;
+								}
+								case 'empty': {
+									echo '<!-- empty box -->';
+									break;
+								}
 							}
 							echo '</div>';
 						}
@@ -1282,7 +1419,7 @@ JS;
 //  ███ ▄█▄ ███  ███   ███   ▄███    ███    ███    ███    ███      ███      
 //   ▀███▀███▀   █▀    ████████▀     ████████▀     ██████████     ▄████▀
 
-class _themeWidget {
+class B_Widget {
 	public $name;
 	public $html;
 
@@ -1374,27 +1511,105 @@ class B {
 		echo $mode . _B['theme_js_minified'];
 	}
 
-	public static function concat($type) {
-		$upload_dir = wp_upload_dir();
-
-		switch ($type) {
-			case 'js': {
-				$file = $upload_dir['basedir'] . '/scripts.js';
-				echo (file_exists($file)) ? '<script src="' . $upload_dir['url'] . '/' . basename($file) . '"></script>' : '';
-				break;
-			}
-			case 'css': {
-				$file = $upload_dir['basedir'] . '/styles.css';
-				echo (file_exists($file)) ? '<link rel="stylesheet" href="' . $upload_dir['url'] . '/' . basename($file) . '">' : '';
-				break;
-			}
-		}
-	}
-
 	public static function favicon() {
 		$setting = _B['favicon_image'];
 		$favicon = ($setting != '') ? '/uploads/' . $setting : '/img/favicon.png';
 		echo $favicon;
+	}
+
+	public static function is_gf() {
+		$gf = json_decode(self::gf_list());
+
+		$fonts = [
+			_B['heading_font'],
+			_B['nav_font'],
+			_B['body_font'],
+			_B['mono_font']
+		];
+
+		foreach ($gf->items as $item) {
+			if (in_array($item->family, $fonts)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static function gf_list() {
+		$gf_file = _UPLOADS_PATH . 'google-fonts.json';
+
+		if (file_exists($gf_file)) {
+			return file_get_contents($gf_file);
+		}
+		else {
+			$gf_data = curl('https://www.googleapis.com/webfonts/v1/webfonts?key=' . _B['google_api']);
+			file_put_contents($gf_file, $gf_data, LOCK_EX);
+			return $gf_data;
+		}
+	}
+
+	// <link href="https://fonts.googleapis.com/css2?family=Delicious+Handrawn&family=Emilys+Candy&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+
+	public static function gf_href($echo = true) {
+		$href = 'https://fonts.googleapis.com/css2?display=swap';
+
+		$types = [
+			'heading',
+			'nav',
+			'body',
+			'mono'
+		];
+
+		foreach ($types as $font_type) {
+			if (_B[$font_type . '_font'] != '') {
+				$name = str_replace(' ', '+', _B[$font_type . '_font']);
+
+				if ((strpos($href, $name) === false)) {
+					$href .= '&family=' . $name;
+				}
+			}
+		}
+
+		if ($echo) {
+			echo $href;
+		}
+		else {
+			return $href;
+		}
+	}
+
+	public static function lf_list() {
+		$atts = get_posts([
+			'post_type' => 'attachment',
+			'post_mime_type' => '',
+			'post_status' => 'inherit',
+			'posts_per_page' => -1
+		]);
+
+		$fonts = [];
+		$exts = [
+			'ttf',
+			'woff',
+			'woff2',
+			'otf',
+			'eot'
+		];
+
+		foreach ($atts as $a) {
+			$path = get_attached_file($a->ID);
+			if (in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), $exts)) {
+				$url = wp_get_attachment_url($a->ID);
+
+				$fonts[] = [
+					'id' => $a->ID,
+					'file' => basename($url),
+					'url' => $url,
+				];
+			}
+		}
+
+		return $fonts;
 	}
 
 	public static function featured($type = '', $echo = true) {
@@ -1424,12 +1639,12 @@ class B {
 					break;				
 				}
 				case 'width': {
-					list($width, $height) = getimagesize(wp_upload_dir()['url'] . end($image));
+					list($width, $height) = getimagesize(_UPLOADS_PATH . end($image));
 					$return = $width;
 					break;
 				}
 				case 'height': {
-					list($width, $height) = getimagesize(wp_upload_dir()['url'] . end($image));
+					list($width, $height) = getimagesize(_UPLOADS_PATH . end($image));
 					$return = $height;
 					break;
 				}
@@ -1806,7 +2021,7 @@ function b_dequeue_styles($styles) {
 // theme setup
 
 function b_do_setup() {
-	define('_B', _themeSettings::get_settings());
+	define('_B', B_Settings::get_settings());
 
 	if (_B['woo_support'] == 'yes') {
 		b_woo_setup();
@@ -1860,19 +2075,8 @@ function b_set_wp_options() {
 	if (is_admin()) {
 		// init updater
 
-		if (class_exists('WPTU')) {
-			if (get_option('auth_key') !== '') {
-				$updater = new WPTU(__FILE__);
-				$updater->set_versions('6.5', '6.5.4');
-				$updater->set_username('nullstep');
-				$updater->set_repository('basic_wp');
-				$updater->authorize(get_option('auth_key'));
-				$updater->initialize();
-			}
-		}
-
 		if (_B['dev_mode'] == 'yes') {
-			$tools = new _themeWidget('tools');
+			$tools = new B_Widget('tools');
 			$tools->html = '<p>' .
 				$tools->button('caniuse.com', 'caniuse.com') .
 				$tools->button('svg path editor', 'yqnn.github.io/svg-path-editor') .
@@ -2644,7 +2848,7 @@ function b_parse_output($html) {
 	$replace = [
 		'alignwide' => 'container',
 		'alignfull' => 'container-fluid',
-		'wp-block-group__inner-container' => 'row',
+		'wp-block-group__inner-container' => 'row g-0',
 		'wp-block-group' => 'col',
 		'wp-block-button__link' => 'btn btn-primary',
 		'wp-block-button' => 'btn-wrapper',
@@ -2652,14 +2856,14 @@ function b_parse_output($html) {
 		'wp-block-cover' => 'position-relative',
 		'wp-block-image__figure' => 'img-fluid',
 		'wp-block-image' => 'figure',
-		'wp-block-gallery-item' => 'row',
+		'wp-block-gallery-item' => 'row g-0',
 		'wp-block-gallery' => 'col',
 		'wp-block-quote' => 'blockquote',
 		'wp-block-pullquote' => 'blockquote',
 		'wp-block-table__table-wrapper' => 'table-responsive',
 		'wp-block-table' => 'table',
 		'wp-block-media-text' => 'd-flex align-items-center',
-		'wp-block-columns' => 'row',
+		'wp-block-columns' => 'row g-0',
 		'wp-block-column' => 'col',
 		'wp-block-spacer' => 'my-3',
 		'wp-block-separator' => 'border-top',
@@ -2701,7 +2905,7 @@ function b_parse_output($html) {
 
 function b_admin_styling() {
 	$dir = wp_upload_dir();
-	echo '<link rel="shortcut icon" type="image/x-icon" href="' . $dir['url'] . '/' . _B['favicon_image'] . '" />';
+	echo '<link rel="shortcut icon" type="image/x-icon" href="' . _UPLOADS_URL . _B['favicon_image'] . '" />';
 	echo '<style>';
 		echo ':root{--admin-contrast:' . B::contrast(_B['admin_highlight_colour']) . ';--admin-link:' . _B['admin_link_colour'] . ';--admin-highlight:'. _B['admin_highlight_colour'] . '}';
 		echo 'a{color:var(--admin-link)}input[type=checkbox]:focus,input[type=color]:focus,input[type=date]:focus,input[type=datetime-local]:focus,input[type=datetime]:focus,input[type=email]:focus,input[type=month]:focus,input[type=number]:focus,input[type=password]:focus,input[type=radio]:focus,input[type=search]:focus,input[type=tel]:focus,input[type=text]:focus,input[type=time]:focus,input[type=url]:focus,input[type=week]:focus,select:focus,textarea:focus{border-color:var(--admin-highlight);box-shadow:0 0 0 1px var(--admin-highlight)}a:active,a:hover{color:#2c3338}#adminmenu a:hover,#adminmenu li.menu-top:hover,#adminmenu li.opensub>a.menu-top,#adminmenu li>a.menu-top:focus,.wp-core-ui .wp-ui-highlight{color:#fff;background-color:var(--admin-highlight)}#adminmenu li:hover a div.wp-menu-image:before{color:#fff!important}#adminmenu .wp-has-current-submenu .wp-submenu a:focus,#adminmenu .wp-has-current-submenu .wp-submenu a:hover,#adminmenu .wp-has-current-submenu.opensub .wp-submenu a:focus,#adminmenu .wp-has-current-submenu.opensub .wp-submenu a:hover,#adminmenu .wp-has-current-submenu.opensub .wp-submenu li.current a:focus,#adminmenu .wp-has-current-submenu.opensub .wp-submenu li.current a:hover,#adminmenu .wp-submenu a:focus,#adminmenu .wp-submenu a:hover,#adminmenu .wp-submenu li.current a:focus,#adminmenu .wp-submenu li.current a:hover,#adminmenu a.wp-has-current-submenu:focus+.wp-submenu a:focus,#adminmenu a.wp-has-current-submenu:focus+.wp-submenu a:hover,#adminmenu a.wp-has-current-submenu:focus+.wp-submenu li.current a:focus,#adminmenu a.wp-has-current-submenu:focus+.wp-submenu li.current a:hover,.folded #adminmenu .wp-has-current-submenu .wp-submenu a:focus,.folded #adminmenu .wp-has-current-submenu .wp-submenu a:hover,.theme-browser .theme.add-new-theme a:focus span:after,.theme-browser .theme.add-new-theme a:hover span:after,.wp-core-ui .wp-ui-text-highlight,.wp-pointer .wp-pointer-content h3:before,#collapse-button:focus,#collapse-button:hover,#wpadminbar #wp-admin-bar-user-info a:hover .display-name,#wpadminbar .ab-top-menu>li.menupop.hover>.ab-item,#wpadminbar .menupop .menupop>.ab-item:hover:before,#wpadminbar .quicklinks .ab-sub-wrapper .menupop.hover>a,#wpadminbar .quicklinks .ab-sub-wrapper .menupop.hover>a .blavatar,#wpadminbar .quicklinks .menupop ul li a:focus,#wpadminbar .quicklinks .menupop ul li a:focus strong,#wpadminbar .quicklinks .menupop ul li a:hover,#wpadminbar .quicklinks .menupop ul li a:hover strong,#wpadminbar .quicklinks .menupop.hover ul li a:focus,#wpadminbar .quicklinks .menupop.hover ul li a:hover,#wpadminbar .quicklinks li a:focus .blavatar,#wpadminbar .quicklinks li a:hover .blavatar,#wpadminbar li #adminbarsearch.adminbar-focused:before,#wpadminbar li .ab-item:focus .ab-icon:before,#wpadminbar li .ab-item:focus:before,#wpadminbar li a:focus .ab-icon:before,#wpadminbar li.hover .ab-icon:before,#wpadminbar li.hover .ab-item:before,#wpadminbar li:hover #adminbarsearch:before,#wpadminbar li:hover .ab-icon:before,#wpadminbar li:hover .ab-item:before,#wpadminbar.mobile .quicklinks .ab-icon:before,#wpadminbar.mobile .quicklinks .ab-item:before,#wpadminbar.nojq .quicklinks .ab-top-menu>li>.ab-item:focus,#wpadminbar.nojs .ab-top-menu>li.menupop:hover>.ab-item,#wpadminbar.nojs .quicklinks .menupop:hover ul li a:focus,#wpadminbar.nojs .quicklinks .menupop:hover ul li a:hover,#wpadminbar:not(.mobile) .ab-top-menu>li:hover>.ab-item,#wpadminbar:not(.mobile) .ab-top-menu>li>.ab-item:focus,#wpadminbar:not(.mobile)>#wp-toolbar a:focus span.ab-label,#wpadminbar:not(.mobile)>#wp-toolbar li.hover span.ab-label,#wpadminbar:not(.mobile)>#wp-toolbar li:hover span.ab-label,#adminmenu li a:focus div.wp-menu-image:before,#adminmenu li.opensub div.wp-menu-image:before,#wp-toolbar li.menupop:hover,#adminmenu li:hover div.wp-menu-image:before,#adminmenu .wp-submenu li a:hover{color:#fff}#adminmenu li.current a.menu-top,#adminmenu li.wp-has-current-submenu .wp-submenu .wp-submenu-head,#adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,.folded #adminmenu li.current.menu-top{color:#fff;background:var(--admin-highlight)}.media-item .bar,.media-progress-bar div,.wp-pointer .wp-pointer-content h3{background-color:var(--admin-highlight)}.wp-pointer.wp-pointer-top .wp-pointer-arrow,.wp-pointer.wp-pointer-top .wp-pointer-arrow-inner,.wp-pointer.wp-pointer-undefined .wp-pointer-arrow,.wp-pointer.wp-pointer-undefined .wp-pointer-arrow-inner{border-bottom-color:var(--admin-highlight)}.details.attachment{box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 7px var(--admin-highlight)}.attachment.details .check{background-color:var(--admin-highlight);box-shadow:0 0 0 1px #fff,0 0 0 2px var(--admin-highlight)}.media-selection .attachment.selection.details .thumbnail{box-shadow:0 0 0 1px #fff,0 0 0 3px var(--admin-highlight)}.mce-container.mce-menu .mce-menu-item-normal.mce-active,.mce-container.mce-menu .mce-menu-item-preview.mce-active,.mce-container.mce-menu .mce-menu-item.mce-selected,.mce-container.mce-menu .mce-menu-item:focus,.mce-container.mce-menu .mce-menu-item:hover,.theme-browser .theme.active .theme-name,.theme-browser .theme.add-new-theme a:focus:after,.theme-browser .theme.add-new-theme a:hover:after{background:var(--admin-highlight)}.widgets-chooser li.widgets-chooser-selected,body.more-filters-opened .more-filters:focus,body.more-filters-opened .more-filters:hover{background-color:var(--admin-highlight);color:#fff}.wp-responsive-open div#wp-responsive-toggle a{border-color:transparent;background:var(--admin-highlight)}#wpbody-content a.page-title-action,#wpbody-content .button:not(.show-settings),#wpbody-content .postform,#wpbody-content .actions select{border:1px solid var(--admin-highlight);color:#111}.wp-core-ui .button-primary{background:var(--admin-highlight)!important;border:1px solid var(--admin-highlight);color:var(--admin-contrast)!important}';
@@ -3007,9 +3211,7 @@ function minify_js($input) {
 
 // generate our stored css
 
-function generate_css() {
-	$s = _themeSettings::get_settings();
-
+function generate_css($s) {
 	$css = ':root{';
 	$colours = [
 		'page',
@@ -3072,8 +3274,6 @@ function generate_css() {
 	$root = '';
 	$fonts = '';
 
-	$template = '@import url(\'https://fonts.googleapis.com/css2?family=[F]:wght@200..800&display=swap\');';
-
 	$types = [
 		'heading',
 		'nav',
@@ -3083,12 +3283,6 @@ function generate_css() {
 
 	foreach ($types as $font_type) {
 		if ($s[$font_type . '_font'] != '') {
-			$name = str_replace(' ', '+', $s[$font_type . '_font']);
-
-			if (($fonts == '') || (strpos($fonts, $name) === false)) {
-				$fonts .= str_replace('[F]', $name, $template);
-			}
-
 			$root .= '--' . str_replace('_', '-', $font_type . '_font') . ':' . $s[$font_type . '_font'] . ';';
 		}
 	}
@@ -3112,6 +3306,8 @@ function generate_css() {
 		$theme_css .= $mq . minify_css($s['theme_' . $bp . '_css']) . '}';
 	}
 
+	$theme_css .= minify_css($s['theme_css']);
+
 	return $fonts . $css . $theme_css;
 }
 
@@ -3130,106 +3326,6 @@ function curl($url) {
 	curl_close($curl);
 
 	return $response;
-}
-
-function b_css_concatenator() {
-	global $wp_styles;
-
-	$upload_dir = wp_upload_dir();
-	$concat_file_path = $upload_dir['basedir'] . '/styles.css';
-
-	$concatenated_content = '';
-	$concat_styles = [];
-	$processed_styles = [];
-
-	function process_style($handle, &$concatenated_content, &$concat_styles, &$processed_styles) {
-		global $wp_styles;
-
-		if (in_array($handle, $processed_styles)) {
-			return;
-		}
-
-		$style = $wp_styles->registered[$handle];
-
-		if (!empty($style->deps)) {
-			foreach ($style->deps as $dep) {
-				process_style($dep, $concatenated_content, $concat_styles, $processed_styles);
-			}
-		}
-
-		$style_path = ABSPATH . str_replace(site_url('/'), '', $style->src);
-
-		if (file_exists($style_path)) {
-			$content = file_get_contents($style_path);
-			$concatenated_content .= $content . "\n";
-			$concat_styles[] = $handle;
-			$processed_styles[] = $handle;
-		}
-	}
-
-	if (!file_exists($concat_file_path)) {
-		foreach ($wp_styles->queue as $handle) {
-			process_style($handle, $concatenated_content, $concat_styles, $processed_styles);
-		}
-
-		file_put_contents($concat_file_path, $concatenated_content);
-	}
-
-	//wp_enqueue_style('styles', $upload_dir['baseurl'] . '/styles.css', [], null, 'all');
-
-	foreach ($wp_styles->queue as $handle) {
-		wp_dequeue_style($handle);
-	}
-}
-
-function b_js_concatenator() {
-	global $wp_scripts;
-
-	$upload_dir = wp_upload_dir();
-	$concat_file_path = $upload_dir['basedir'] . '/scripts.js';
-
-	$concatenated_content = '';
-	$concat_scripts = [];
-	$processed_scripts = [];
-
-	function process_script($handle, &$concatenated_content, &$concat_scripts, &$processed_scripts) {
-		global $wp_scripts;
-
-		if (in_array($handle, $processed_scripts)) {
-			return;
-		}
-
-		$script = $wp_scripts->registered[$handle];
-
-		if (!empty($script->deps)) {
-			foreach ($script->deps as $dep) {
-				process_script($dep, $concatenated_content, $concat_scripts, $processed_scripts);
-			}
-		}
-
-		$script_path = ABSPATH . str_replace(site_url('/'), '', $script->src);
-
-		if (file_exists($script_path)) {
-			$content = file_get_contents($script_path);
-			$concatenated_content .= $content . "\n";
-			$concat_scripts[] = $handle;
-			$processed_scripts[] = $handle;
-		}
-	}
-
-	if (!file_exists($concat_file_path)) {
-		foreach ($wp_scripts->queue as $handle) {
-			process_script($handle, $concatenated_content, $concat_scripts, $processed_scripts);
-		}
-		
-		file_put_contents($concat_file_path, $concatenated_content);
-	}
-
-	//wp_enqueue_script('scripts', $upload_dir['baseurl'] . '/scripts.js', [], null, true);
-
-	foreach ($wp_scripts->queue as $handle) {
-		wp_dequeue_script($handle);
-	}
 }
 
 
@@ -3265,9 +3361,6 @@ add_action('edited_category', 'b_save_category_image', 10, 2);
 add_action('enqueue_block_editor_assets', 'b_post_sidebar');
 add_action('init', 'b_post_sidebar_fields');
 
-//add_action('wp_enqueue_scripts', 'b_js_concatenator', 999);
-//add_action('wp_enqueue_scripts', 'b_css_concatenator', 999);
-
 // filters
 
 add_filter('excerpt_length', 'b_set_excerpt_length', 999);
@@ -3286,20 +3379,6 @@ add_shortcode('page', 'b_page_shortcode');
 add_shortcode('video', 'b_video_shortcode');
 add_shortcode('button', 'b_button_shortcode');
 
-// fix lazy-loading/auto issue
-
-add_filter('wp_content_img_tag', function($image) {
-	return str_replace(' sizes="auto, ', ' sizes="', $image);
-});
-
-add_filter('wp_get_attachment_image_attributes', function($attr) {
-	if (isset($attr['sizes'])) {
-		$attr['sizes'] = preg_replace('/^auto, /', '', $attr['sizes']);
-	}
-
-	return $attr;
-});
-
 // parse final output
 
 add_action('template_redirect', 'b_buffer_output', 3);
@@ -3314,15 +3393,15 @@ remove_action('shutdown', 'wp_ob_end_flush_all', 1);
 add_action('init', function() {
 	if (is_admin()) {
 		$assets_url = get_template_directory_uri();
-		new _themeMenu($assets_url);
+		new B_Menu($assets_url);
 	}
 });
 
 // boot api
 
 add_action('rest_api_init', function() {
-	_themeSettings::args();
-	$api = new _themeAPI();
+	B_Settings::args();
+	$api = new B_API();
 	$api->add_routes();
 });
 

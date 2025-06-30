@@ -66,6 +66,7 @@ jQuery(function($) {
 		'nav_font',
 		'body_font',
 		'mono_font',
+		'is_gf',
 		'headings_upper',
 		'nav_upper',
 		'font_awesome',
@@ -81,6 +82,7 @@ jQuery(function($) {
 		'theme_lg_css',
 		'theme_xl_css',
 		'theme_xxl_css',
+		'theme_css',
 		'theme_js',
 		'notes'
 	];
@@ -92,6 +94,7 @@ jQuery(function($) {
 		'theme_lg_css',
 		'theme_xl_css',
 		'theme_xxl_css',
+		'theme_css',
 		'theme_js'
 	];
 	// content editors

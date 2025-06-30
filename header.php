@@ -12,14 +12,17 @@
 <?php } ?>
 	<title><?php B::title(); ?></title>
 <?php if (B::value('font_awesome', 0) == 'yes') { ?>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <?php } ?>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
+<?php if (B::is_gf()) { ?>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="<?php B::gf_href(); ?>" rel="stylesheet">
+<?php } ?>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/css/bootstrap.min.css">
 <?php wp_head(); ?>
 	<link rel="canonical" href="<?php echo get_site_url(); ?>/">
 	<link rel="shortcut icon" type="image/x-icon" href="<?php B::favicon(); ?>">
-	<?php //B::concat('css'); ?>
-
 	<style>
 		<?php B::css(); ?>
 
