@@ -767,6 +767,14 @@ define('_ADMIN_BASIC_WP', [
 					'heading_font' => [
 						'label' => '',
 						'type' => 'font'
+					],
+					'heading_weights' => [
+						'label' => '',
+						'type' => 'div'
+					],
+					'heading_preview' => [
+						'label' => '',
+						'type' => 'div'
 					]
 				]
 			],
@@ -785,6 +793,14 @@ define('_ADMIN_BASIC_WP', [
 					'nav_font' => [
 						'label' => '',
 						'type' => 'font'
+					],
+					'nav_weights' => [
+						'label' => '',
+						'type' => 'div'
+					],
+					'nav_preview' => [
+						'label' => '',
+						'type' => 'div'
 					]
 				]
 			],
@@ -803,6 +819,14 @@ define('_ADMIN_BASIC_WP', [
 					'body_font' => [
 						'label' => '',
 						'type' => 'font'
+					],
+					'body_weights' => [
+						'label' => '',
+						'type' => 'div'
+					],
+					'body_preview' => [
+						'label' => '',
+						'type' => 'div'
 					]
 				]
 			],
@@ -821,6 +845,14 @@ define('_ADMIN_BASIC_WP', [
 					'mono_font' => [
 						'label' => '',
 						'type' => 'font'
+					],
+					'mono_weights' => [
+						'label' => '',
+						'type' => 'div'
+					],
+					'mono_preview' => [
+						'label' => '',
+						'type' => 'div'
 					]
 				]
 			],
@@ -1350,6 +1382,10 @@ JS;
 										echo '&nbsp;';
 									echo '</label>';
 									echo '<span class="button button-primary" style="position:relative;top:3px" id="' . $fid . '">' . $field['label'] . '</span>';
+									break;
+								}
+								case 'div': {
+									echo '<div id="' . $fid . '"></div>';
 									break;
 								}
 								case 'empty': {
