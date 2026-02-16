@@ -46,6 +46,14 @@
 		vertical-align: top;
 	}
 
+	.form-section {
+		h3 {
+			margin-bottom: 0;
+			padding: 8px;
+			background: rgba(255, 255, 255, 0.4);
+		}
+	}
+
 	.basic_wp-tab {
 		display: none;
 	}

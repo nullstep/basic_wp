@@ -12,7 +12,6 @@ jQuery(function($) {
 		'header_order',
 		'excerpt_length',
 		'filter_post_list',
-		'media_folders',
 		'admin_sees_all_posts',
 		'paginate_same_author',
 		'editor_width',
