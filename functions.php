@@ -12,7 +12,7 @@ define('_UPLOADS_URL', wp_upload_dir()['baseurl'] . '/');
 
 define('_THEME', 'basic_wp');
 
-define('_LOGO', 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDE5MjAgMjUzIj48Zz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNMjMxLjMsMTkxLjZsLTIyMi4yLDBsMC00M2wxNzcuOC0wLjFsMC00M0w5LDEwNS43bC0wLjItODZsNDQuNSwwbDAsNDNsMTc3LjcsMEwyMzEuMywxOTEuNnoiLz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNNDk4LDE5MS41bC00NC41LDBsLTAuMi04NmwtMTMzLjQsMGwwLDQzbDg4LjksMGwwLDQzbC0xMzMuNCwwbC0wLjMtMTI5bDIyMi4yLDBMNDk4LDE5MS41eiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik03NjQuNCwxMDUuNWwtODguOSwwbDAuMiw4NmwtMTMzLjQsMGwwLTQzbDg4LjksMGwtMC4yLTg2bDEzMy40LDBMNzY0LjQsMTA1LjV6Ii8+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTg1My4yLDU4LjJsLTQ0LjUsMGwwLTQzbDQ0LjUsMEw4NTMuMiw1OC4yeiBNODUzLjQsMTkxLjVsLTQ0LjUsMGwtMC4yLTkwLjNsNDQuNSwwTDg1My40LDE5MS41eiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik0xMTIwLDE0OC41bDAsNDNsLTIyMi4yLDBsLTAuMy0xMjlsMjIyLjIsMGwwLDQzbC0xNzcuNywwbDAsNDNMMTEyMCwxNDguNXoiLz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNMTE2NC40LDE0OC40bDE3Ny43LDBsMCw0M2wtMTc3LjcsMEwxMTY0LjQsMTQ4LjR6Ii8+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTE2MDksMTkxLjNsLTIyMi4yLDBsLTAuMy0xMjlsNDQuNSwwbDAuMiw4Nmw0NC41LDBsLTAuMi04Nmw0NC41LDBsMC4yLDg2bDQ0LjUsMGwtMC4yLTg2bDQ0LjUsMEwxNjA5LDE5MS4zeiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik0xODc1LjYsMTkxLjNsLTE3Ny43LDBsMCw0M2wtNDQuNSwwbC0wLjItODZsMTc3LjcsMGwwLTQzbC0xNzcuNywwbDAtNDNsMjIyLjIsMEwxODc1LjYsMTkxLjN6Ii8+PC9nPjwvc3ZnPg==');
+define('_LOGO', 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIwIDI1MyI+PGc+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTIzMS4zLDE5MS42bC0yMjIuMiwwbDAtNDNsMTc3LjgtMC4xbDAtNDNMOSwxMDUuN2wtMC4yLTg2bDQ0LjUsMGwwLDQzbDE3Ny43LDBMMjMxLjMsMTkxLjZ6Ii8+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTQ5OCwxOTEuNWwtNDQuNSwwbC0wLjItODZsLTEzMy40LDBsMCw0M2w4OC45LDBsMCw0M2wtMTMzLjQsMGwtMC4zLTEyOWwyMjIuMiwwTDQ5OCwxOTEuNXoiLz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNNzY0LjQsMTA1LjVsLTg4LjksMGwwLjIsODZsLTEzMy40LDBsMC00M2w4OC45LDBsLTAuMi04NmwxMzMuNCwwTDc2NC40LDEwNS41eiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik04NTMuMiw1OC4ybC00NC41LDBsMC00M2w0NC41LDBMODUzLjIsNTguMnogTTg1My40LDE5MS41bC00NC41LDBsLTAuMi05MC4zbDQ0LjUsMEw4NTMuNCwxOTEuNXoiLz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNMTEyMCwxNDguNWwwLDQzbC0yMjIuMiwwbC0wLjMtMTI5bDIyMi4yLDBsMCw0M2wtMTc3LjcsMGwwLDQzTDExMjAsMTQ4LjV6Ii8+PHBhdGggZmlsbD0iIzMzMzMzMyIgZD0iTTExNjQuNCwxNDguNGwxNzcuNywwbDAsNDNsLTE3Ny43LDBMMTE2NC40LDE0OC40eiIvPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik0xNjA5LDE5MS4zbC0yMjIuMiwwbC0wLjMtMTI5bDQ0LjUsMGwwLjIsODZsNDQuNSwwbC0wLjItODZsNDQuNSwwbDAuMiw4Nmw0NC41LDBsLTAuMi04Nmw0NC41LDBMMTYwOSwxOTEuM3oiLz48cGF0aCBmaWxsPSIjMzMzMzMzIiBkPSJNMTg3NS42LDE5MS4zbC0xNzcuNywwbDAsNDNsLTQ0LjUsMGwtMC4yLTg2bDE3Ny43LDBsMC00M2wtMTc3LjcsMGwwLTQzbDIyMi4yLDBMMTg3NS42LDE5MS4zeiIvPjwvZz48L3N2Zz4=');
 
 // basic_wp default css
 
@@ -1129,7 +1129,7 @@ class B_Menu {
 			'manage_options',
 			$this->slug,
 			[$this, 'render_admin'],
-			'data:image/svg+xml;base64,' . base64_encode('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewbox="0 0 500 500"><path fill="#a7aaad" d="M250.2,17.4L49,133.5v232.3L250.2,482l201.2-116.2V133.5L250.2,17.4z M371.8,347H128.4v-48.7h194.7v-48.7H128.4v-97.4h48.7 v48.7h194.7V347z"/></svg>'),
+			'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 501 493.3"><path fill="#a7aaad" d="M250.5,14.3L49.3,130.4v232.3l201.2,116.2,201.2-116.2v-232.3L250.5,14.3ZM372.1,343.9h-243.4v-48.7h194.7v-48.7h-194.7v-97.4h48.7v48.7h194.7v146.1Z"/></svg>'),
 			2
 		);
 	}
@@ -2808,6 +2808,18 @@ function b_parse_output($html) {
 	$html = preg_replace(
 		'#<div class="row"><div class="section"><div class="row">(.*?)</div></div></div>#s',
 		'<div class="row">$1</div>',
+		$html
+	);
+
+	// this added to remove wp 6.9
+	// raping our html by inserting
+	// it's unwanted inlined css
+	// until such time they allow us
+	// to say no
+
+	$html = preg_replace(
+		"#<style id='(.*?)</style>#s",
+		'',
 		$html
 	);
 
